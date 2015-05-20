@@ -4,6 +4,7 @@ import com.scapelog.client.ui.shapes.Edge;
 import com.scapelog.client.ui.shapes.Point3D;
 import com.scapelog.client.ui.shapes.Shape3d;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Random;
 
@@ -15,11 +16,11 @@ public final class Cube extends Shape3d {
 	}
 
 	@Override
-	public void update(Graphics g, int x, int y) {
+	public void update(Graphics g, Color backgroundColor, int x, int y) {
 		int rand = random.nextInt(1) == 0 ? -1 : 1;
 		azimuth -= rand;
 		elevation += rand;
-		super.update(g, x, y);
+		super.update(g, backgroundColor, x, y);
 	}
 
 	private static Point3D[] createVertices() {

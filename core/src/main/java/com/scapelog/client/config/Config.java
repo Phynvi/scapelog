@@ -20,7 +20,11 @@ public final class Config {
 
 	public static void load() {
 		try {
-			ini.load(new File(getPropertyLocation()));
+			File file = new File(getPropertyLocation());
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+			ini.load(file);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
