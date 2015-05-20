@@ -88,6 +88,9 @@ public final class ScapeLog {
 					try {
 						ClientLoader clientLoader = ClientLoader.create(world, language);
 						Applet applet = clientLoader.load();
+						if (applet == null) {
+							return;
+						}
 
 						Toolkit.getDefaultToolkit().addAWTEventListener(e -> {
 							Object source = e.getSource();

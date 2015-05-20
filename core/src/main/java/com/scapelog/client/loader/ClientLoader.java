@@ -73,14 +73,13 @@ public final class ClientLoader {
 
 	public Applet load() throws Exception {
 		String outputPath = System.getProperty("java.io.tmpdir") + "/.scapelog_cache";
-		String url = "http://" + (world.isPresent() ? "world" + world.get().getId() + "." : "") + "runescape.com/l=" + language.getLanguage();
-		String configUrl = url + "/jav_config.ws";
-
-		System.out.println("CONFIG URL: " + configUrl);
 
 		print("Loading config...");
-		JavConfig config = new JavConfig(configUrl);
-		config.load();
+		JavConfig config = new JavConfig(this, world, language);
+		if (!config.load()) {
+			print("Failed to load client config, please try again.");
+			return null;
+		}
 		String gamePack = config.getConfig(JavConfig.GAMEPACK_NAME);
 		String appletClass = config.getConfig(JavConfig.MAIN_CLASS);
 		String codebase = config.getConfig(JavConfig.CODE_BASE);
@@ -91,7 +90,7 @@ public final class ClientLoader {
 		try {
 			jar = WebUtils.download(codebase, gamePack, outputPath, gamePack.replace("/", ""));
 		} catch (Exception e) {
-			print("Failed to download the client, please try again");
+			print("Failed to download the client, please try again.");
 			return null;
 		}
 		print("- Downloaded");
@@ -101,7 +100,7 @@ public final class ClientLoader {
 		try {
 			archive = analyse(jar, config);
 		} catch (CryptographyException | IOException e) {
-			print("Failed to analyse the client, retrying after redownloading");
+			print("Failed to analyse the client, retrying after redownloading.");
 			jar = WebUtils.download(codebase, gamePack, outputPath, gamePack.replace("/", ""));
 			archive = analyse(jar, config);
 		}
@@ -111,7 +110,7 @@ public final class ClientLoader {
 		print((isDefault ? "Received default" : "Using") + " world " + getWorldId(codebase) + ", lobby " + findLobbyId(config.getParameters()));
 
 		if (archive == null) {
-			print("Something went wrong with the client archive, please restart or report on forums");
+			print("Something went wrong with the client archive, please restart or report on forums.");
 			return null;
 		}
 
@@ -175,7 +174,7 @@ public final class ClientLoader {
 		}
 	}
 
-	private void print(String message) {
+	protected void print(String message) {
 		ClientEventDispatcher.fireEvent(new LoadingEvent(message));
 	}
 

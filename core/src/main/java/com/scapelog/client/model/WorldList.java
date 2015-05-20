@@ -4,6 +4,8 @@ import com.scapelog.client.config.Config;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.util.Random;
+
 public enum WorldList {
 	WORLD_1(1, "Trade - Members", Language.ENGLISH, true),
 	WORLD_2(2, "Trade - Members", Language.ENGLISH, true),
@@ -112,6 +114,11 @@ public enum WorldList {
 
 	public static void saveWorld(WorldList world) {
 		Config.setInt("client", "world", world.getId());
+	}
+
+	public static WorldList getRandomWorld() {
+		WorldList[] worlds = WorldList.values();
+		return worlds[new Random().nextInt(worlds.length)];
 	}
 
 	@Override

@@ -1,12 +1,15 @@
 package com.scapelog.client.loader;
 
-import com.google.common.io.Resources;
+import com.goebl.david.WebbException;
+import com.google.common.collect.Lists;
+import com.scapelog.client.model.Language;
+import com.scapelog.client.model.WorldList;
+import com.scapelog.client.ui.util.WebUtils;
 
-import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public final class JavConfig {
 	public static final String GAMEPACK_NAME = "initial_jar";
@@ -16,20 +19,22 @@ public final class JavConfig {
 	public static final String SECRET_PARAMETER_NAME = "0";
 	public static final String VECTOR_PARAMETER_NAME = "-1";
 
-	private final String configUrl;
+	private final ClientLoader clientLoader;
+	private final Optional<WorldList> world;
+	private final Language language;
 
 	private final Map<String, String> config = new HashMap<>();
 	private final Map<String, String> params = new HashMap<>();
 
-	public JavConfig(String configUrl) {
-		this.configUrl = configUrl;
+	public JavConfig(ClientLoader clientLoader, Optional<WorldList> world, Language language) {
+		this.clientLoader = clientLoader;
+		this.world = world;
+		this.language = language;
 	}
 
-	public void load() {
+	public boolean load() {
 		try {
-			URL url = new URL(configUrl);
-			List<String> lines = Resources.readLines(url, Charset.forName("UTF-8"));
-			lines.size();
+			List<String> lines = getConfigPage(getURL(world));
 			for (String line : lines) {
 				if(line.length() < 1 || !line.contains("="))
 					continue;
@@ -44,9 +49,31 @@ public final class JavConfig {
 					config.put(key, value);
 				}
 			}
+			return !(params.isEmpty() || config.isEmpty());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return false;
+	}
+
+	private List<String> getConfigPage(String baseUrl) {
+		List<String> lines = Lists.newArrayList();
+		while(lines.isEmpty()) {
+			try {
+				lines = WebUtils.readLines(baseUrl, "/jav_config.ws");
+			} catch (WebbException e) {
+				/* request was unsuccessful, attempt a random world */
+				WorldList randomWorld = WorldList.getRandomWorld();
+				clientLoader.print("- Connection timed out, attempting world " + randomWorld.getId());
+				baseUrl = getURL(Optional.of(randomWorld));
+				lines = getConfigPage(baseUrl);
+			}
+		}
+		return lines;
+	}
+
+	private String getURL(Optional<WorldList> world) {
+		return "http://" + (world.isPresent() ? "world" + world.get().getId() + "." : "") + "runescape.com/l=" + language.getLanguage();
 	}
 
 	public String getConfig(String name) {
