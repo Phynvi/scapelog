@@ -3,12 +3,6 @@ package com.scapelog.loader;
 import org.kamranzafar.jtar.TarEntry;
 import org.kamranzafar.jtar.TarInputStream;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -31,11 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.security.KeyManagementException;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -490,7 +480,7 @@ public final class Loader {
 		Map<String, List<String>> headers = connection.getHeaderFields();
 		while (isRedirected(headers)) {
 			url = headers.get("Location").get(0);
-			connection = (HttpsURLConnection) new URL(url).openConnection();
+			connection = (HttpURLConnection) new URL(url).openConnection();
 			setHeaders(url, connection);
 			headers = connection.getHeaderFields();
 		}
@@ -555,42 +545,6 @@ public final class Loader {
 		} catch (Exception e) {
 			return null;
 		}
-	}
-
-	private static void disableSSLVerification() {
-		try {
-			// Create a trust manager that does not validate certificate chains
-			TrustManager[] trustAllCerts = new TrustManager[] {
-					new X509TrustManager() {
-						@Override public java.security.cert.X509Certificate[] getAcceptedIssuers() { return null; }
-						@Override public void checkClientTrusted(X509Certificate[] certs, String authType) {}
-						@Override public void checkServerTrusted(X509Certificate[] certs, String authType) {}
-					}
-			};
-
-			// Install the all-trusting trust manager
-			SSLContext sc = SSLContext.getInstance("SSL");
-			sc.init(null, trustAllCerts, new SecureRandom());
-			HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-
-			// Create all-trusting host name verifier
-			HostnameVerifier allHostsValid = new HostnameVerifier() {
-				public boolean verify(String hostname, SSLSession session) {
-					return true;
-				}
-			};
-
-			// Install the all-trusting host verifier
-			HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (KeyManagementException e) {
-			e.printStackTrace();
-		}
-	}
-
-	static {
-		disableSSLVerification();
 	}
 
 }
