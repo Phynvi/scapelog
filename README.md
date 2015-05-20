@@ -28,3 +28,4 @@ ScapeLog
 
 ## Helpful wiki articles
 * [Working with the analysers](https://bitbucket.org/scapelog/scapelog-client/wiki/Working%20with%20the%20analysers)
+* [Developing ScapeLog](https://bitbucket.org/scapelog/scapelog-client/wiki/Developing%20ScapeLog) **(READ BEFORE STARTING)**
