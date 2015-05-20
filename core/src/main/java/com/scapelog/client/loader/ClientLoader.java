@@ -158,7 +158,7 @@ public final class ClientLoader {
 
 		// run the reflection analysers
 		for (ReflectionAnalyser analyser : reflectionAnalysers) {
-			analyser.analyse(classNodes, operation);
+			analyser.analyse(classNodes);
 		}
 	}
 
