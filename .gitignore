@@ -1,0 +1,25 @@
+.*
+*~
+*.bak
+
+# Mac
+.DS_Store
+
+# Java
+target
+build
+/classes
+/out
+
+# IntelliJ Idea
+*.iml
+*.ipr
+*.iws
+*.ids
+
+# Git
+!.git*
+!.mailmap
+
+scapelog.properties
+tools

@@ -1,0 +1,48 @@
+/* styles */
+.root {
+    -fx-background: #1C1C1C;
+    -fx-border: #111;
+    -fx-border-2: #151515;
+
+    -fx-text: #a3a3a3;
+    -fx-text-hover: #6a6a6a;
+}
+
+#root {
+    -fx-border-width: 1 1 1 1;
+}
+
+/* image logo */
+#logo {
+    -fx-border-color: red;
+/*    -fx-font-family: 'Nunito';
+    -fx-alignment: center;
+    -fx-padding: 0 0 0 0;
+    -fx-font-size: 60;*/
+}
+
+#response-label {
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+    -fx-wrap-text: true;
+}
+
+.fail {
+    -fx-text-fill: #c0392b;
+}
+
+#username-box, #password-box, #login-box {
+    -fx-padding: 5 15 5 15;
+}
+
+#link {
+    -fx-font-size: 10;
+}
+
+.left {
+    -fx-alignment: center-left;
+}
+
+.right {
+    -fx-alignment: center-right;
+}

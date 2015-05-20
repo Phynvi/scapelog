@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Agent-Class: com.scapelog.agent.Agent
+Can-Redefine-Classes: true
+Can-Retransform-Classes: true
+Premain-Class: com.scapelog.agent.Agent

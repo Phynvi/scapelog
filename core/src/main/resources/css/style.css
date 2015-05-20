@@ -1,0 +1,720 @@
+.root {
+    -fx-font-family: 'Open Sans';
+    -fx-font-size: 13px;
+
+    -fx-background-fill: #1C1C1C;
+    -fx-background-fill-darker: #161616;
+
+    -fx-border: #111;
+    -fx-border-darker: #151515;
+    -fx-border-lighter: derive(-fx-border, 20%);
+
+    -fx-text: #a3a3a3;
+    -fx-text-darker: #717171;
+}
+
+/**
+ * The root.
+ */
+#root {
+    -fx-background-color: -fx-background-fill;
+    -fx-background-repeat: repeat;
+    -fx-border-color: -fx-border;
+    -fx-border-style: solid;
+    -fx-border-width: 0 1 1 1;
+}
+
+/**
+ * The title bar.
+ */
+#title-bar {
+    -fx-background-repeat: repeat-x;
+    -fx-border-color: -fx-border;
+    -fx-border-style: solid;
+    -fx-border-width: 1 0 1 0;
+}
+
+#title-bar .button {
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: 0 0;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-padding: 0;
+}
+
+#title-bar #logo {
+    -fx-text-fill: -fx-text;
+    -fx-translate-x: 6;
+    -fx-translate-y: 7;
+}
+
+#title-bar #beta {
+    -fx-text-fill: -fx-text-darker;
+    -fx-font-size: 11px;
+    -fx-translate-x: 8;
+    -fx-translate-y: 6;
+}
+
+#title-bar #features {
+    -fx-translate-y: 1;
+}
+
+#window-controls {
+    -fx-translate-y: 5;
+    -fx-translate-x: -7;
+    -fx-padding: 0 0 0 10;
+    -fx-spacing: 5;
+}
+
+#window-controls > .button {
+    -fx-label-padding: -5;
+    -fx-translate-y: -5;
+    -fx-pref-width: 20;
+    -fx-min-height: 17;
+    -fx-max-height: 17;
+}
+
+#window-controls #minimize, #window-controls #close {
+    -fx-font-size: 16;
+    -fx-padding: 1 9 3 7;
+}
+
+#window-controls #maximize {
+    -fx-padding: 2 6 1 6;
+}
+
+#features-window {
+    -fx-border-color: -fx-border;
+    -fx-border-style: solid;
+    -fx-border-width: 1 1 1 1;
+}
+
+#feature-statuses .status-label.disabled {
+    -fx-text-fill: derive(red, -30%);
+}
+
+#feature-statuses .status-label.unverified {
+    -fx-text-fill: orange;
+}
+
+#feature-statuses .status-label.enabled {
+    -fx-text-fill: green;
+}
+
+#plugin-button {
+    -fx-border-color: -fx-border;
+    -fx-background-color: linear-gradient(#2d2d2d, #1e1e1e);
+}
+
+#plugin-header {
+    -fx-border-color: -fx-border-darker;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 5 5 5 10;
+}
+
+#plugin-header #settings {
+    -fx-padding: 2 5 2 5;
+}
+
+#plugin-header .button {
+    -fx-padding: 2 5 3 5;
+}
+
+.label {
+    -fx-text-fill: -fx-text;
+}
+
+/**
+ * Buttons
+ */
+.button,
+.bordered,
+.awesome {
+    -fx-text-fill: -fx-text;
+    -fx-background-color: transparent;
+}
+
+.button:hover,
+.bordered:hover,
+.awesome:hover {
+    -fx-text-fill: -fx-text-darker;
+    -fx-background-color: transparent;
+}
+
+.bordered {
+    -fx-border-color: -fx-border-lighter;
+    -fx-padding: 5;
+}
+
+.bordered:hover {
+    -fx-text-fill: -fx-text-darker;
+}
+
+#reload {
+    -fx-padding: 0 10 0 10;
+}
+
+/**
+ * ListViews
+ */
+.list-view {
+    -fx-background-color: linear-gradient(#222222, #1f1f1f);
+    -fx-border-color: -fx-border-lighter;
+    -fx-text-fill: -fx-text;
+    -fx-padding: 0;
+}
+
+.list-view .list-cell {
+    -fx-background-color: -fx-background-fill-darker;
+    -fx-border-color: -fx-border-lighter;
+    -fx-border-width: 0;
+    -fx-text-fill: -fx-text;
+    -fx-padding: 2 3 2 3;
+}
+
+.list-view .list-cell:selected {
+    -fx-text-fill: -fx-text;
+    -fx-background-color: -fx-background-fill;
+}
+
+/**
+ * ComboBoxes
+ */
+.combo-box {
+    -fx-text-fill: -fx-text;
+}
+
+.combo-box > .list-cell {
+    -fx-text-fill: -fx-text;
+    -fx-padding: 3 0 3 5;
+}
+
+.combo-box-base {
+    -fx-background-color: -fx-background-fill-darker;
+    -fx-border-color: -fx-border-lighter;
+}
+
+.combo-box-base > .arrow-button {
+    -fx-padding: 1 5 1 5;
+}
+
+.combo-box .arrow {
+    -fx-shape: "M 0,0 L 0,0 10,0 5,10 Z";
+    -fx-background-color: -fx-border-lighter;
+    -fx-border-width: 0;
+}
+
+/**
+ * TableViews
+ */
+.table-view {
+    -fx-background-color: -fx-background-fill;
+    -fx-text-fill: -fx-text;
+    -fx-fill: -fx-text;
+    -fx-border-color: -fx-background-fill;
+
+    -fx-table-cell-border-color: transparent;
+    -fx-table-header-border-color: transparent;
+    -fx-padding: 5;
+}
+
+/*.table-view .column-header-background {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color:
+        transparent
+        transparent
+        derive(-fx-base, 80%)
+        transparent;
+    -fx-border-insets: 0 10 1 0;
+}*/
+
+.table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-alignment: center;
+    -fx-opacity: 1;
+}
+
+.table-view:focused .table-row-cell:filled:focused:selected {
+    -fx-background-color: -fx-focus-color;
+}
+
+/**
+ * TabPanes
+ */
+.tab-pane {
+    -fx-border-color: -fx-background-fill;
+}
+
+.tab-pane *.tab-header-background {
+    -fx-background-color: linear-gradient(#1f1f1f, #282828);
+}
+
+.tab-pane .tab {
+    -fx-background-color: #262626;
+    -fx-border-color: -fx-background-fill;
+    -fx-border-radius: 0;
+    -fx-hgap: 10;
+}
+
+.tab-pane .tab:selected {
+/*    -fx-background-color: linear-gradient(#252525, -fx-background-fill);*/
+}
+
+.tab-pane .tab *.tab-label, .tab-pane .tab .awesome {
+    -fx-text-fill: -fx-text;
+}
+
+.rotateTab {
+    -fx-rotate: 90;
+}
+
+.tab-content-area {
+    -fx-text-fill: -fx-text;
+    -fx-background-color: -fx-background-fill;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab:selected {
+    -fx-background-color: #363636;
+}
+
+.tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
+    -fx-border-style: solid;
+    -fx-border-width: 1;
+    -fx-border-color: transparent;
+}
+
+.tab-pane .tab-down-button {
+    visibility: hidden;
+    -fx-background-color: transparent;
+}
+
+.tab-pane .arrow {
+    -fx-background-color: -fx-text;
+}
+
+.tab-pane .menu-item .label {
+    /*-fx-label-padding: 0 15 5 10;*/
+
+    -fx-translate-x: 3;
+    -fx-pref-width: 25;
+    -fx-min-height: 25;
+    -fx-max-height: 25;
+}
+
+/**
+ * Scroll Pane
+ */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar {
+    -fx-background-color: #212121;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.corner {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .track-background {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+}
+
+.scroll-bar .track {
+    -fx-background-color: #1b1b1b;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #212121;
+    -fx-background-insets: 0 1 0 1;
+    -fx-background-radius: 0.5em;
+    -fx-border-color: #323232;
+    -fx-border-width: 0;
+    -fx-border-radius: 0.9em;
+}
+
+.scroll-bar:horizontal .thumb {
+    -fx-background-insets: 0;
+    -fx-border-width: 0;
+}
+
+.scroll-bar .increment-button {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0 10px 0 0;
+    -fx-shape: '';
+}
+
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0 10px 0 0;
+}
+
+.scroll-bar .increment-arrow {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-shape: '';
+}
+
+.scroll-bar .decrement-arrow {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-shape: '';
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * ToggleButton                                                                *
+ *                                                                             *
+ ******************************************************************************/
+
+.toggle-button {
+    -fx-background-color: transparent;
+    -fx-padding: 1 6 1 6;
+    -fx-alignment: CENTER;
+}
+
+.toggle-button:selected {
+    -fx-background-color: -fx-background-fill-darker;
+    -fx-border-color: -fx-border-lighter;
+    -fx-padding: 0 5 1 5;
+/*    -fx-background-color:
+    -fx-shadow-highlight-color,
+    linear-gradient(to bottom, derive(-fx-color,-90%) 0%, derive(-fx-color,-60%) 100%),
+    linear-gradient(to bottom, derive(-fx-color,-60%) 0%, derive(-fx-color,-35%) 50%, derive(-fx-color,-30%) 98%, derive(-fx-color,-50%) 100%),
+    linear-gradient(to right, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 10%, rgba(0,0,0,0) 90%, rgba(0,0,0,0.3) 100%);
+    -fx-background-insets: 0 0 -1 0, 0, 1, 1;*/
+    /* TODO: -fx-text-fill should be derived */
+/*    -fx-text-fill: -fx-light-text-color;*/
+}
+
+.toggle-button:selected:focused {
+/*    -fx-color: -fx-focused-base;
+    -fx-background-color:
+    -fx-focus-color,
+    linear-gradient(to bottom, derive(-fx-color,-90%) 0%, derive(-fx-color,-60%) 100%),
+    linear-gradient(to bottom, derive(-fx-color,-60%) 0%, derive(-fx-color,-35%) 50%, derive(-fx-color,-30%) 98%, derive(-fx-color,-50%) 100%),
+    linear-gradient(to right, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 10%, rgba(0,0,0,0) 90%, rgba(0,0,0,0.3) 100%);
+    -fx-background-insets: -1.4, 0, 1, 1;*/
+}
+
+.toggle-button:disabled {
+/*    -fx-opacity: -fx-disabled-opacity;*/
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * TextInput                                                                   *
+ *                                                                             *
+ ******************************************************************************/
+
+.text-input {
+    -fx-background-color: -fx-background-fill-darker;
+    -fx-border-color: derive(-fx-background-fill, 10%);
+    -fx-text-fill: derive(-fx-text, -30%);
+}
+
+.text-input:focused {
+    -fx-border-color: derive(-fx-background-fill, 20%);
+    -fx-text-fill: derive(-fx-text, -5%);
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * TextArea                                                                    *
+ *                                                                             *
+ ******************************************************************************/
+
+.text-area {
+    -fx-background-color: -fx-background-fill;
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 3, 2, 2;
+    -fx-padding: 1;
+    -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
+}
+
+.text-area > .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.text-area .content {
+    -fx-background-color: -fx-background-fill;
+    -fx-padding: 3 5 3 5;
+    -fx-cursor: text;
+}
+
+.text-area:focused {
+    -fx-text-fill: -fx-text-darker;
+    -fx-background-color: -fx-background-fill;
+    -fx-background-insets: -0.4, 1, 2;
+    -fx-background-radius: 3.4, 2, 2;
+    -fx-prompt-text-fill: transparent;
+}
+
+.text-area:disabled {
+    -fx-opacity: 0/*-fx-disabled-opacity*/;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * CheckBox                                                                    *
+ *                                                                             *
+ ******************************************************************************/
+
+.check-box *.box {
+    -fx-background-color: -fx-background-fill-darker;
+    -fx-border-color: derive(-fx-background-fill, 10%);
+    -fx-border-radius: 0;
+}
+
+.check-box *.mark {
+    -fx-background-color: transparent;
+}
+
+.check-box:selected *.mark {
+    -fx-background-color: #0c95c9;
+    -fx-scale-shape: true;
+    /*-fx-shape: "M 0 6 V 7 L 6 13 L 8 11 L 4 7  V 6 L 8 2 L 6 0 L 0 6 Z";*/
+    /*-fx-shape: "M .2,.2 L .4,.4 .2,.8 .4,.6 .8,.8 .6,.6 .8,.2 .6,.4 Z";*/
+    /*-fx-shape: "M .1,.1 L .1,.1 .4,.4 .1,.9 .4,.5 .9,.9 .5,.5 .9,.1 .5,.4 .1,.1 Z";*/
+    /*-fx-shape: "M 0,0 L 0,0   5,4.5   10,10   5,5.5   0,0 Z   M 10,0 L 10,0   5,4.5   0,10   5,5.5   10,0 Z";*/
+    -fx-shape: "M 0,0 L 0,0 4.5,5 0,10 5,5.5 10,10 5.5,5 10,0 5,4.5 0,0 Z";
+}
+
+.check-box {
+    -fx-text-fill: -fx-text;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Hyperlinks                                                                  *
+ *                                                                             *
+ ******************************************************************************/
+
+.hyperlink {
+    -fx-text-fill: #0c95c9;
+}
+
+.hyperlink:visited {
+    -fx-text-fill: #0c95c9;
+    -fx-underline: false;
+}
+
+.hyperlink:focused {
+    -fx-border-color: transparent;
+    -fx-underline: true;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Popup                                                                       *
+ *                                                                             *
+ ******************************************************************************/
+
+.popup  {
+    -fx-background-color: -fx-background-fill;
+/*    -fx-border-color: red;*/
+}
+
+.popup > .content {
+    -fx-border-color: -fx-border;
+}
+
+.popup > .detached {
+
+}
+
+.popup > .title {
+    -fx-padding: 5;
+    -fx-border-color: -fx-border;
+    -fx-border-width: 1 1 0 1;
+}
+
+.popup > .title > .text  {
+    /*-fx-padding: 6.0 6.0 0.0 6.0;*/
+    -fx-text-fill: -fx-text;
+}
+
+.popup > .title > .close {
+    -fx-font-family: 'Nunito';
+    -fx-font-size: 16;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Misc                                                                        *
+ *                                                                             *
+ ******************************************************************************/
+
+.context-menu {
+    -fx-background-color: -fx-background-fill;
+}
+
+.menu-item {
+    -fx-background-color: -fx-background-fill;
+}
+
+.menu-bar .menu-button:hover, .menu-bar .menu-button:focused, .menu-bar .menu-button:showing {
+    -fx-background: -fx-accent;
+    -fx-background-color: -fx-selection-bar;
+    -fx-text-fill: lightpink;
+}
+
+.header {
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: -fx-border-darker;
+}
+
+.header > .title {
+/*    -fx-font-size: 14;*/
+}
+
+.header > .description {
+    -fx-font-size: 10;
+    -fx-text-fill: -fx-text-darker;
+    -fx-padding: 0 0 5 0;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Plugins                                                                     *
+ *                                                                             *
+ ******************************************************************************/
+
+#idle-label {
+    -fx-font-size: 11;
+    -fx-padding: -2;
+}
+
+#session-label {
+    -fx-text-fill: -fx-text-darker;
+    -fx-font-size: 9;
+    -fx-padding: -2 0 0 1;
+}
+
+#skill-tracker-button #xp-label {
+    -fx-font-size: 12.0;
+}
+
+#skill-box {
+    -fx-background-color: #2d2d2d;
+    /*    -fx-padding: 1 5 5 5;*/
+    -fx-min-height: 35;
+    -fx-max-height: 35;
+}
+
+#skill-box #info {
+    -fx-padding: 2 1 5 5;
+}
+
+#skill-box #size-controls {
+    -fx-max-width: 3;
+    -fx-max-height: 3;
+    -fx-min-width: 15;
+}
+
+#skill-box #size-controls .button {
+    -fx-max-height: 15;
+    -fx-max-width: 15;
+    -fx-min-height: 15;
+    -fx-min-width: 15;
+}
+
+#skill-box #skill-icon {
+    -fx-padding: 5 0 0 0;
+    -fx-translate-y: 5;
+    -fx-effect: dropshadow(three-pass-box, black, 5, 0.0, 0.0, 0.0);
+}
+
+#skill-box #level-progress-bar > .bar {
+    -fx-padding: 1px;
+    -fx-background-color: #33703D;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+
+#skill-box #level-progress-bar > .track {
+    -fx-control-inner-background: #c0392b;
+    -fx-background-color: #c0392b;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+
+#skill-box #current-level {
+    -fx-font-size: 13;
+    -fx-font-weight: bold;
+}
+
+#skill-box #current-xp {
+    -fx-font-size: 10;
+    -fx-text-fill: -fx-text-darker;
+}
+
+#skill-box #level-progress {
+    -fx-font-size: 10;
+    -fx-text-fill: -fx-text-darker;
+}
+
+#skill-box #hourly-xp {
+    -fx-font-size: 12;
+    -fx-font-weight: bold;
+    -fx-alignment: bottom-right;
+    -fx-translate-y: 1;
+}
+
+#skill-box #gained-xp {
+    -fx-font-size: 10;
+    -fx-text-fill: -fx-text-darker;
+    -fx-alignment: bottom-right;
+}
+
+#skill-box #xp-popup {
+    -fx-font-size: 10;
+}
+
+/* Highscores */
+#highscores #skills, #highscores, #additional {
+    -fx-border-width: 0 1 0 0;
+    -fx-border-color: -fx-border-darker;
+}
+
+
+/**
+ * SpinnerField
+ */
+.spinner-control .increase {
+    -fx-label-padding: -2 0 0 0;
+}
+
+.spinner-control .decrease {
+    -fx-label-padding: -2 0 0 -1;
+}
+
+.spinner-control .increase, .spinner-control .decrease {
+    -fx-alignment: top-center;
+    -fx-border-width: 1 1 1 0;
+    -fx-padding: 0;
+    -fx-font-size: 10;
+    -fx-pref-width: 18;
+    -fx-max-width: 18;
+}
