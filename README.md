@@ -25,3 +25,6 @@ ScapeLog
 ## Previous features (implemented by Jagex)
 * Proper 'public chat off' mode
 * Ability to move the `displayfps debug information
+
+## Helpful wiki articles
+* [Working with the analysers](https://bitbucket.org/scapelog/scapelog-client/wiki/Working%20with%20the%20analysers)
