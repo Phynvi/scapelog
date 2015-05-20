@@ -76,6 +76,8 @@ public final class ClientLoader {
 		String url = "http://" + (world.isPresent() ? "world" + world.get().getId() + "." : "") + "runescape.com/l=" + language.getLanguage();
 		String configUrl = url + "/jav_config.ws";
 
+		System.out.println("CONFIG URL: " + configUrl);
+
 		print("Loading config...");
 		JavConfig config = new JavConfig(configUrl);
 		config.load();

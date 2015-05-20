@@ -54,7 +54,8 @@ public enum WorldList {
 	WORLD_46(46, "Community Agility Training", Language.ENGLISH, true),
 	WORLD_47(47, "Português", Language.ENGLISH, true), //todo: check language
 	WORLD_48(48, "Skill Total (2400)", Language.ENGLISH, true),
-	WORLD_49(49, "Australia", Language.ENGLISH, true);
+	WORLD_49(49, "Australia", Language.ENGLISH, true),
+	WORLD_140(140, "South America", Language.ENGLISH, true);
 	//WORLD_5(5, "", Language.ENGLISH, ),
 	// todo: do rest of the worlds
 

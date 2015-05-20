@@ -133,7 +133,8 @@ public final class ScapeLog {
 	}
 
 	private void loadClient() {
-		executor.schedule(() -> ClientEventDispatcher.fireEvent(new ClientLoadEvent(Optional.empty(), Language.getSavedLanguage())), 2000, TimeUnit.MILLISECONDS);
+		//something to test
+		executor.schedule(() -> ClientEventDispatcher.fireEvent(new ClientLoadEvent(Optional.of(WorldList.WORLD_140), Language.getSavedLanguage())), 2000, TimeUnit.MILLISECONDS);
 	}
 
 	public static ScheduledExecutorService getExecutor() {
