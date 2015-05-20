@@ -3,8 +3,7 @@ package com.scapelog.client.loader.analyser.impl.reflection;
 import com.scapelog.agent.util.ClassNodeUtils;
 import com.scapelog.agent.util.InsnNodeUtils;
 import com.scapelog.agent.util.InstructionSearcher;
-import com.scapelog.client.loader.analyser.AnalysingOperation;
-import com.scapelog.client.loader.analyser.impl.ReflectionAnalyser;
+import com.scapelog.client.loader.analyser.ReflectionAnalyser;
 import com.scapelog.client.reflection.ReflectedField;
 import com.scapelog.client.reflection.ReflectedFields;
 import org.objectweb.asm.Opcodes;
@@ -22,7 +21,7 @@ import java.util.regex.Pattern;
 public final class PlayerAnalyser extends ReflectionAnalyser {
 
 	@Override
-	public void analyse(Collection<ClassNode> classNodes, AnalysingOperation operation) {
+	public void analyse(Collection<ClassNode> classNodes) {
 		ClassNode clientNode = ClassNodeUtils.getClassNode(classNodes, "client");
 		MethodNode clinit = ClassNodeUtils.getMethod(clientNode, "<clinit>");
 		if (clinit == null) {

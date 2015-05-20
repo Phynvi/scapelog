@@ -10,7 +10,7 @@ import com.scapelog.client.loader.analyser.impl.ClassLoaderAnalyser;
 import com.scapelog.client.loader.analyser.impl.GameMessageAnalyser;
 import com.scapelog.client.loader.analyser.impl.IdleResetAnalyser;
 import com.scapelog.client.loader.analyser.impl.MultiplierAnalyser;
-import com.scapelog.client.loader.analyser.impl.ReflectionAnalyser;
+import com.scapelog.client.loader.analyser.ReflectionAnalyser;
 import com.scapelog.client.loader.analyser.impl.SkillAnalyser;
 import com.scapelog.client.loader.analyser.impl.StringFieldAnalyser;
 import com.scapelog.client.loader.analyser.impl.VariableAnalyser;
@@ -57,9 +57,11 @@ public final class ClientLoader {
 		ImmutableList.Builder<Analyser> analyserBuilder = new ImmutableList.Builder<>();
 		ImmutableList.Builder<ReflectionAnalyser> reflectionBuilder = new ImmutableList.Builder<>();
 		analyserBuilder.add(
+				// keep these three analysers first
 				new MultiplierAnalyser(),
 				new ClassLoaderAnalyser(),
 				new StringFieldAnalyser(),
+
 				new SkillAnalyser(),
 				new IdleResetAnalyser(),
 				new GameMessageAnalyser(),
