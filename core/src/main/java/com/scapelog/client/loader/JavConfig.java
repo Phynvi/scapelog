@@ -56,20 +56,15 @@ public final class JavConfig {
 		return false;
 	}
 
+	/* This will keep trying to find a working world, instead of trying just once like you had previous. */
 	private List<String> getConfigPage(String baseUrl) {
-		List<String> lines = Lists.newArrayList();
-		while(lines.isEmpty()) {
-			try {
-				lines = WebUtils.readLines(baseUrl, "/jav_config.ws");
-			} catch (WebbException e) {
-				/* request was unsuccessful, attempt a random world */
-				WorldList randomWorld = WorldList.getRandomWorld();
-				clientLoader.print("- Connection timed out, attempting world " + randomWorld.getId());
-				baseUrl = getURL(Optional.of(randomWorld));
-				lines = getConfigPage(baseUrl);
-			}
+		try {
+			return WebUtils.readLines(baseUrl, "/jav_config.ws");
+		} catch (WebbException e) {
+			WorldList randomWorld = WorldList.getRandomWorld();
+			clientLoader.print("- Connection timed out, attempting world " + randomWorld.getId());
+			return getConfigPage(getURL(Optional.of(randomWorld)));
 		}
-		return lines;
 	}
 
 	private String getURL(Optional<WorldList> world) {

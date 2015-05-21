@@ -20,6 +20,7 @@ import javafx.embed.swing.JFXPanel;
 import javafx.stage.Stage;
 
 import javax.swing.SwingUtilities;
+import javax.swing.text.html.Option;
 import java.applet.Applet;
 import java.awt.AWTEvent;
 import java.awt.Canvas;
@@ -136,8 +137,7 @@ public final class ScapeLog {
 	}
 
 	private void loadClient() {
-		//something to test
-		executor.schedule(() -> ClientEventDispatcher.fireEvent(new ClientLoadEvent(Optional.of(WorldList.WORLD_140), Language.getSavedLanguage())), 2000, TimeUnit.MILLISECONDS);
+		executor.schedule(() -> ClientEventDispatcher.fireEvent(new ClientLoadEvent(Optional.empty(), Language.getSavedLanguage())), 2000, TimeUnit.MILLISECONDS);
 	}
 
 	public static ScheduledExecutorService getExecutor() {
