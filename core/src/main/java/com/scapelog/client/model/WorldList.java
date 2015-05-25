@@ -4,6 +4,8 @@ import com.scapelog.client.config.Config;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.util.Random;
+
 public enum WorldList {
 	WORLD_1(1, "Trade - Members", Language.ENGLISH, true),
 	WORLD_2(2, "Trade - Members", Language.ENGLISH, true),
@@ -54,7 +56,8 @@ public enum WorldList {
 	WORLD_46(46, "Community Agility Training", Language.ENGLISH, true),
 	WORLD_47(47, "Português", Language.ENGLISH, true), //todo: check language
 	WORLD_48(48, "Skill Total (2400)", Language.ENGLISH, true),
-	WORLD_49(49, "Australia", Language.ENGLISH, true);
+	WORLD_49(49, "Australia", Language.ENGLISH, true),
+	WORLD_140(140, "South America", Language.ENGLISH, true);
 	//WORLD_5(5, "", Language.ENGLISH, ),
 	// todo: do rest of the worlds
 
@@ -111,6 +114,11 @@ public enum WorldList {
 
 	public static void saveWorld(WorldList world) {
 		Config.setInt("client", "world", world.getId());
+	}
+
+	public static WorldList getRandomWorld() {
+		WorldList[] worlds = WorldList.values();
+		return worlds[new Random().nextInt(worlds.length)];
 	}
 
 	@Override

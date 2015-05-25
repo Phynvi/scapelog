@@ -20,6 +20,7 @@ import javafx.embed.swing.JFXPanel;
 import javafx.stage.Stage;
 
 import javax.swing.SwingUtilities;
+import javax.swing.text.html.Option;
 import java.applet.Applet;
 import java.awt.AWTEvent;
 import java.awt.Canvas;
@@ -88,6 +89,9 @@ public final class ScapeLog {
 					try {
 						ClientLoader clientLoader = ClientLoader.create(world, language);
 						Applet applet = clientLoader.load();
+						if (applet == null) {
+							return;
+						}
 
 						Toolkit.getDefaultToolkit().addAWTEventListener(e -> {
 							Object source = e.getSource();
