@@ -15,14 +15,19 @@ public final class Config {
 	private static final String[] propertiesLocations = {
 			System.getProperty("user.home") + "/.scapelog/scapelog.properties",
 			"./scapelog.properties",
-			System.getProperty("java.io.tmpdir") +"/scapelog.properties"
+			System.getProperty("java.io.tmpdir") + "/scapelog.properties"
 	};
 
 	public static void load() {
 		try {
 			File file = new File(getPropertyLocation());
+			boolean exists = true;
 			if (!file.exists()) {
-				file.createNewFile();
+				exists = file.createNewFile();
+			}
+			if (!exists) {
+				System.err.println("Failed to load config");
+				return;
 			}
 			ini.load(file);
 		} catch (IOException e) {

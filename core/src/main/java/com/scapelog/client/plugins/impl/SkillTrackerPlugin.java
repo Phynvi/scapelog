@@ -365,7 +365,7 @@ public final class SkillTrackerPlugin extends TabPlugin {
 			this.skill = skill;
 			this.icon = getSkillIcon(skill.getId());
 
-			this.levelLabel = Components.createLabel(skill.levelProperty().get() + "", "current-level");
+			this.levelLabel = Components.createLabel(Integer.toString(skill.levelProperty().get()), "current-level");
 			this.levelProgressLabel = Components.createLabel("", "level-progress");
 			this.xpLabel = Components.createLabel(skill.xpProperty().get() + " xp", "current-xp");
 			this.gainedXpLabel = Components.createLabel("", "gained-xp");

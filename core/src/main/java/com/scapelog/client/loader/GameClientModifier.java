@@ -8,6 +8,7 @@ import com.scapelog.client.util.JagBase64;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.util.jar.JarFile;
 
@@ -39,8 +40,11 @@ public final class GameClientModifier {
 	public GamePackArchives unpack(JavConfig config, Path gamePackPath) throws IOException, CryptographyException {
 		byte[] key = JagBase64.decode(config.getParameter(JavConfig.SECRET_PARAMETER_NAME));
 		byte[] iv = JagBase64.decode(config.getParameter(JavConfig.VECTOR_PARAMETER_NAME));
-		this.aesCodec = new AESCodec(key, iv);
-		JarArchive gamePackArchive = jarArchiveCodec.read(new FileInputStream(gamePackPath.toString()));
+		this.aesCodec = new AESCodec(ByteBuffer.wrap(key), ByteBuffer.wrap(iv));
+		JarArchive gamePackArchive;
+		try (FileInputStream inputStream = new FileInputStream(gamePackPath.toString())) {
+			gamePackArchive = jarArchiveCodec.read(inputStream);
+		}
 		byte[] unpackedClient = unpackClient(gamePackArchive.get(CLIENT_NAME));
 		JarArchive clientArchive = jarArchiveCodec.read(unpackedClient);
 		return new GamePackArchives(gamePackArchive, clientArchive);

@@ -4,8 +4,11 @@ import com.scapelog.agent.util.ClassNodeUtils;
 import com.scapelog.agent.util.InsnNodeUtils;
 import com.scapelog.agent.util.InstructionSearcher;
 import com.scapelog.client.loader.analyser.ReflectionAnalyser;
+import com.scapelog.client.loader.analyser.ReflectionOperation;
+import com.scapelog.client.reflection.ClassNames;
 import com.scapelog.client.reflection.ReflectedField;
 import com.scapelog.client.reflection.ReflectedFields;
+import com.scapelog.client.util.Debug;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
@@ -21,7 +24,7 @@ import java.util.regex.Pattern;
 public final class PlayerAnalyser extends ReflectionAnalyser {
 
 	@Override
-	public void analyse(Collection<ClassNode> classNodes) {
+	public void analyse(Collection<ClassNode> classNodes, ReflectionOperation operation) {
 		ClassNode clientNode = ClassNodeUtils.getClassNode(classNodes, "client");
 		MethodNode clinit = ClassNodeUtils.getMethod(clientNode, "<clinit>");
 		if (clinit == null) {
@@ -54,6 +57,8 @@ public final class PlayerAnalyser extends ReflectionAnalyser {
 		if (playerClass == null) {
 			return;
 		}
+		ClassNames.PLAYER = playerClass.name;
+		Debug.println("player identified as %s", ClassNames.PLAYER);
 		findUsername(playerClass);
 	}
 

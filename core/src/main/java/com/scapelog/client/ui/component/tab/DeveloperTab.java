@@ -256,7 +256,7 @@ public final class DeveloperTab extends IconTab {
 		}
 		if (evt.getClass().equals(VariableEvent.class)) {
 			VariableEvent e = (VariableEvent) evt;
-			return "[setting] id=" + e.getId() + ", value=" + e.getValue();
+			return "[setting] id=" + e.getId() + ", value=" + e.getValue() + ", type=" + e.getType();
 		}
 		return null;
 	}
@@ -265,7 +265,7 @@ public final class DeveloperTab extends IconTab {
 		textArea.appendText(message + "\n");
 	}
 
-	class EventMessage {
+	static class EventMessage {
 
 		private final Event event;
 		private String message;

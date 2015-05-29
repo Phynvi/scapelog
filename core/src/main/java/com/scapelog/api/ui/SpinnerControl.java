@@ -47,24 +47,24 @@ public class SpinnerControl extends HBox {
 		buttonIncrease.getStyleClass().add("increase");
 		addPressAndHoldHandler(buttonIncrease, Duration.millis(30), event -> {
 			double value = getValue();
+			double newValue = maxValue;
 			if (value < maxValue) {
-				setValue(getValue() + incrementationValue);
-			} else {
-				setValue(maxValue);
+				newValue = getValue() + incrementationValue;
 			}
+			setValue(newValue);
 		});
 
 		buttonDecrease = Components.createBorderedButton("-");
 		buttonDecrease.getStyleClass().add("decrease");
 		addPressAndHoldHandler(buttonDecrease, Duration.millis(30), event -> {
 			double value = getValue();
+			double newValue = minValue;
 			if (value > minValue) {
-				setValue(getValue() - incrementationValue);
+				newValue = getValue() - incrementationValue;
 			} else if (value >= maxValue) {
-				setValue(maxValue);
-			} else {
-				setValue(minValue);
+				newValue = maxValue;
 			}
+			setValue(newValue);
 		});
 
 		textField.heightProperty().addListener((observable, oldValue, newValue) -> {

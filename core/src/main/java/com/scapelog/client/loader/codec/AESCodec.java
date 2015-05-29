@@ -11,6 +11,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -23,21 +24,21 @@ public final class AESCodec extends Codec<byte[]> {
 	/**
 	 * The key for the {@link SecretKeySpec}.
 	 */
-	private final byte[] key;
+	private final ByteBuffer keyBuffer;
 
 	/**
 	 * The Iv for the {@link IvParameterSpec}.
 	 */
-	private final byte[] iv;
+	private final ByteBuffer ivBuffer;
 
 	/**
 	 * Creates a new {@link AESCodec}.
-	 * @param key The {@link SecretKeySpec} key.
-	 * @param iv The {@link IvParameterSpec} iv.
+	 * @param keyBuffer The {@link SecretKeySpec} key.
+	 * @param ivBuffer The {@link IvParameterSpec} iv.
 	 */
-	public AESCodec(byte[] key, byte[] iv) {
-		this.key = key;
-		this.iv = iv;
+	public AESCodec(ByteBuffer keyBuffer, ByteBuffer ivBuffer) {
+		this.keyBuffer = keyBuffer;
+		this.ivBuffer = ivBuffer;
 	}
 
 	@Override
@@ -72,8 +73,8 @@ public final class AESCodec extends Codec<byte[]> {
 	private byte[] decode(byte[] data) throws CryptographyException {
 		try {
 			Cipher cipherObject = Cipher.getInstance("AES/CBC/PKCS5Padding");
-			SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
-			cipherObject.init(Cipher.DECRYPT_MODE, secretKeySpec, new IvParameterSpec(iv));
+			SecretKeySpec secretKeySpec = new SecretKeySpec(keyBuffer.array(), "AES");
+			cipherObject.init(Cipher.DECRYPT_MODE, secretKeySpec, new IvParameterSpec(ivBuffer.array()));
 			return cipherObject.doFinal(data);
 		} catch (InvalidKeyException | InvalidAlgorithmParameterException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | NoSuchPaddingException e) {
 			throw new CryptographyException(e);
@@ -89,8 +90,8 @@ public final class AESCodec extends Codec<byte[]> {
 	private byte[] encode(byte[] data) throws CryptographyException {
 		try {
 			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-			SecretKeySpec secretKeySpec = new SecretKeySpec(key, "AES");
-			cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, new IvParameterSpec(iv));
+			SecretKeySpec secretKeySpec = new SecretKeySpec(keyBuffer.array(), "AES");
+			cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, new IvParameterSpec(ivBuffer.array()));
 			return cipher.doFinal(data);
 		} catch (InvalidKeyException | InvalidAlgorithmParameterException | NoSuchAlgorithmException | IllegalBlockSizeException | BadPaddingException | NoSuchPaddingException e) {
 			throw new CryptographyException(e);

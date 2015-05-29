@@ -1,5 +1,6 @@
 package com.scapelog.client.util;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 
 public final class RSA {
@@ -14,7 +15,7 @@ public final class RSA {
 		byte[] bytes;
 		try {
 			bytes = message.getBytes("UTF-8");
-		} catch (Exception e) {
+		} catch (UnsupportedEncodingException e) {
 			bytes = message.getBytes();
 		}
 		BigInteger msg = new BigInteger(bytes);

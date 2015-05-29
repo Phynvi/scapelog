@@ -55,6 +55,17 @@ public final class ClassNodeUtils {
 		return null;
 	}
 
+	public static ClassNode getClassNode(Collection<ClassNode> classNodes, MethodNode methodNode) {
+		for (ClassNode classNode : classNodes) {
+			for (MethodNode method : classNode.methods) {
+				if (method.equals(methodNode)) {
+					return classNode;
+				}
+			}
+		}
+		return null;
+	}
+
 	public static MethodNode getMethod(ClassNode node, String name, String desc) {
 		for (MethodNode methodNode : node.methods) {
 			if (methodNode.name.equals(name) && methodNode.desc.equals(desc)) {
