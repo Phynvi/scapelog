@@ -117,14 +117,7 @@ public final class SkillTrackerPlugin extends TabPlugin {
 			trackedSkills[skillId] = isTracked;
 		}
 
-//		AtomicInteger xp2 = new AtomicInteger(1000);
 		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0), event -> {
-/*			for (int i = 0; i < SkillSet.count(); i++) {
-				int xp = xp2.getAndAdd(100);
-				int level = Skills.getLevelFromExperience(xp);
-				ClientEventReceiver.receive(ClientFeature.SKILLS.getIdentifier() + "_" + i + "_" + level + "_" + xp);
-			}*/
-
 			// updateRates xp/h label
 			skillBoxes.stream().filter(skillBox -> System.currentTimeMillis() - skillBox.lastUpdate >= 5000).forEach(SkillBox::updateRates);
 		}), new KeyFrame(Duration.seconds(2)));

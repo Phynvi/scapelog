@@ -25,6 +25,7 @@ import java.awt.AWTEvent;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.sql.SQLException;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -41,7 +42,15 @@ public final class ScapeLog {
 	public static void main(String[] args) {
 		ScapeLog scapeLog = new ScapeLog();
 		executor.submit(new ClientEventReceiver());
-		Config.load();
+
+		try {
+			Config.setup();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.exit(0);
+		}
+
+		//scapeLog.testConfig();
 
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			if (scapeLog.userInterface != null) {
@@ -129,7 +138,7 @@ public final class ScapeLog {
 			}
 		});
 
-//		if (!debug)
+		if (!debug)
 		{
 			loadClient();
 		}
@@ -165,6 +174,21 @@ public final class ScapeLog {
 			return;
 		}
 		ScapeLog.user = user;
+	}
+
+	private void testConfig() {
+		System.out.println("testing config...");
+		long start = System.currentTimeMillis();
+
+		String value = Config.getString("key", "default");
+		System.out.println("value=" + value);
+		if (value == null || value.equals("default")) {
+			Config.setString("main", "key", "heyoo");
+		}
+
+		long end = System.currentTimeMillis();
+		System.out.println("completed, " + (end - start) + "ms");
+		System.exit(0);
 	}
 
 	static {
