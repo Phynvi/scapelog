@@ -38,7 +38,8 @@ public final class StringFieldAnalyser extends Analyser {
 				LdcInsnNode ldc5 = (LdcInsnNode) pattern[4];
 				FieldInsnNode field = (FieldInsnNode) pattern[6];
 
-				STRING_STORE.add(new TranslatedString(field, (String) ldc1.cst, (String) ldc2.cst, (String) ldc3.cst, (String) ldc4.cst, (String) ldc5.cst));
+				TranslatedString str = new TranslatedString(field, (String) ldc1.cst, (String) ldc2.cst, (String) ldc3.cst, (String) ldc4.cst, (String) ldc5.cst);
+				STRING_STORE.add(str);
 			}
 		}
 	}
@@ -47,7 +48,7 @@ public final class StringFieldAnalyser extends Analyser {
 		return STRING_STORE.stream().filter(str -> str.english.equals(english)).findFirst();
 	}
 
-	public class TranslatedString {
+	public static class TranslatedString {
 
 		private final FieldInsnNode fieldInsnNode;
 		private final String english;
@@ -89,6 +90,10 @@ public final class StringFieldAnalyser extends Analyser {
 			return spanish;
 		}
 
+		@Override
+		public String toString() {
+			return fieldInsnNode + ", " + english + ", " + german + ", " + french + ", " + portugese + ", " + spanish;
+		}
 	}
 
 }

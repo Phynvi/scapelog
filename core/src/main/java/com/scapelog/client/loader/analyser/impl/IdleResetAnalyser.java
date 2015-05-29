@@ -24,7 +24,7 @@ public final class IdleResetAnalyser extends Analyser {
 				String methodName = methodNode.name;
 				for (String eventName : eventNames) {
 					if (methodName.equals(eventName)) {
-						InsnList instructions = InjectionUtils.createPrintInjection(ClientFeature.IDLE_RESET.getIdentifier());
+						InsnList instructions = InjectionUtils.createEventInjection(ClientFeature.IDLE_RESET.getIdentifier());
 						InjectionUtils.inject(methodNode, null, instructions);
 						operation.addInjection(node.name, new ClassInjection(new MethodInfo(node.name, methodNode.name, methodNode.desc), 0, instructions, ClientFeature.IDLE_RESET));
 					}

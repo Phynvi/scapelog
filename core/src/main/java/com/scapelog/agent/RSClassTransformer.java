@@ -1,8 +1,8 @@
 package com.scapelog.agent;
 
 import com.google.common.collect.Maps;
+import com.scapelog.agent.util.ClassNodeUtils;
 import com.scapelog.agent.util.tree.MethodInfo;
-import com.scapelog.api.ClientFeature;
 import com.scapelog.client.ClientFeatures;
 import com.scapelog.client.loader.analyser.ClassInjection;
 import com.scapelog.client.util.Debug;
@@ -34,38 +34,40 @@ public final class RSClassTransformer implements ClassFileTransformer {
 			reader.accept(classNode, ClassReader.EXPAND_FRAMES | ClassReader.SKIP_DEBUG);
 
 			boolean transformed = false;
-			if (injections != null && !injections.isEmpty()) {
-				List<ClassInjection> classInjections = injections.get(classNode.name);
-				if (classInjections == null) {
-					return classfileBuffer;
-				}
-				for (ClassInjection injection : classInjections) {
-					InsnList instructions = injection.getInstructions();
-					MethodNode method = getMethod(classNode, injection.getMethodInfo());
-					if (method == null) {
-						continue;
+			try {
+				if (injections != null && !injections.isEmpty()) {
+					List<ClassInjection> classInjections = injections.get(classNode.name);
+					if (classInjections == null) {
+						return classfileBuffer;
 					}
-					int index = injection.getIndex();
-					if (index == -2) {
-						method.instructions.insert(instructions);
-					} else {
-						AbstractInsnNode indexNode = method.instructions.get(index);
-						if (indexNode == null) {
-							Debug.println("no index found!!");
+					for (ClassInjection injection : classInjections) {
+						InsnList instructions = injection.getInstructions();
+						MethodNode method = getMethod(classNode, injection.getMethodInfo());
+						if (method == null) {
 							continue;
 						}
-						method.instructions.insert(indexNode, instructions);
-						if (injection.getFeatures() != null) {
-							for (ClientFeature feature : injection.getFeatures()) {
-								ClientFeatures.enable(feature);
+						int index = injection.getIndex();
+						if (index == -2) {
+							method.instructions.insert(instructions);
+						} else {
+							AbstractInsnNode indexNode = method.instructions.get(index);
+							if (indexNode == null) {
+								Debug.println("no index found!!");
+								continue;
+							}
+							method.instructions.insert(indexNode, instructions);
+							if (injection.getFeatures() != null) {
+								injection.getFeatures().forEach(ClientFeatures::enable);
 							}
 						}
+						transformed = true;
 					}
-					transformed = true;
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 
-//			ClassNodeUtils.dumpClass(classNode);
+			ClassNodeUtils.dumpClass(classNode);
 
 			if (transformed) {
 				try {

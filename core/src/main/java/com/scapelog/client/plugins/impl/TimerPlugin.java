@@ -153,9 +153,9 @@ public final class TimerPlugin extends Plugin {
 		int step = 0;
 		for (int i = parts.length - 1; i >= 0; i--) {
 			String part = parts[i];
-			int value;
+			long value;
 			try {
-				value = Integer.parseInt(part);
+				value = Long.parseLong(part);
 			} catch (NumberFormatException e) {
 				value = 0;
 			}

@@ -11,7 +11,7 @@ public final class Client extends Wrapper {
 
 	private static final ReflectionField<Object[]> LOCAL_PLAYERS = new ReflectionField<>(ReflectedFields.LOCAL_PLAYERS, new Object[0]);
 
-	private Client() {
+	protected Client() {
 
 	}
 

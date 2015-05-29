@@ -7,6 +7,9 @@ public final class ReflectedFields {
 	public static final ReflectedField LOCAL_PLAYERS = new ReflectedField();
 
 	public static final ReflectedField PLAYER_USERNAME = new ReflectedField();
+	public static final ReflectedField PLAYER_COMBAT_LEVEL = new ReflectedField();
+
+	public static final ReflectedField NPC_COMBAT_LEVEL = new ReflectedField();
 
 	private ReflectedFields() {
 

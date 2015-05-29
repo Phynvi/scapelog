@@ -21,17 +21,19 @@ public final class InjectionUtils implements Opcodes {
 			String type = (i >= 0 && i < types.length) ? types[i] : null;
 			groups[i] = new InstructionGroup(type, nodes[i]);
 		}
-		return createPrintInjection(identifier, groups);
+		return createEventInjection(identifier, groups);
 	}
 
-	public static InsnList createPrintInjection(String identifier, InstructionGroup... groups) {
+	public static InsnList createEventInjection(String identifier, InstructionGroup... groups) {
 		InsnList list = new InsnList();
 		try {
+			String stringBuilderName = Type.getInternalName(StringBuilder.class);
+
 			list.add(new TypeInsnNode(NEW, Type.getInternalName(StringBuilder.class)));
 			list.add(new InsnNode(DUP));
-			list.add(new MethodInsnNode(INVOKESPECIAL, Type.getInternalName(StringBuilder.class), "<init>", Type.getMethodDescriptor(Type.VOID_TYPE), false));
+			list.add(new MethodInsnNode(INVOKESPECIAL, stringBuilderName, "<init>", Type.getMethodDescriptor(Type.VOID_TYPE), false));
 			list.add(new LdcInsnNode(identifier + SEPARATOR));
-			list.add(new MethodInsnNode(INVOKEVIRTUAL, Type.getInternalName(StringBuilder.class), "append", Type.getMethodDescriptor(Type.getType(StringBuilder.class), Type.getType(String.class)), false));
+			list.add(new MethodInsnNode(INVOKEVIRTUAL, stringBuilderName, "append", Type.getMethodDescriptor(Type.getType(StringBuilder.class), Type.getType(String.class)), false));
 			for (int i = 0; i < (groups == null ? 0 : groups.length); i++) {
 				InstructionGroup group = groups[i];
 				String type = group.getType();

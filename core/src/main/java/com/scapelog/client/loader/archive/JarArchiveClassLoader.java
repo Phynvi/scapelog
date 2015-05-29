@@ -6,9 +6,11 @@ import org.objectweb.asm.tree.ClassNode;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.security.AccessController;
 import java.security.AllPermission;
 import java.security.CodeSource;
 import java.security.Permissions;
+import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
 import java.security.cert.Certificate;
 
@@ -32,24 +34,25 @@ public final class JarArchiveClassLoader extends ClassLoader {
 
 	@Override
 	public Class<?> findClass(String name) throws ClassNotFoundException {
-		byte[] data = jarArchive.get(StringUtils.classToFileName(name));
-		if (data != null) {
+		try {
+			byte[] data = jarArchive.get(StringUtils.classToFileName(name));
 			Class<?> clazz = defineClass(name, data, 0, data.length, getDomain());
 			if (clazz == null) {
 				clazz = findSystemClass(name);
 			}
 			return clazz;
+		} catch (IllegalArgumentException e) {
+			return null;
 		}
-		return null;
 	}
 
 	@Override
 	public InputStream getResourceAsStream(String name) {
-		byte[] data = jarArchive.get(name);
-		if (data == null) {
+		try {
+			 return new ByteArrayInputStream(jarArchive.get(name));
+		} catch (IllegalArgumentException e) {
 			return ClassLoader.getSystemResourceAsStream(name);
 		}
-		return new ByteArrayInputStream(data);
 	}
 
 	private ProtectionDomain getDomain() {
@@ -72,6 +75,24 @@ public final class JarArchiveClassLoader extends ClassLoader {
 		node.accept(cw);
 		byte[] b = cw.toByteArray();
 		return defineClass(node.name.replace('/', '.'), b, 0, b.length, getDomain()); /// ClassNodes store packages with a "/", but this method expects a "."
+	}
+
+	public static JarArchiveClassLoader create(JarArchive archive) {
+		return AccessController.doPrivileged(new PrivilegedClassLoaderAction(archive));
+	}
+
+	private static class PrivilegedClassLoaderAction implements PrivilegedAction<JarArchiveClassLoader> {
+
+		private final JarArchive archive;
+
+		public PrivilegedClassLoaderAction(JarArchive archive) {
+			this.archive = archive;
+		}
+
+		@Override
+		public JarArchiveClassLoader run() {
+			return new JarArchiveClassLoader(archive);
+		}
 	}
 
 }

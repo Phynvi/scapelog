@@ -403,11 +403,9 @@ public final class Loader {
 			commandParts.add(joinedDependencies);
 			commandParts.add("com.scapelog.client.ScapeLog"); // todo: main class from somewhere
 
-			String[] command = commandParts.toArray(new String[commandParts.size()]);
-
 			if (printOutput) {
 				frame.dispose();
-				ProcessBuilder builder = new ProcessBuilder(command);
+				ProcessBuilder builder = new ProcessBuilder(commandParts);
 				builder.redirectErrorStream(true);
 				Process process = builder.start();
 				String line;
@@ -420,7 +418,7 @@ public final class Loader {
 					System.out.println(line);
 				}
 			} else {
-				Runtime.getRuntime().exec(command);
+				Runtime.getRuntime().exec(commandParts.toArray(new String[commandParts.size()]));
 			}
 			System.exit(0);
 		} catch (Exception e) {

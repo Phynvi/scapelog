@@ -1,5 +1,6 @@
 package com.scapelog.client.loader.analyser;
 
+import com.google.common.collect.ImmutableList;
 import com.scapelog.agent.util.tree.MethodInfo;
 import com.scapelog.api.ClientFeature;
 import org.objectweb.asm.tree.InsnList;
@@ -12,13 +13,13 @@ public final class ClassInjection {
 
 	private final InsnList instructions;
 
-	private final ClientFeature[] features;
+	private final ImmutableList<ClientFeature> features;
 
 	public ClassInjection(MethodInfo methodInfo, int index, InsnList instructions, ClientFeature... features) {
 		this.methodInfo = methodInfo;
 		this.index = index;
 		this.instructions = instructions;
-		this.features = features;
+		this.features = ImmutableList.copyOf(features);
 	}
 
 	public MethodInfo getMethodInfo() {
@@ -33,7 +34,7 @@ public final class ClassInjection {
 		return instructions;
 	}
 
-	public ClientFeature[] getFeatures() {
+	public ImmutableList<ClientFeature> getFeatures() {
 		return features;
 	}
 

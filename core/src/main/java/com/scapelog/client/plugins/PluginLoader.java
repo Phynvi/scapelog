@@ -13,8 +13,8 @@ import com.scapelog.client.loader.archive.JarArchive;
 import com.scapelog.client.loader.archive.JarArchiveClassLoader;
 import com.scapelog.client.loader.codec.JarArchiveCodec;
 import com.scapelog.client.plugins.impl.HighscoresPlugin;
-import com.scapelog.client.plugins.impl.TimerPlugin;
 import com.scapelog.client.plugins.impl.SkillTrackerPlugin;
+import com.scapelog.client.plugins.impl.TimerPlugin;
 import com.scapelog.client.util.Debug;
 import javafx.application.Platform;
 import org.objectweb.asm.Type;
@@ -86,8 +86,11 @@ public final class PluginLoader {
 			return null;
 		}
 		JarArchiveCodec jarArchiveCodec = new JarArchiveCodec();
-		JarArchive archive = jarArchiveCodec.read(new FileInputStream(file));
-		JarArchiveClassLoader classLoader = new JarArchiveClassLoader(archive);
+		JarArchive archive;
+		try (FileInputStream inputStream = new FileInputStream(file)) {
+			archive = jarArchiveCodec.read(inputStream);
+		}
+		JarArchiveClassLoader classLoader = JarArchiveClassLoader.create(archive);
 		ClassNodeArchive nodeArchive = new ClassNodeArchive(archive);
 		nodeArchive.addClassNodes();
 

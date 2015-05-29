@@ -6,15 +6,21 @@ import com.scapelog.client.event.ClientEventDispatcher;
 import com.scapelog.client.event.impl.LoadingEvent;
 import com.scapelog.client.loader.analyser.Analyser;
 import com.scapelog.client.loader.analyser.AnalysingOperation;
+import com.scapelog.client.loader.analyser.OperationAttributes;
+import com.scapelog.client.loader.analyser.ReflectionAnalyser;
+import com.scapelog.client.loader.analyser.ReflectionOperation;
 import com.scapelog.client.loader.analyser.impl.ClassLoaderAnalyser;
 import com.scapelog.client.loader.analyser.impl.GameMessageAnalyser;
 import com.scapelog.client.loader.analyser.impl.IdleResetAnalyser;
 import com.scapelog.client.loader.analyser.impl.MultiplierAnalyser;
-import com.scapelog.client.loader.analyser.ReflectionAnalyser;
 import com.scapelog.client.loader.analyser.impl.SkillAnalyser;
 import com.scapelog.client.loader.analyser.impl.StringFieldAnalyser;
 import com.scapelog.client.loader.analyser.impl.VariableAnalyser;
+import com.scapelog.client.loader.analyser.impl.reflection.MenuBuilderAnalyser;
+import com.scapelog.client.loader.analyser.impl.reflection.MobAnalyser;
+import com.scapelog.client.loader.analyser.impl.reflection.NpcAnalyser;
 import com.scapelog.client.loader.analyser.impl.reflection.PlayerAnalyser;
+import com.scapelog.client.loader.analyser.impl.reflection.WorldTypeAnalyser;
 import com.scapelog.client.loader.archive.ClassNodeArchive;
 import com.scapelog.client.loader.archive.JarArchive;
 import com.scapelog.client.loader.archive.JarArchiveClassLoader;
@@ -64,11 +70,16 @@ public final class ClientLoader {
 
 				new SkillAnalyser(),
 				new IdleResetAnalyser(),
-				new GameMessageAnalyser(),
-				new VariableAnalyser()
+				new VariableAnalyser(), // temp
+				new GameMessageAnalyser()/*,
+				new VariableAnalyser()*/
 		);
 		reflectionBuilder.add(
-				new PlayerAnalyser()
+				new WorldTypeAnalyser(),
+				new MenuBuilderAnalyser(),
+				new PlayerAnalyser(),
+				new MobAnalyser(),
+				new NpcAnalyser()
 		);
 		return new ClientLoader(world, language, analyserBuilder.build(), reflectionBuilder.build());
 	}
@@ -116,7 +127,7 @@ public final class ClientLoader {
 			return null;
 		}
 
-		JarArchiveClassLoader classLoader = new JarArchiveClassLoader(archive);
+		JarArchiveClassLoader classLoader = JarArchiveClassLoader.create(archive);
 		Applet applet = (Applet) classLoader.loadClass(appletClass.replace(".class", "")).newInstance();
 		applet.setStub(new ClientAppletStub(config, new URL(codebase)));
 
@@ -131,14 +142,18 @@ public final class ClientLoader {
 		ClassNodeArchive nodeArchive = new ClassNodeArchive(archives.getGamepackArchive());
 		nodeArchive.addClassNodes();
 		Collection<ClassNode> classNodes = nodeArchive.toCollection();
-		AnalysingOperation operation = new AnalysingOperation();
-		analyse(classNodes, operation);
+
+		OperationAttributes attributes = new OperationAttributes();
+		AnalysingOperation analysingOperation = new AnalysingOperation(attributes);
+		ReflectionOperation reflectionOperation = new ReflectionOperation(attributes);
+
+		analyse(classNodes, analysingOperation, reflectionOperation);
 
 		// The decrypted classes
 		nodeArchive = new ClassNodeArchive(archives.getClientArchive());
 		nodeArchive.addClassNodes();
 		classNodes = nodeArchive.toCollection();
-		analyse(classNodes, operation);
+		analyse(classNodes, analysingOperation, reflectionOperation);
 
 		checkRequiredFields();
 
@@ -147,19 +162,19 @@ public final class ClientLoader {
 			classNodes.forEach(ClassNodeUtils::dumpClass);
 		}*/
 
-		RSClassTransformer.addInjections(operation.getClassInjections());
+		RSClassTransformer.addInjections(analysingOperation.getClassInjections());
 		return archives.getGamepackArchive();
 	}
 
-	private void analyse(Collection<ClassNode> classNodes, AnalysingOperation operation) {
+	private void analyse(Collection<ClassNode> classNodes, AnalysingOperation analysingOperation, ReflectionOperation reflectionOperation) {
 		// run the injection analysers
 		for (Analyser analyser : analysers) {
-			analyser.analyse(classNodes, operation);
+			analyser.analyse(classNodes, analysingOperation);
 		}
 
 		// run the reflection analysers
 		for (ReflectionAnalyser analyser : reflectionAnalysers) {
-			analyser.analyse(classNodes);
+			analyser.analyse(classNodes, reflectionOperation);
 		}
 	}
 
@@ -189,15 +204,14 @@ public final class ClientLoader {
 		return -1;
 	}
 
-	private int findLobbyId(Map<String, String> parameters) {
+	private String findLobbyId(Map<String, String> parameters) {
 		for (String value : parameters.values()) {
 			Matcher matcher = LOBBY_ID_PATTERN.matcher(value);
 			if (matcher.find()) {
-				String worldId = matcher.group(1);
-				return Integer.parseInt(worldId);
+				return matcher.group(1);
 			}
 		}
-		return -1;
+		return "n/a";
 	}
 
 }

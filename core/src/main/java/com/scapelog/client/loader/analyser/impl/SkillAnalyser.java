@@ -3,11 +3,12 @@ package com.scapelog.client.loader.analyser.impl;
 import com.scapelog.agent.util.InjectionUtils;
 import com.scapelog.agent.util.InstructionSearcher;
 import com.scapelog.agent.util.tree.MethodInfo;
+import com.scapelog.agent.util.tree.MethodNodeInfo;
 import com.scapelog.api.ClientFeature;
 import com.scapelog.client.loader.analyser.Analyser;
 import com.scapelog.client.loader.analyser.AnalysingOperation;
 import com.scapelog.client.loader.analyser.ClassInjection;
-import com.scapelog.client.util.Tuple;
+import com.scapelog.client.util.Debug;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
@@ -16,6 +17,7 @@ import org.objectweb.asm.tree.VarInsnNode;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 public final class SkillAnalyser extends Analyser {
 
@@ -39,9 +41,9 @@ public final class SkillAnalyser extends Analyser {
 				VarInsnNode xpNode = (VarInsnNode) xpPattern[4];
 				VarInsnNode levelNode = (VarInsnNode) levelPattern[4];
 
-				String key = "packet_parser_" + node.name + "_" + (int) (Math.random() * 10000);
-				operation.setAttribute(key, new Tuple<>(node, methodNode));
-//				Debug.println("%s=%s.%s [%s]", key, node.name, methodNode.name, methodNode.desc);
+				String key = "packet_parser_" + node.name + "_" + new Random().nextInt(10000);
+				operation.getAttributes().set(key, new MethodNodeInfo(node, methodNode.name, methodNode.desc));
+				Debug.println("%s=%s.%s [%s]", key, node.name, methodNode.name, methodNode.desc);
 
 				InsnList instructions = InjectionUtils.createEventInjection(ClientFeature.SKILLS.getIdentifier(), new AbstractInsnNode[]{skillNode, levelNode, xpNode});
 //				Debug.println("\tinject: %d instructions to %s.%s @ %d", instructions.size(), node.name, methodNode.name, methodNode.instructions.indexOf(first));

@@ -7,7 +7,7 @@ import java.util.Collection;
 
 public abstract class ReflectionAnalyser {
 
-	public abstract void analyse(Collection<ClassNode> classNodes);
+	public abstract void analyse(Collection<ClassNode> classNodes, ReflectionOperation operation);
 
 	public abstract ReflectedField[] getRequiredFields();
 
