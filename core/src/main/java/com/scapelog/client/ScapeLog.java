@@ -20,7 +20,6 @@ import javafx.embed.swing.JFXPanel;
 import javafx.stage.Stage;
 
 import javax.swing.SwingUtilities;
-import javax.swing.text.html.Option;
 import java.applet.Applet;
 import java.awt.AWTEvent;
 import java.awt.Canvas;

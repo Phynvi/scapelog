@@ -256,7 +256,7 @@ public final class DeveloperTab extends IconTab {
 		}
 		if (evt.getClass().equals(VariableEvent.class)) {
 			VariableEvent e = (VariableEvent) evt;
-			return "[setting] id=" + e.getId() + ", value=" + e.getValue() + ", type=" + e.getType();
+			return "[setting] id=" + e.getId() + ", oldValue=" + e.getOldValue() + ", newValue=" + e.getNewValue();
 		}
 		return null;
 	}

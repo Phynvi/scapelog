@@ -5,6 +5,8 @@ import com.google.common.collect.Maps;
 import java.util.Map;
 
 public final class Settings {
+	public static final int SLAYER_ASSIGNMENT_KILLS_LEFT = 183;
+	public static final int SLAYER_ASSIGNMENT_MOB_CATEGORY = 185;
 
 	private static Map<Integer, Integer> settings = Maps.newHashMap();
 
