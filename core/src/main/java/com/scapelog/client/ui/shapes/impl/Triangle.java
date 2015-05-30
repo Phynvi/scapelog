@@ -14,9 +14,9 @@ public final class Triangle extends Shape3d {
 	}
 
 	@Override
-	public void update(Graphics g, Color backgroundColor, int x, int y) {
+	public void update(Graphics g, Color foregroundColor, Color backgroundColor, int x, int y) {
 		azimuth -= 1;
-		super.update(g, backgroundColor, x, y);
+		super.update(g, foregroundColor, backgroundColor, x, y);
 	}
 
 	private static Point3D[] createVertices() {

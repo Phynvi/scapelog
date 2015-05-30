@@ -16,11 +16,11 @@ public final class Cube extends Shape3d {
 	}
 
 	@Override
-	public void update(Graphics g, Color backgroundColor, int x, int y) {
+	public void update(Graphics g, Color foregroundColor, Color backgroundColor, int x, int y) {
 		int rand = random.nextInt(1) == 0 ? -1 : 1;
 		azimuth -= rand;
 		elevation += rand;
-		super.update(g, backgroundColor, x, y);
+		super.update(g, foregroundColor, backgroundColor, x, y);
 	}
 
 	private static Point3D[] createVertices() {

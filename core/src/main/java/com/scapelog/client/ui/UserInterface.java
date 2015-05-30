@@ -3,7 +3,6 @@ package com.scapelog.client.ui;
 import com.scapelog.api.plugin.OpenTechnique;
 import com.scapelog.api.plugin.Plugin;
 import com.scapelog.api.ui.tab.BaseTab;
-import com.scapelog.client.config.ClientConfigKeys;
 import com.scapelog.client.config.Config;
 import com.scapelog.client.config.UserInterfaceConfigKeys;
 import com.scapelog.client.event.ClientEventDispatcher;
@@ -25,12 +24,13 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 
+import javax.swing.SwingUtilities;
 import java.applet.Applet;
 
 public final class UserInterface {
 	public static final String SECTION_NAME = "ui";
 
-	private static final SimpleIntegerProperty borderRadius = new SimpleIntegerProperty(Config.getIntOrAdd(ClientConfigKeys.SECTION_NAME, ClientConfigKeys.BORDER_RADIUS, 2));
+	private static final SimpleIntegerProperty borderRadius = new SimpleIntegerProperty(2/*Config.getIntOrAdd(ClientConfigKeys.SECTION_NAME, ClientConfigKeys.BORDER_RADIUS, 2)*/);
 
 	private DecoratedFrame frame;
 	private AppletPanel appletPanel;
@@ -78,11 +78,12 @@ public final class UserInterface {
 
 			ScapeFrame scapeFrame = frame.getFrame();
 			scapeFrame.setVisible(true);
-			scapeFrame.setLocation(frameX, frameY);
-			scapeFrame.setSize(frameWidth, frameHeight);
-			if (frameMaximized) {
-				scapeFrame.toggleMaximize();
-			}
+			SwingUtilities.invokeLater(() -> {
+				scapeFrame.setBounds(frameX, frameY, frameWidth, frameHeight);
+				if (frameMaximized) {
+					scapeFrame.toggleMaximize();
+				}
+			});
 		});
 	}
 
@@ -173,13 +174,20 @@ public final class UserInterface {
 	}
 
 	public void saveSize() {
-		Config.setBoolean(SECTION_NAME, UserInterfaceConfigKeys.MAXIMIZED, frame.getFrame().isMaximized());
-		if (!frame.getFrame().isMaximized()) {
-			Scene scene = frame.getScene();
-			Config.setInt(SECTION_NAME, UserInterfaceConfigKeys.X, frame.getFrame().getX());
-			Config.setInt(SECTION_NAME, UserInterfaceConfigKeys.Y, frame.getFrame().getY());
-			Config.setInt(SECTION_NAME, UserInterfaceConfigKeys.WIDTH, (int) scene.getWidth());
-			Config.setInt(SECTION_NAME, UserInterfaceConfigKeys.HEIGHT, (int) scene.getHeight());
+		try {
+			Config.runBatch(() -> {
+				Config.setBoolean(SECTION_NAME, UserInterfaceConfigKeys.MAXIMIZED, frame.getFrame().isMaximized());
+				if (!frame.getFrame().isMaximized()) {
+					Scene scene = frame.getScene();
+					Config.setInt(SECTION_NAME, UserInterfaceConfigKeys.X, frame.getFrame().getX());
+					Config.setInt(SECTION_NAME, UserInterfaceConfigKeys.Y, frame.getFrame().getY());
+					Config.setInt(SECTION_NAME, UserInterfaceConfigKeys.WIDTH, (int) scene.getWidth());
+					Config.setInt(SECTION_NAME, UserInterfaceConfigKeys.HEIGHT, (int) scene.getHeight());
+				}
+				return null;
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

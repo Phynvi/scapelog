@@ -12,9 +12,10 @@ public final class VariableEventParser extends EventParser<VariableEvent> {
 	@Override
 	public VariableEvent parse(String[] messageParts) {
 		int id = Integer.parseInt(messageParts[1]);
-		int value = Integer.parseInt(messageParts[2]);
-		Settings.set(id, value);
-		return new VariableEvent(id, value);
+		int newValue = Integer.parseInt(messageParts[2]);
+		int oldValue = Settings.get(id);
+		Settings.set(id, newValue);
+		return new VariableEvent(id, oldValue, newValue);
 	}
 
 }

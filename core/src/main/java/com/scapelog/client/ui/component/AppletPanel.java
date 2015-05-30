@@ -27,6 +27,7 @@ public final class AppletPanel extends JPanel {
 	private final Shape3d shape;
 	private final Image logo;
 	private final Color backgroundColor = new Color(22, 22, 22);
+	private final Color foregroundColor = new Color(29, 126, 166);
 
 	private final List<String> messages = Lists.newArrayList();
 
@@ -95,11 +96,14 @@ public final class AppletPanel extends JPanel {
 				break;
 			}
 			String message = messages.get(idx);
+			g.setColor(Color.black);
+			g.drawString(message, x + 1, y + 1);
+			g.setColor(foregroundColor);
 			g.drawString(message, x, y);
 			y -= g.getFontMetrics().getHeight();
 		}
 
-		shape.update(g, backgroundColor, getWidth() - shape.getWidth(), getHeight() - shape.getHeight());
+		shape.update(g, foregroundColor, backgroundColor, getWidth() - shape.getWidth(), getHeight() - shape.getHeight());
 	}
 
 }

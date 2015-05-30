@@ -7,20 +7,27 @@ public final class VariableEvent extends SourceVerifiedEvent {
 
 	private final int id;
 
-	private final int value;
+	private final int oldValue;
 
-	public VariableEvent(int id, int value) {
+	private final int newValue;
+
+	public VariableEvent(int id, int oldValue, int newValue) {
 		super(VariableEventParser.class);
 		this.id = id;
-		this.value = value;
+		this.oldValue = oldValue;
+		this.newValue = newValue;
 	}
 
 	public int getId() {
 		return id;
 	}
 
-	public int getValue() {
-		return value;
+	public int getOldValue() {
+		return oldValue;
+	}
+
+	public int getNewValue() {
+		return newValue;
 	}
 
 }

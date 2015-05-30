@@ -46,7 +46,7 @@ public enum Language {
 	}
 
 	public static Language getSavedLanguage() {
-		return getLanguage(Config.getString("client", "language"));
+		return getLanguage(Config.getString("client", "language", "english"));
 	}
 
 	public static void saveLanguage(Language language) {
