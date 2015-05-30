@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 public final class Loader {
-	private final int VERSION = 4;
+	private final int VERSION = 5;
 	private final OperatingSystem operatingSystem = OperatingSystem.getOperatingSystem();
 
 	private final String dataDirectory = System.getProperty("user.home") + "/.scapelog";
@@ -47,6 +47,7 @@ public final class Loader {
 	private boolean printOutput = false;
 	private boolean noChecksumCheck = false;
 	private boolean noMods = false;
+	private boolean forcePortableJava = false;
 
 	private List<BootFlag> bootFlags = new ArrayList<BootFlag>();
 
@@ -122,6 +123,12 @@ public final class Loader {
 				noMods = true;
 			}
 		}));
+		bootFlags.add(new BootFlag("-portablejava", "Force use the portable Java 8", new Runnable() {
+			@Override
+			public void run() {
+				forcePortableJava = true;
+			}
+		}));
 	}
 
 	private void printHelp() {
@@ -165,6 +172,9 @@ public final class Loader {
 	}
 
 	private boolean hasValidJava() {
+		if (forcePortableJava && hasValidPortableJava()) {
+			return true;
+		}
 		return hasValidJavaInstalled() || hasValidPortableJava();
 	}
 
@@ -361,7 +371,7 @@ public final class Loader {
 		if (executable == null) {
 			executable = "java";
 		}
-		if (hasValidJavaInstalled()) {
+		if (!forcePortableJava && hasValidJavaInstalled()) {
 			executable = System.getProperty("java.home") + "/" + executable;
 		} else if (hasValidPortableJava()) {
 			executable = javaDirectory + "/" + executable;
@@ -429,13 +439,11 @@ public final class Loader {
 	private void download(String url, String file, String out) throws Exception {
 		progressBar.setIndeterminate(false);
 		HttpURLConnection connection = getConnection(url);
-		setHeaders(file, connection);
 		connection.connect();
 		Map<String, List<String>> headers = connection.getHeaderFields();
 		while (isRedirected(headers)) {
 			url = headers.get("Location").get(0);
-			connection = (HttpURLConnection) new URL(url).openConnection();
-			setHeaders(file, connection);
+			connection = getConnection(url);
 			headers = connection.getHeaderFields();
 		}
 
@@ -478,8 +486,7 @@ public final class Loader {
 		Map<String, List<String>> headers = connection.getHeaderFields();
 		while (isRedirected(headers)) {
 			url = headers.get("Location").get(0);
-			connection = (HttpURLConnection) new URL(url).openConnection();
-			setHeaders(url, connection);
+			connection = getConnection(url);
 			headers = connection.getHeaderFields();
 		}
 		InputStream input = connection.getInputStream();
