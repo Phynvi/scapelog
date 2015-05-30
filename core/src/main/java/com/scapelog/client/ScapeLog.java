@@ -141,7 +141,8 @@ public final class ScapeLog {
 	}
 
 	private void loadClient() {
-		/*executor.schedule(() -> */ClientEventDispatcher.fireEvent(new ClientLoadEvent(Optional.empty(), Language.getSavedLanguage()))/*, 2000, TimeUnit.MILLISECONDS)*/;
+		// todo: load world from preferences
+		ClientEventDispatcher.fireEvent(new ClientLoadEvent(Optional.empty(), Language.getSavedLanguage()));
 	}
 
 	public static ScheduledExecutorService getExecutor() {

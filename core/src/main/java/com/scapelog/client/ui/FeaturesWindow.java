@@ -10,6 +10,7 @@ import com.scapelog.client.plugins.PluginLoader;
 import com.scapelog.client.ui.component.PopUp;
 import com.scapelog.client.ui.component.tab.DashboardTab;
 import com.scapelog.client.ui.component.tab.DeveloperTab;
+import com.scapelog.client.ui.component.tab.NewsTab;
 import com.scapelog.client.ui.component.tab.ReflectionTab;
 import com.scapelog.client.ui.component.tab.SettingsTab;
 import javafx.application.Platform;
@@ -49,6 +50,7 @@ public final class FeaturesWindow {
 
 		tabs.getTabs().addAll(
 				new DashboardTab().getTab(),
+				new NewsTab().getTab(),
 				new SettingsTab().getTab()
 		);
 
