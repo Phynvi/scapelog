@@ -37,7 +37,7 @@ public final class Loader {
 
 	private final String dataDirectory = System.getProperty("user.home") + "/.scapelog";
 	private String libDirectory = dataDirectory + "/lib";
-	private String javaDirectory = libDirectory + "/java";
+	private final String javaDirectory = libDirectory + "/java";
 	private final List<Dependency> dependencies = new ArrayList<Dependency>();
 
 	private JFrame frame;
@@ -102,8 +102,7 @@ public final class Loader {
 
 	private void setPaths() {
 		if (testingFiles) {
-			libDirectory = dataDirectory + "/testing/lib";
-			javaDirectory = libDirectory + "/java";
+			libDirectory = dataDirectory + "/lib/testing";
 		}
 	}
 
@@ -302,7 +301,7 @@ public final class Loader {
 			progressLabel.setText("Fetching file list...");
 			String[] lines;
 			try {
-				lines = downloadToMemory(testingFiles ? "http://static.scapelog.com/sl/test/checksums" : "http://static.scapelog.com/sl/checksums");
+				lines = downloadToMemory(testingFiles ? "http://static.scapelog.com/test/checksums" : "http://static.scapelog.com/live/checksums");
 			} catch (FileNotFoundException e) {
 				throw new Exception("Remote file list not found, please try again later");
 			}
@@ -428,6 +427,8 @@ public final class Loader {
 			commandParts.add("-cp");
 			commandParts.add(joinedDependencies);
 			commandParts.add("com.scapelog.client.ScapeLog"); // todo: main class from somewhere
+
+			System.out.println(commandParts);
 
 			if (printOutput) {
 				frame.dispose();
