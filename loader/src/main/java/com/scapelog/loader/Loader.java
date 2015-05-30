@@ -36,8 +36,8 @@ public final class Loader {
 	private final OperatingSystem operatingSystem = OperatingSystem.getOperatingSystem();
 
 	private final String dataDirectory = System.getProperty("user.home") + "/.scapelog";
-	private final String libDirectory = dataDirectory + "/lib";
-	private final String javaDirectory = libDirectory + "/java";
+	private String libDirectory = dataDirectory + "/lib";
+	private String javaDirectory = libDirectory + "/java";
 	private final List<Dependency> dependencies = new ArrayList<Dependency>();
 
 	private JFrame frame;
@@ -48,6 +48,7 @@ public final class Loader {
 	private boolean noChecksumCheck = false;
 	private boolean noMods = false;
 	private boolean forcePortableJava = false;
+	private boolean testingFiles = false;
 
 	private List<BootFlag> bootFlags = new ArrayList<BootFlag>();
 
@@ -64,6 +65,8 @@ public final class Loader {
 				}
 			}
 		}
+
+		loader.setPaths();
 
 		loader.setupFrame();
 		if (!loader.hasValidJava()) {
@@ -97,6 +100,13 @@ public final class Loader {
 		loader.launch();
 	}
 
+	private void setPaths() {
+		if (testingFiles) {
+			libDirectory = dataDirectory + "/testing/lib";
+			javaDirectory = libDirectory + "/java";
+		}
+	}
+
 	private void loadBootFlags() {
 		bootFlags.add(new BootFlag("-help", "Prints this message", new Runnable() {
 			@Override
@@ -127,6 +137,12 @@ public final class Loader {
 			@Override
 			public void run() {
 				forcePortableJava = true;
+			}
+		}));
+		bootFlags.add(new BootFlag("-testing", "Use the files in testing phase (not recommended)", new Runnable() {
+			@Override
+			public void run() {
+				testingFiles = true;
 			}
 		}));
 	}
@@ -286,7 +302,7 @@ public final class Loader {
 			progressLabel.setText("Fetching file list...");
 			String[] lines;
 			try {
-				lines = downloadToMemory("http://static.scapelog.com/checksums");
+				lines = downloadToMemory(testingFiles ? "http://static.scapelog.com/sl/test/checksums" : "http://static.scapelog.com/sl/checksums");
 			} catch (FileNotFoundException e) {
 				throw new Exception("Remote file list not found, please try again later");
 			}
