@@ -37,7 +37,7 @@ public enum Language {
 	}
 
 	public static Language getLanguage(String name) {
-		for (Language language : list) {
+		for (Language language : asList()) {
 			if (language.name.equalsIgnoreCase(name)) {
 				return language;
 			}

@@ -1,7 +1,6 @@
 package com.scapelog.agent;
 
 import com.google.common.collect.Maps;
-import com.scapelog.agent.util.ClassNodeUtils;
 import com.scapelog.agent.util.tree.MethodInfo;
 import com.scapelog.client.ClientFeatures;
 import com.scapelog.client.loader.analyser.ClassInjection;
@@ -67,7 +66,7 @@ public final class RSClassTransformer implements ClassFileTransformer {
 				e.printStackTrace();
 			}
 
-			ClassNodeUtils.dumpClass(classNode);
+//			ClassNodeUtils.dumpClass(classNode);
 
 			if (transformed) {
 				try {

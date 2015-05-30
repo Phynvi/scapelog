@@ -29,13 +29,12 @@ import java.sql.SQLException;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public final class ScapeLog {
 	private static User user;
 	private static boolean agentEnabled;
 	private static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() + 1);
-	public static final boolean debug = true;
+	public static final boolean debug = false;
 
 	private UserInterface userInterface;
 
@@ -49,8 +48,6 @@ public final class ScapeLog {
 			e.printStackTrace();
 			System.exit(0);
 		}
-
-		//scapeLog.testConfig();
 
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 			if (scapeLog.userInterface != null) {
@@ -137,14 +134,14 @@ public final class ScapeLog {
 			}
 		});
 
-		if (!debug)
+//		if (!debug)
 		{
 			loadClient();
 		}
 	}
 
 	private void loadClient() {
-		executor.schedule(() -> ClientEventDispatcher.fireEvent(new ClientLoadEvent(Optional.empty(), Language.getSavedLanguage())), 2000, TimeUnit.MILLISECONDS);
+		/*executor.schedule(() -> */ClientEventDispatcher.fireEvent(new ClientLoadEvent(Optional.empty(), Language.getSavedLanguage()))/*, 2000, TimeUnit.MILLISECONDS)*/;
 	}
 
 	public static ScheduledExecutorService getExecutor() {

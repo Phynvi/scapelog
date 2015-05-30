@@ -29,7 +29,7 @@ public final class SettingsTab extends IconTab {
 		VBox content = new VBox(10);
 		content.setPadding(new Insets(10, 10, 10, 10));
 
-		content.getChildren().addAll(
+		ObservableList<Region> nodes = FXCollections.observableArrayList(
 				Components.createHeader("ScapeLog settings", "Settings for the ScapeLog client"),
 				SettingsUtils.createSpinnerSetting("Border radius", 1, 5, UserInterface.getBorderRadius(), (observable, oldValue, newValue) -> {
 					int oldRadius = oldValue.intValue();
@@ -62,6 +62,8 @@ public final class SettingsTab extends IconTab {
 						}
 				)*/
 		);
+
+		content.getChildren().addAll(nodes);
 
 		ScrollPane scrollPane = new ScrollPane(content);
 		scrollPane.setFitToHeight(true);

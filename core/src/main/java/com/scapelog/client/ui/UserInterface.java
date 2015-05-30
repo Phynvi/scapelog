@@ -77,9 +77,9 @@ public final class UserInterface {
 			appletPanel.setBounds(2, TitleBar.HEIGHT, (int) scene.getWidth() - (UserInterface.getBorderRadius() * 2), (int) scene.getHeight());
 
 			ScapeFrame scapeFrame = frame.getFrame();
+			scapeFrame.setVisible(true);
 			SwingUtilities.invokeLater(() -> {
 				scapeFrame.setBounds(frameX, frameY, frameWidth, frameHeight);
-				scapeFrame.setVisible(true);
 				if (frameMaximized) {
 					scapeFrame.toggleMaximize();
 				}

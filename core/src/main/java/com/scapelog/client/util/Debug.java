@@ -1,5 +1,7 @@
 package com.scapelog.client.util;
 
+import com.scapelog.client.ScapeLog;
+
 // println wrapper that the obfuscators will remove
 public final class Debug {
 
@@ -8,11 +10,15 @@ public final class Debug {
 	}
 
 	public static void println(String format, Object... args) {
-		System.out.println(String.format(format, args));
+		if (ScapeLog.debug) {
+			System.out.println(String.format(format, args));
+		}
 	}
 
 	public static void println(Object str) {
-		System.out.println(str);
+		if (ScapeLog.debug) {
+			System.out.println(str);
+		}
 	}
 
 }
