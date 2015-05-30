@@ -3,6 +3,7 @@ package com.scapelog.client.ui;
 import com.scapelog.api.plugin.OpenTechnique;
 import com.scapelog.api.plugin.Plugin;
 import com.scapelog.api.ui.tab.BaseTab;
+import com.scapelog.client.config.ClientConfigKeys;
 import com.scapelog.client.config.Config;
 import com.scapelog.client.config.UserInterfaceConfigKeys;
 import com.scapelog.client.event.ClientEventDispatcher;
@@ -30,7 +31,7 @@ import java.applet.Applet;
 public final class UserInterface {
 	public static final String SECTION_NAME = "ui";
 
-	private static final SimpleIntegerProperty borderRadius = new SimpleIntegerProperty(2/*Config.getIntOrAdd(ClientConfigKeys.SECTION_NAME, ClientConfigKeys.BORDER_RADIUS, 2)*/);
+	private static final SimpleIntegerProperty borderRadius = new SimpleIntegerProperty(Config.getIntOrAdd(ClientConfigKeys.SECTION_NAME, ClientConfigKeys.BORDER_RADIUS, 2));
 
 	private DecoratedFrame frame;
 	private AppletPanel appletPanel;

@@ -1,4 +1,4 @@
-package com.scapelog.client;
+package com.scapelog.api;
 
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;

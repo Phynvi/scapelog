@@ -7,8 +7,13 @@ import com.j256.ormlite.logger.LocalLog;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import com.scapelog.api.Setting;
 import com.scapelog.client.ScapeLog;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -23,7 +28,18 @@ public final class Config {
 			System.setProperty(LocalLog.LOCAL_LOG_LEVEL_PROPERTY, "ERROR");
 		}
 
-		connectionSource = new JdbcConnectionSource("jdbc:sqlite:" + System.getProperty("user.home") + "/.scapelog/db.sqlite");
+		Path databasePath = Paths.get(System.getProperty("user.home") + "/.scapelog/db.sqlite");
+		if (!Files.exists(databasePath)) {
+			try {
+				Files.createFile(databasePath);
+			} catch (IOException e) {
+				System.err.println("Failed to create db.sqlite in path " + databasePath.toString());
+				e.printStackTrace();
+				return;
+			}
+		}
+
+		connectionSource = new JdbcConnectionSource("jdbc:sqlite:" + databasePath.toString());
 
 		settingsDao = DaoManager.createDao(connectionSource, Setting.class);
 		settingsDao.setObjectCache(true);
