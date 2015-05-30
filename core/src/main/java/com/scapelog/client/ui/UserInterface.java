@@ -174,13 +174,20 @@ public final class UserInterface {
 	}
 
 	public void saveSize() {
-		Config.setBoolean(SECTION_NAME, UserInterfaceConfigKeys.MAXIMIZED, frame.getFrame().isMaximized());
-		if (!frame.getFrame().isMaximized()) {
-			Scene scene = frame.getScene();
-			Config.setInt(SECTION_NAME, UserInterfaceConfigKeys.X, frame.getFrame().getX());
-			Config.setInt(SECTION_NAME, UserInterfaceConfigKeys.Y, frame.getFrame().getY());
-			Config.setInt(SECTION_NAME, UserInterfaceConfigKeys.WIDTH, (int) scene.getWidth());
-			Config.setInt(SECTION_NAME, UserInterfaceConfigKeys.HEIGHT, (int) scene.getHeight());
+		try {
+			Config.runBatch(() -> {
+				Config.setBoolean(SECTION_NAME, UserInterfaceConfigKeys.MAXIMIZED, frame.getFrame().isMaximized());
+				if (!frame.getFrame().isMaximized()) {
+					Scene scene = frame.getScene();
+					Config.setInt(SECTION_NAME, UserInterfaceConfigKeys.X, frame.getFrame().getX());
+					Config.setInt(SECTION_NAME, UserInterfaceConfigKeys.Y, frame.getFrame().getY());
+					Config.setInt(SECTION_NAME, UserInterfaceConfigKeys.WIDTH, (int) scene.getWidth());
+					Config.setInt(SECTION_NAME, UserInterfaceConfigKeys.HEIGHT, (int) scene.getHeight());
+				}
+				return null;
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

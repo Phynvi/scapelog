@@ -205,7 +205,6 @@ public final class LoginWindow extends Application {
 						if (success && token != null) {
 							Config.setBoolean(sectionName, rememberConfig, rememberMe.isSelected());
 							Config.setString("login", "username", usernameField.getText());
-							Config.save();
 
 							ScapeLog.setUser(new User(usernameField.getText(), token, groups));
 							Platform.runLater(() -> {

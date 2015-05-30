@@ -38,7 +38,7 @@ public abstract class Shape3d {
 		return height;
 	}
 
-	public void update(Graphics g, Color backgroundColor, int x, int y) {
+	public void update(Graphics g, Color foregroundColor, Color backgroundColor, int x, int y) {
 		// compute coefficients for the projection
 		double theta = Math.PI * azimuth / 180.0;
 		double phi = Math.PI * elevation / 180.0;
@@ -77,7 +77,13 @@ public abstract class Shape3d {
 		graphics.setColor(backgroundColor);
 		graphics.fillRect(0, 0, width, height);
 		Color oldColor = graphics.getColor();
-		graphics.setColor(Color.white);
+
+		graphics.setColor(Color.black);
+		for (Edge edge : edges) {
+			graphics.drawLine(points[edge.a].x + 1, points[edge.a].y + 1, points[edge.b].x + 1, points[edge.b].y + 1);
+		}
+
+		graphics.setColor(foregroundColor);
 		for (Edge edge : edges) {
 			graphics.drawLine(points[edge.a].x, points[edge.a].y, points[edge.b].x, points[edge.b].y);
 		}

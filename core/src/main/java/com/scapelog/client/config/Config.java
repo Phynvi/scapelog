@@ -3,11 +3,15 @@ package com.scapelog.client.config;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.DaoManager;
 import com.j256.ormlite.jdbc.JdbcConnectionSource;
+import com.j256.ormlite.logger.LocalLog;
+import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import com.scapelog.client.ScapeLog;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public final class Config {
 
@@ -15,17 +19,17 @@ public final class Config {
 	private static Dao<Setting, String> settingsDao;
 
 	public static void setup() throws SQLException {
-//		System.setProperty(LocalLog.LOCAL_LOG_LEVEL_PROPERTY, "ERROR");
+		if (!ScapeLog.debug) {
+			System.setProperty(LocalLog.LOCAL_LOG_LEVEL_PROPERTY, "ERROR");
+		}
 
 		connectionSource = new JdbcConnectionSource("jdbc:sqlite:" + System.getProperty("user.home") + "/.scapelog/db.sqlite");
+
 		settingsDao = DaoManager.createDao(connectionSource, Setting.class);
+		settingsDao.setObjectCache(true);
 
 //		TableUtils.dropTable(connectionSource, Setting.class, false);
 		TableUtils.createTableIfNotExists(connectionSource, Setting.class);
-	}
-
-	public static void save() {
-
 	}
 
 	public static void setBoolean(String sectionName, String key, boolean value) {
@@ -93,6 +97,14 @@ public final class Config {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static <T> T runBatch(Callable<T> callable) throws Exception {
+		return settingsDao.callBatchTasks(callable);
+	}
+
+	public static <T> T runTransactional(Callable<T> callable) throws SQLException {
+		return TransactionManager.callInTransaction(connectionSource, callable);
 	}
 
 }

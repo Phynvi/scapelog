@@ -8,7 +8,6 @@ import com.scapelog.api.event.EventListener;
 import com.scapelog.api.ui.tab.BaseTab;
 import com.scapelog.api.ui.tab.IconTab;
 import com.scapelog.api.util.Components;
-import com.scapelog.client.config.Config;
 import com.scapelog.client.config.ConfigWrapper;
 import com.scapelog.client.event.EventDispatcher;
 import de.jensd.fx.fontawesome.AwesomeDude;
@@ -154,15 +153,12 @@ public abstract class Plugin extends ConfigWrapper {
 		HBox pane = new HBox(3);
 		pane.setId("plugin-header");
 
-		Button save = Components.createBorderedButton("Save");
-		save.setOnAction(e -> Config.save());
-
 		Button back = Components.createBorderedButton("Back");
 		back.setOnAction(e -> getInitializedTab().setContent(originalContent));
 
 		Label label = new Label(name + " - Settings");
 		label.setMaxHeight(Double.MAX_VALUE);
-		pane.getChildren().addAll(label, Components.createSpacer(), save, back);
+		pane.getChildren().addAll(label, Components.createSpacer(), back);
 		return pane;
 	}
 

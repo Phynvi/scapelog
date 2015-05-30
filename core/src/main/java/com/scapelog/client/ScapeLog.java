@@ -56,7 +56,6 @@ public final class ScapeLog {
 			if (scapeLog.userInterface != null) {
 				scapeLog.userInterface.saveSize();
 			}
-			Config.save();
 		}));
 
 //		if (debug) {
@@ -174,21 +173,6 @@ public final class ScapeLog {
 			return;
 		}
 		ScapeLog.user = user;
-	}
-
-	private void testConfig() {
-		System.out.println("testing config...");
-		long start = System.currentTimeMillis();
-
-		String value = Config.getString("key", "default");
-		System.out.println("value=" + value);
-		if (value == null || value.equals("default")) {
-			Config.setString("main", "key", "heyoo");
-		}
-
-		long end = System.currentTimeMillis();
-		System.out.println("completed, " + (end - start) + "ms");
-		System.exit(0);
 	}
 
 	static {
