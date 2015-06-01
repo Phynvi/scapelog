@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 public final class Loader {
-	private final int VERSION = 5;
+	private final int VERSION = 6;
 	private final OperatingSystem operatingSystem = OperatingSystem.getOperatingSystem();
 
 	private final String dataDirectory = System.getProperty("user.home") + "/.scapelog";
@@ -69,7 +69,9 @@ public final class Loader {
 		loader.setPaths();
 
 		loader.setupFrame();
-		if (!loader.hasValidJava()) {
+		if (loader.forcePortableJava && !loader.hasValidPortableJava()) {
+			loader.downloadJava();
+		} else if (!loader.forcePortableJava && !loader.hasValidJava()) {
 			if (loader.operatingSystem == OperatingSystem.GENERIC) {
 				JOptionPane.showMessageDialog(null, "Please upgrade your Java to version 8 to use ScapeLog");
 				System.exit(0);

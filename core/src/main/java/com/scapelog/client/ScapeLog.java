@@ -34,7 +34,7 @@ public final class ScapeLog {
 	private static User user;
 	private static boolean agentEnabled;
 	private static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors() + 1);
-	public static final boolean debug = false;
+	public static final boolean debug = true;
 
 	private UserInterface userInterface;
 
@@ -134,7 +134,7 @@ public final class ScapeLog {
 			}
 		});
 
-//		if (!debug)
+		if (!debug)
 		{
 			loadClient();
 		}

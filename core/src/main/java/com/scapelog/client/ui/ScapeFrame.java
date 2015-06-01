@@ -1,10 +1,13 @@
 package com.scapelog.client.ui;
 
+import com.google.common.collect.Lists;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
@@ -17,10 +20,12 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.List;
 
 public final class ScapeFrame extends JFrame {
 
 	private final SimpleBooleanProperty iconifiedProperty = new SimpleBooleanProperty(false);
+	private final List<ChangeListener<Dimension>> resizeListeners = Lists.newArrayList();
 
 	public static final SimpleBooleanProperty MAXIMIZED_PROPERTY = new SimpleBooleanProperty(false);
 
@@ -33,6 +38,10 @@ public final class ScapeFrame extends JFrame {
 			@Override
 			public void componentResized(ComponentEvent e) {
 				this.processNewPosition();
+
+				for (ChangeListener<Dimension> changeListener : resizeListeners) {
+					changeListener.changed(null, getSize(), getSize());
+				}
 			}
 
 			@Override
@@ -130,6 +139,10 @@ public final class ScapeFrame extends JFrame {
 
 	public SimpleBooleanProperty iconifiedPropertyProperty() {
 		return iconifiedProperty;
+	}
+
+	public final void addResizeListener(ChangeListener<Dimension> changeListener) {
+		resizeListeners.add(changeListener);
 	}
 
 }
