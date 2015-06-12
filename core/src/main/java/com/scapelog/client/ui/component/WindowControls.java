@@ -4,6 +4,7 @@ import com.scapelog.api.util.Components;
 import com.scapelog.client.ui.ScapeFrame;
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -75,8 +76,10 @@ public final class WindowControls extends HBox {
 	}
 
 	public void sizeChanged(boolean maximized) {
-		Label label = AwesomeDude.createIconLabel(maximized ? AwesomeIcon.COMPRESS : AwesomeIcon.EXPAND);
-		maximizeButton.setGraphic(label);
+		Platform.runLater(() -> {
+			Label label = AwesomeDude.createIconLabel(maximized ? AwesomeIcon.COMPRESS : AwesomeIcon.EXPAND);
+			maximizeButton.setGraphic(label);
+		});
 	}
 
 }

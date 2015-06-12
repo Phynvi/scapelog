@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 public final class Loader {
-	private final int VERSION = 6;
+	private final int VERSION = 7;
 	private final OperatingSystem operatingSystem = OperatingSystem.getOperatingSystem();
 
 	private final String dataDirectory = System.getProperty("user.home") + "/.scapelog";
@@ -197,7 +197,7 @@ public final class Loader {
 
 	private boolean hasValidPortableJava() {
 		boolean installed = hasValidJavaInstalled();
-		if (!installed) {
+		if (forcePortableJava || !installed) {
 			File javaFolder = new File(javaDirectory);
 			if (!javaFolder.exists()) {
 				return false;
@@ -523,7 +523,7 @@ public final class Loader {
 
 	private void setHeaders(String file, HttpURLConnection connection) {
 		connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 5.1; rv:19.0) Gecko/20100101 Firefox/19.0");
-		if (file.equals("Java")) {
+		if (file.contains("jre-8")) {
 			connection.setRequestProperty("Cookie", "oraclelicense=accept-securebackup-cookie");
 		}
 	}

@@ -33,8 +33,9 @@ enum OperatingSystem {
 		switch (operatingSystem) {
 			case WINDOWS:
 				return "bin/java.exe";
-			case LINUX:
 			case MAC: // check
+				return "Contents/Home/bin/java";
+			case LINUX:
 			case SOLARIS: // check
 				return "bin/java";
 		}
