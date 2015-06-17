@@ -57,7 +57,7 @@ public final class LoginWindow extends Application {
 		GridPane root = new GridPane();
 		root.setId("root");
 
-		Scene scene = new Scene(root, 400, 350);
+		Scene scene = new Scene(root, 400, 370);
 		setupUI(root, scene, stage);
 
 		CSS.addDefaultStyles(scene.getStylesheets());
@@ -74,6 +74,7 @@ public final class LoginWindow extends Application {
 				Components.createSpacer(),
 				new WindowControls(stage)
 		);
+		controlsBox.setPadding(new Insets(5, 0, 0, 0));
 
 		/* Logo */
 		ImageView img = new ImageView(new Image(LoginWindow.class.getResourceAsStream("/img/logo.png")));
@@ -83,7 +84,8 @@ public final class LoginWindow extends Application {
 		logoPane.setPrefWidth(scene.getWidth());
 
 		/* Response label */
-		Label responseLabel = new Label("");
+		Label responseLabel = new Label("Enter your ScapeLog credentials to continue");
+		responseLabel.setPadding(new Insets(10, 0, 10, 0));
 		responseLabel.setMaxWidth(Double.MAX_VALUE);
 		responseLabel.setId("response-label");
 
