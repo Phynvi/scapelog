@@ -3,6 +3,7 @@ package com.scapelog.client.ui;
 import com.scapelog.api.plugin.OpenTechnique;
 import com.scapelog.api.plugin.Plugin;
 import com.scapelog.api.ui.tab.BaseTab;
+import com.scapelog.client.config.ClientConfigKeys;
 import com.scapelog.client.config.Config;
 import com.scapelog.client.config.UserInterfaceConfigKeys;
 import com.scapelog.client.event.ClientEventDispatcher;
@@ -24,13 +25,13 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 
-import javax.swing.SwingUtilities;
 import java.applet.Applet;
+import java.awt.Dimension;
 
 public final class UserInterface {
 	public static final String SECTION_NAME = "ui";
 
-	private static final SimpleIntegerProperty borderRadius = new SimpleIntegerProperty(2/*Config.getIntOrAdd(ClientConfigKeys.SECTION_NAME, ClientConfigKeys.BORDER_RADIUS, 2)*/);
+	private static final SimpleIntegerProperty borderRadius = new SimpleIntegerProperty(Config.getIntOrAdd(ClientConfigKeys.SECTION_NAME, ClientConfigKeys.BORDER_RADIUS, 2));
 
 	private DecoratedFrame frame;
 	private AppletPanel appletPanel;
@@ -78,12 +79,11 @@ public final class UserInterface {
 
 			ScapeFrame scapeFrame = frame.getFrame();
 			scapeFrame.setVisible(true);
-			SwingUtilities.invokeLater(() -> {
-				scapeFrame.setBounds(frameX, frameY, frameWidth, frameHeight);
-				if (frameMaximized) {
-					scapeFrame.toggleMaximize();
-				}
-			});
+			scapeFrame.setMinimumSize(new Dimension(220, 200));
+			scapeFrame.setBounds(frameX, frameY, frameWidth, frameHeight);
+			if (frameMaximized) {
+				scapeFrame.toggleMaximize();
+			}
 		});
 	}
 
@@ -97,6 +97,7 @@ public final class UserInterface {
 	}
 
 	public void setupTitleBar(TitleBar titleBar, PluginLoader pluginLoader) {
+		HBox staticContent = titleBar.getStaticContent();
 		HBox content = titleBar.getContent();
 
 /*		Button reloadButton = AwesomeDude.createIconButton(AwesomeIcon.REPEAT);
@@ -170,7 +171,8 @@ public final class UserInterface {
 				});
 			}
 		});
-		content.getChildren().addAll(buttonBox, /*reloadButton, */featuresButton);
+		content.getChildren().addAll(buttonBox);
+		staticContent.getChildren().addAll(featuresButton);
 	}
 
 	public void saveSize() {

@@ -3,7 +3,7 @@ package com.scapelog.client.loader.analyser.impl;
 import com.scapelog.agent.util.ClassNodeUtils;
 import com.scapelog.agent.util.InstructionSearcher;
 import com.scapelog.agent.util.tree.MethodInfo;
-import com.scapelog.client.ClassStore;
+import com.scapelog.api.ClassStore;
 import com.scapelog.client.loader.analyser.Analyser;
 import com.scapelog.client.loader.analyser.AnalysingOperation;
 import com.scapelog.client.loader.analyser.ClassInjection;

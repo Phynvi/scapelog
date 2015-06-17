@@ -1,6 +1,6 @@
 package com.scapelog.client.reflection;
 
-import com.scapelog.client.ClassStore;
+import com.scapelog.api.ClassStore;
 
 import java.util.Optional;
 

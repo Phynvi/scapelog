@@ -1,10 +1,10 @@
 package com.scapelog.loader;
 
 enum OperatingSystem {
-	WINDOWS("http://download.oracle.com/otn-pub/java/jdk/8u25-b18/jre-8u25-windows-i586.tar.gz", "http://download.oracle.com/otn-pub/java/jdk/8u25-b18/jre-8u25-windows-x64.tar.gz"),
-	LINUX("http://download.oracle.com/otn-pub/java/jdk/8u25-b17/jre-8u25-linux-i586.tar.gz", "http://download.oracle.com/otn-pub/java/jdk/8u25-b17/jre-8u25-linux-x64.tar.gz"),
-	SOLARIS("http://download.oracle.com/otn-pub/java/jdk/8u25-b17/jre-8u25-solaris-x64.tar.gz", "http://download.oracle.com/otn-pub/java/jdk/8u25-b17/jre-8u25-solaris-x64.tar.gz"),
-	MAC("http://download.oracle.com/otn-pub/java/jdk/8u25-b17/jre-8u25-macosx-x64.tar.gz", "http://download.oracle.com/otn-pub/java/jdk/8u25-b17/jre-8u25-macosx-x64.tar.gz"),
+	WINDOWS("http://download.oracle.com/otn-pub/java/jdk/8u45-b15/jre-8u45-windows-i586.tar.gz", "http://download.oracle.com/otn-pub/java/jdk/8u45-b15/jre-8u45-windows-x64.tar.gz"),
+	LINUX("http://download.oracle.com/otn-pub/java/jdk/8u45-b14/jre-8u45-linux-i586.tar.gz", "http://download.oracle.com/otn-pub/java/jdk/8u45-b14/jre-8u45-linux-x64.tar.gz"),
+	SOLARIS("http://download.oracle.com/otn-pub/java/jdk/8u45-b14/jre-8u45-solaris-x64.tar.gz", "http://download.oracle.com/otn-pub/java/jdk/8u45-b14/jre-8u45-solaris-x64.tar.gz"),
+	MAC("http://download.oracle.com/otn-pub/java/jdk/8u45-b14/jre-8u45-macosx-x64.tar.gz", "http://download.oracle.com/otn-pub/java/jdk/8u45-b14/jre-8u45-macosx-x64.tar.gz"),
 	GENERIC(null, null);
 
 	private final String downloadLink32bit;
@@ -29,12 +29,13 @@ enum OperatingSystem {
 		return is64bit;
 	}
 
-	public static String getExecutable(OperatingSystem operatingSystem) {
+	public static String getExecutable(OperatingSystem operatingSystem, boolean usingPortableJava) {
 		switch (operatingSystem) {
 			case WINDOWS:
 				return "bin/java.exe";
-			case LINUX:
 			case MAC: // check
+				return usingPortableJava ? "Contents/Home/bin/java" : "bin/java";
+			case LINUX:
 			case SOLARIS: // check
 				return "bin/java";
 		}

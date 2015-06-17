@@ -3,7 +3,9 @@ package com.scapelog.client.ui.component;
 import com.scapelog.api.util.Components;
 import com.scapelog.client.ui.ScapeFrame;
 import com.scapelog.client.ui.StyleConstants;
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 
@@ -21,10 +23,12 @@ public final class TitleBar extends HBox {
 	private double toolbarOffsetX = 0;
 	private double toolbarOffsetY = 0;
 
-	private final Label logo;
+	private final Label logo, beta;
+	private final WindowControls windowControls;
 	private final Region spacer = Components.createSpacer();
 
 	private final HBox content;
+	private final HBox staticContent;
 
 	private final PrivilegedExceptionAction getLocationAction = () -> {
 		PointerInfo pointerInfo = MouseInfo.getPointerInfo();
@@ -35,20 +39,48 @@ public final class TitleBar extends HBox {
 
 	public TitleBar(ScapeFrame frame) {
 		this.content = new HBox();
+		this.staticContent = new HBox();
 		setId("title-bar");
 		setMinHeight(StyleConstants.TITLEBAR_DIMENSIONS.height);
 
 		logo = new Label(frame.getTitle());
 		logo.setId("logo");
+		logo.setMinWidth(67);
+		logo.setPrefWidth(67);
 
-		Label beta = new Label("Beta");
+		beta = new Label("Beta");
 		beta.setId("beta");
+		beta.setMinWidth(40);
+		beta.setPrefWidth(40);
 
-		WindowControls windowControls = new WindowControls(frame);
-		getChildren().addAll(logo, beta, spacer, content, windowControls);
+		windowControls = new WindowControls(frame);
+
+		ScrollPane contentScroll = new ScrollPane(content);
+		contentScroll.setPadding(new Insets(0, 0, 0, 0));
+		contentScroll.setPannable(true);
+		contentScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+		contentScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+
+		getChildren().addAll(logo, beta, spacer, contentScroll, staticContent, windowControls);
+
+		logo.impl_processCSS(true);
+		beta.impl_processCSS(true);
+		spacer.impl_processCSS(true);
+		contentScroll.impl_processCSS(true);
+
+		frame.addResizeListener((observable, oldValue, newValue) -> {
+			int frameWidth = newValue.width;
+			double logoWidth = logo.prefWidth(-1);
+			double betaWidth = beta.prefWidth(-1);
+			double controlsWidth = windowControls.getWidth();
+			double staticWidth = staticContent.getWidth();
+			double emptySpace = frameWidth - logoWidth - betaWidth - controlsWidth - staticWidth;
+
+			contentScroll.setMaxWidth(emptySpace);
+		});
 
 		setOnMousePressed(e -> {
-			if (isRightTarget(e)) {
+			if (isDraggableTarget(e)) {
 				if (e.isPrimaryButtonDown()) {
 					isMovingWindow = true;
 				}
@@ -62,7 +94,7 @@ public final class TitleBar extends HBox {
 		});
 		setOnMouseReleased(e -> isMovingWindow = false);
 		setOnMouseDragged(e -> {
-			if (isMovingWindow && isRightTarget(e)) {
+			if (isMovingWindow && isDraggableTarget(e)) {
 				Point windowPoint;
 				try {
 					windowPoint = (Point) AccessController.doPrivileged(getLocationAction);
@@ -78,12 +110,16 @@ public final class TitleBar extends HBox {
 		});
 	}
 
-	private boolean isRightTarget(javafx.scene.input.MouseEvent e) {
-		return e.getTarget().equals(logo) || e.getTarget().equals(spacer);
+	private boolean isDraggableTarget(javafx.scene.input.MouseEvent e) {
+		return e.getTarget().equals(logo) || e.getTarget().equals(beta) || e.getTarget().equals(spacer);
 	}
 
 	public HBox getContent() {
 		return content;
+	}
+
+	public HBox getStaticContent() {
+		return staticContent;
 	}
 
 }

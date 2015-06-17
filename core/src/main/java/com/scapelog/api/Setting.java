@@ -1,4 +1,4 @@
-package com.scapelog.client.config;
+package com.scapelog.api;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -6,20 +6,20 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "settings")
 public class Setting {
 
-	Setting() {
+	public Setting() {
 
 	}
 
 	@DatabaseField(generatedId = true)
-	int id;
+	public int id;
 
 	@DatabaseField(canBeNull = false, columnDefinition = "VARCHAR UNIQUE ON CONFLICT REPLACE")
-	String key;
+	public String key;
 
 	@DatabaseField(canBeNull = false)
-	String section;
+	public String section;
 
 	@DatabaseField
-	String value;
+	public String value;
 
 }

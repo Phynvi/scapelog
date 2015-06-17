@@ -32,11 +32,11 @@ import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 public final class Loader {
-	private final int VERSION = 4;
+	private final int VERSION = 7;
 	private final OperatingSystem operatingSystem = OperatingSystem.getOperatingSystem();
 
 	private final String dataDirectory = System.getProperty("user.home") + "/.scapelog";
-	private final String libDirectory = dataDirectory + "/lib";
+	private String libDirectory = dataDirectory + "/lib";
 	private final String javaDirectory = libDirectory + "/java";
 	private final List<Dependency> dependencies = new ArrayList<Dependency>();
 
@@ -47,6 +47,8 @@ public final class Loader {
 	private boolean printOutput = false;
 	private boolean noChecksumCheck = false;
 	private boolean noMods = false;
+	private boolean forcePortableJava = false;
+	private boolean testingFiles = false;
 
 	private List<BootFlag> bootFlags = new ArrayList<BootFlag>();
 
@@ -64,8 +66,12 @@ public final class Loader {
 			}
 		}
 
+		loader.setPaths();
+
 		loader.setupFrame();
-		if (!loader.hasValidJava()) {
+		if (loader.forcePortableJava && !loader.hasValidPortableJava()) {
+			loader.downloadJava();
+		} else if (!loader.forcePortableJava && !loader.hasValidJava()) {
 			if (loader.operatingSystem == OperatingSystem.GENERIC) {
 				JOptionPane.showMessageDialog(null, "Please upgrade your Java to version 8 to use ScapeLog");
 				System.exit(0);
@@ -96,6 +102,12 @@ public final class Loader {
 		loader.launch();
 	}
 
+	private void setPaths() {
+		if (testingFiles) {
+			libDirectory = dataDirectory + "/lib/testing";
+		}
+	}
+
 	private void loadBootFlags() {
 		bootFlags.add(new BootFlag("-help", "Prints this message", new Runnable() {
 			@Override
@@ -120,6 +132,18 @@ public final class Loader {
 			@Override
 			public void run() {
 				noMods = true;
+			}
+		}));
+		bootFlags.add(new BootFlag("-portablejava", "Force use the portable Java 8", new Runnable() {
+			@Override
+			public void run() {
+				forcePortableJava = true;
+			}
+		}));
+		bootFlags.add(new BootFlag("-testing", "Use the files in testing phase (not recommended)", new Runnable() {
+			@Override
+			public void run() {
+				testingFiles = true;
 			}
 		}));
 	}
@@ -165,17 +189,20 @@ public final class Loader {
 	}
 
 	private boolean hasValidJava() {
+		if (forcePortableJava && hasValidPortableJava()) {
+			return true;
+		}
 		return hasValidJavaInstalled() || hasValidPortableJava();
 	}
 
 	private boolean hasValidPortableJava() {
 		boolean installed = hasValidJavaInstalled();
-		if (!installed) {
+		if (forcePortableJava || !installed) {
 			File javaFolder = new File(javaDirectory);
 			if (!javaFolder.exists()) {
 				return false;
 			}
-			String executableName = OperatingSystem.getExecutable(operatingSystem);
+			String executableName = OperatingSystem.getExecutable(operatingSystem, forcePortableJava);
 			if (executableName == null) {
 				System.out.println("unknown executable for " + operatingSystem);
 				return false;
@@ -276,7 +303,7 @@ public final class Loader {
 			progressLabel.setText("Fetching file list...");
 			String[] lines;
 			try {
-				lines = downloadToMemory("http://static.scapelog.com/checksums");
+				lines = downloadToMemory(testingFiles ? "http://static.scapelog.com/test/checksums" : "http://static.scapelog.com/live/checksums");
 			} catch (FileNotFoundException e) {
 				throw new Exception("Remote file list not found, please try again later");
 			}
@@ -357,11 +384,11 @@ public final class Loader {
 	private void launch() {
 		progressLabel.setText("Launching...");
 
-		String executable = OperatingSystem.getExecutable(operatingSystem);
+		String executable = OperatingSystem.getExecutable(operatingSystem, forcePortableJava);
 		if (executable == null) {
 			executable = "java";
 		}
-		if (hasValidJavaInstalled()) {
+		if (!forcePortableJava && hasValidJavaInstalled()) {
 			executable = System.getProperty("java.home") + "/" + executable;
 		} else if (hasValidPortableJava()) {
 			executable = javaDirectory + "/" + executable;
@@ -403,6 +430,8 @@ public final class Loader {
 			commandParts.add(joinedDependencies);
 			commandParts.add("com.scapelog.client.ScapeLog"); // todo: main class from somewhere
 
+			System.out.println(commandParts);
+
 			if (printOutput) {
 				frame.dispose();
 				ProcessBuilder builder = new ProcessBuilder(commandParts);
@@ -429,13 +458,11 @@ public final class Loader {
 	private void download(String url, String file, String out) throws Exception {
 		progressBar.setIndeterminate(false);
 		HttpURLConnection connection = getConnection(url);
-		setHeaders(file, connection);
 		connection.connect();
 		Map<String, List<String>> headers = connection.getHeaderFields();
 		while (isRedirected(headers)) {
 			url = headers.get("Location").get(0);
-			connection = (HttpURLConnection) new URL(url).openConnection();
-			setHeaders(file, connection);
+			connection = getConnection(url);
 			headers = connection.getHeaderFields();
 		}
 
@@ -478,8 +505,7 @@ public final class Loader {
 		Map<String, List<String>> headers = connection.getHeaderFields();
 		while (isRedirected(headers)) {
 			url = headers.get("Location").get(0);
-			connection = (HttpURLConnection) new URL(url).openConnection();
-			setHeaders(url, connection);
+			connection = getConnection(url);
 			headers = connection.getHeaderFields();
 		}
 		InputStream input = connection.getInputStream();
@@ -497,7 +523,7 @@ public final class Loader {
 
 	private void setHeaders(String file, HttpURLConnection connection) {
 		connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 5.1; rv:19.0) Gecko/20100101 Firefox/19.0");
-		if (file.equals("Java")) {
+		if (file.contains("jre-8")) {
 			connection.setRequestProperty("Cookie", "oraclelicense=accept-securebackup-cookie");
 		}
 	}
