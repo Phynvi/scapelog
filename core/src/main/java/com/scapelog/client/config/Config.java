@@ -8,7 +8,6 @@ import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.scapelog.api.Setting;
-import com.scapelog.client.ScapeLog;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,7 +23,7 @@ public final class Config {
 	private static Dao<Setting, String> settingsDao;
 
 	public static void setup() throws SQLException {
-		if (!ScapeLog.debug) {
+		if (true) {
 			System.setProperty(LocalLog.LOCAL_LOG_LEVEL_PROPERTY, "ERROR");
 		}
 

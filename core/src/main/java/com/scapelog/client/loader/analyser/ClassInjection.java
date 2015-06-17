@@ -19,7 +19,7 @@ public final class ClassInjection {
 		this.methodInfo = methodInfo;
 		this.index = index;
 		this.instructions = instructions;
-		this.features = ImmutableList.copyOf(features);
+		this.features = features == null ? ImmutableList.of() : ImmutableList.copyOf(features);
 	}
 
 	public MethodInfo getMethodInfo() {

@@ -2,6 +2,7 @@ package com.scapelog.client.loader;
 
 import com.google.common.collect.ImmutableList;
 import com.scapelog.agent.RSClassTransformer;
+import com.scapelog.client.ScapeLog;
 import com.scapelog.client.event.ClientEventDispatcher;
 import com.scapelog.client.event.impl.LoadingEvent;
 import com.scapelog.client.loader.analyser.Analyser;
@@ -12,6 +13,7 @@ import com.scapelog.client.loader.analyser.ReflectionOperation;
 import com.scapelog.client.loader.analyser.impl.ClassLoaderAnalyser;
 import com.scapelog.client.loader.analyser.impl.GameMessageAnalyser;
 import com.scapelog.client.loader.analyser.impl.IdleResetAnalyser;
+import com.scapelog.client.loader.analyser.impl.LibraryLoaderAnalyser;
 import com.scapelog.client.loader.analyser.impl.MultiplierAnalyser;
 import com.scapelog.client.loader.analyser.impl.SkillAnalyser;
 import com.scapelog.client.loader.analyser.impl.StringFieldAnalyser;
@@ -67,6 +69,7 @@ public final class ClientLoader {
 				new MultiplierAnalyser(),
 				new ClassLoaderAnalyser(),
 				new StringFieldAnalyser(),
+				new LibraryLoaderAnalyser(),
 
 				new SkillAnalyser(),
 				new IdleResetAnalyser(),
@@ -108,24 +111,27 @@ public final class ClientLoader {
 		}
 		print("- Downloaded");
 
-		print("Analysing client...");
-		JarArchive archive;
-		try {
-			archive = analyse(jar, config);
-		} catch (CryptographyException | IOException e) {
-			print("Failed to analyse the client, retrying after redownloading.");
-			jar = WebUtils.download(codebase, gamePack, outputPath, gamePack.replace("/", ""));
-			archive = analyse(jar, config);
+		GamePackArchives gamePackArchives = getGamePackArchive(jar, config);
+		JarArchive archive = gamePackArchives.getGamepackArchive();
+		if (ScapeLog.isAgentEnabled()) {
+			print("Analysing client...");
+			try {
+				archive = analyse(jar, config, gamePackArchives);
+			} catch (CryptographyException | IOException e) {
+				print("Failed to analyse the client, retrying after redownloading.");
+				jar = WebUtils.download(codebase, gamePack, outputPath, gamePack.replace("/", ""));
+				archive = analyse(jar, config, gamePackArchives);
+			}
+			print("- Analysed");
+
+			if (archive == null) {
+				print("Something went wrong with the client archive, please restart or report on forums.");
+				return null;
+			}
 		}
-		print("- Analysed");
 
 		boolean isDefault = !world.isPresent();
 		print((isDefault ? "Received default" : "Using") + " world " + getWorldId(codebase) + ", lobby " + findLobbyId(config.getParameters()));
-
-		if (archive == null) {
-			print("Something went wrong with the client archive, please restart or report on forums.");
-			return null;
-		}
 
 		JarArchiveClassLoader classLoader = JarArchiveClassLoader.create(archive);
 		Applet applet = (Applet) classLoader.loadClass(appletClass.replace(".class", "")).newInstance();
@@ -134,10 +140,12 @@ public final class ClientLoader {
 		return applet;
 	}
 
-	private JarArchive analyse(Path file, JavConfig config) throws IOException, CryptographyException {
+	private GamePackArchives getGamePackArchive(Path file, JavConfig config) throws Exception {
 		GameClientModifier modifier = new GameClientModifier();
-		GamePackArchives archives = modifier.unpack(config, file);
+		return modifier.unpack(config, file);
+	}
 
+	private JarArchive analyse(Path file, JavConfig config, GamePackArchives archives) throws IOException, CryptographyException {
 		// The gamepack's non-decrypted classes
 		ClassNodeArchive nodeArchive = new ClassNodeArchive(archives.getGamepackArchive());
 		nodeArchive.addClassNodes();
@@ -169,12 +177,20 @@ public final class ClientLoader {
 	private void analyse(Collection<ClassNode> classNodes, AnalysingOperation analysingOperation, ReflectionOperation reflectionOperation) {
 		// run the injection analysers
 		for (Analyser analyser : analysers) {
-			analyser.analyse(classNodes, analysingOperation);
+			try {
+				analyser.analyse(classNodes, analysingOperation);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		// run the reflection analysers
 		for (ReflectionAnalyser analyser : reflectionAnalysers) {
-			analyser.analyse(classNodes, reflectionOperation);
+			try {
+				analyser.analyse(classNodes, reflectionOperation);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

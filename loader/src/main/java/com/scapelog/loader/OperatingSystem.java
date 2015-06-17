@@ -29,12 +29,12 @@ enum OperatingSystem {
 		return is64bit;
 	}
 
-	public static String getExecutable(OperatingSystem operatingSystem) {
+	public static String getExecutable(OperatingSystem operatingSystem, boolean usingPortableJava) {
 		switch (operatingSystem) {
 			case WINDOWS:
 				return "bin/java.exe";
 			case MAC: // check
-				return "Contents/Home/bin/java";
+				return usingPortableJava ? "Contents/Home/bin/java" : "bin/java";
 			case LINUX:
 			case SOLARIS: // check
 				return "bin/java";

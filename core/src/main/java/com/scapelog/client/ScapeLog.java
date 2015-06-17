@@ -25,6 +25,8 @@ import java.awt.AWTEvent;
 import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.concurrent.Executors;
@@ -134,7 +136,7 @@ public final class ScapeLog {
 			}
 		});
 
-		if (!debug)
+//		if (!debug)
 		{
 			loadClient();
 		}
@@ -174,8 +176,24 @@ public final class ScapeLog {
 	}
 
 	static {
-//		System.setProperty("prism.order", "j2d");
 		System.setProperty("java.net.preferIPv4Stack", "true");
+
+		String osName = System.getProperty("os.name", "generic").toLowerCase();
+		if (osName.startsWith("mac") || osName.startsWith("darwin")) {
+			// manually load libjawt.dylib into vm, needed since Java 7
+			System.out.println("Attempting to load jawt");
+			AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
+				try {
+					System.loadLibrary("jawt");
+					System.out.println("\tLoaded successfully");
+				} catch (UnsatisfiedLinkError e) {
+					e.printStackTrace();
+					// catch and ignore an already loaded in another classloader
+					// exception, as vm already has it loaded
+				}
+				return null;
+			});
+		}
 	}
 
 }

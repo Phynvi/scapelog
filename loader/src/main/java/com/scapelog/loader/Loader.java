@@ -202,7 +202,7 @@ public final class Loader {
 			if (!javaFolder.exists()) {
 				return false;
 			}
-			String executableName = OperatingSystem.getExecutable(operatingSystem);
+			String executableName = OperatingSystem.getExecutable(operatingSystem, forcePortableJava);
 			if (executableName == null) {
 				System.out.println("unknown executable for " + operatingSystem);
 				return false;
@@ -384,7 +384,7 @@ public final class Loader {
 	private void launch() {
 		progressLabel.setText("Launching...");
 
-		String executable = OperatingSystem.getExecutable(operatingSystem);
+		String executable = OperatingSystem.getExecutable(operatingSystem, forcePortableJava);
 		if (executable == null) {
 			executable = "java";
 		}
