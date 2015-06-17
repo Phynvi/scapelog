@@ -70,7 +70,7 @@
 
 #window-controls > .button {
     -fx-label-padding: -5;
-    -fx-translate-y: -5;
+    -fx-translate-y: -9;
     -fx-pref-width: 20;
     -fx-min-height: 17;
     -fx-max-height: 17;
