@@ -83,7 +83,9 @@ public final class SlayerPlugin extends Plugin {
 
 	@Override
 	public Region getContent() {
-		return new Region();
+		BorderPane borderPane = new BorderPane();
+		borderPane.setCenter(new Label("Task logging coming soon!"));
+		return borderPane;
 	}
 
 	@Override
