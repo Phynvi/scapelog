@@ -85,9 +85,9 @@ public final class SkillTrackerPlugin extends TabPlugin {
 
 					Skill skill = event.getSkill();
 					SkillBox box = boxedSkills.get(skill);
+
 					// create a box after the first xp gain
 					if (skill.getEventCount() == 1 || box == null) {
-						skill.reset();
 						box = new SkillBox(skill);
 						setDraggable(box);
 					}

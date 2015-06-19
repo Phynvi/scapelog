@@ -136,7 +136,7 @@ public final class ScapeLog {
 			}
 		});
 
-		if (!debug)
+//		if (!debug)
 		{
 			loadClient();
 		}
