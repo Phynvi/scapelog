@@ -52,7 +52,10 @@ public final class NewsTab extends IconTab {
 				"Updates #3 - ## June 2015",
 				" - Loader will now download the portable Java package again in case it's needed but not present",
 				" - Portable Java version updated from update 20 to update 45",
-				" - Repositioned the window control buttons"
+				" - Repositioned the window control buttons",
+				" - Slayer tasks should now update properly when switching characters",
+				" - Skill tracker should no longer show that you've gained 0 xp in a skill",
+				" - Numeric fields that are controlled with + and - buttons are now more pleasant to cycle through"
 		});
 	}
 
