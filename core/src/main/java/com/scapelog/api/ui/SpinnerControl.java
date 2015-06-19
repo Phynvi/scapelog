@@ -45,7 +45,7 @@ public class SpinnerControl extends HBox {
 
 		buttonIncrease = Components.createBorderedButton("+");
 		buttonIncrease.getStyleClass().add("increase");
-		addPressAndHoldHandler(buttonIncrease, Duration.millis(30), event -> {
+		addPressAndHoldHandler(buttonIncrease, Duration.millis(100), event -> {
 			double value = getValue();
 			double newValue = maxValue;
 			if (value < maxValue) {
@@ -56,7 +56,7 @@ public class SpinnerControl extends HBox {
 
 		buttonDecrease = Components.createBorderedButton("-");
 		buttonDecrease.getStyleClass().add("decrease");
-		addPressAndHoldHandler(buttonDecrease, Duration.millis(30), event -> {
+		addPressAndHoldHandler(buttonDecrease, Duration.millis(100), event -> {
 			double value = getValue();
 			double newValue = minValue;
 			if (value > minValue) {
