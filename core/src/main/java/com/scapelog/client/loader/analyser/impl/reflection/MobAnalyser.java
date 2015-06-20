@@ -19,6 +19,9 @@ public final class MobAnalyser extends ReflectionAnalyser {
 			return;
 		}
 		ClassNode playerClassNode = ClassNodeUtils.getClassNode(classNodes, playerName);
+		if (playerClassNode == null) {
+			return;
+		}
 		ClassNames.MOB = playerClassNode.superName;
 		Debug.println("mob identified as %s", ClassNames.MOB);
 	}
