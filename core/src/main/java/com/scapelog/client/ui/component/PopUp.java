@@ -164,9 +164,10 @@ public class PopUp {
 		visiblityProperty.set(true);
 		openPopOver.set(this);
 
+		stage.setAlwaysOnTop(true);
+		stage.show();
 		setX(x);
 		setY(y);
-		stage.show();
 
 		lastOwner = owner;
 	}

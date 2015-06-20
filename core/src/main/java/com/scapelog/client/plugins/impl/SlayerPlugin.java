@@ -45,8 +45,14 @@ public final class SlayerPlugin extends Plugin {
 			public void eventExecuted(VariableEvent event) {
 				int oldValue = event.getOldValue();
 				int newValue = event.getNewValue();
-				if (event.getId() == Settings.SLAYER_ASSIGNMENT_KILLS_LEFT) {
 
+				if (event.getId() == Settings.SLAYER_ASSIGNMENT_MOB_CATEGORY) {
+					if (newValue != oldValue && slayerTask != null) {
+						slayerTask.setCategoryId(newValue);
+					}
+				}
+
+				if (event.getId() == Settings.SLAYER_ASSIGNMENT_KILLS_LEFT) {
 					if (newValue == 0) {
 						slayerTask.reset();
 
@@ -65,9 +71,6 @@ public final class SlayerPlugin extends Plugin {
 					}
 					slayerTask.setKillsLeft(newValue);
 				}
-				if (event.getId() == Settings.SLAYER_ASSIGNMENT_MOB_CATEGORY) {
-					slayerTask.setCategoryId(newValue);
-				}
 			}
 		});
 
@@ -80,7 +83,9 @@ public final class SlayerPlugin extends Plugin {
 
 	@Override
 	public Region getContent() {
-		return new Region();
+		BorderPane borderPane = new BorderPane();
+		borderPane.setCenter(new Label("Task logging coming soon!"));
+		return borderPane;
 	}
 
 	@Override
