@@ -13,7 +13,6 @@ import com.scapelog.client.loader.analyser.ReflectionOperation;
 import com.scapelog.client.loader.analyser.impl.ClassLoaderAnalyser;
 import com.scapelog.client.loader.analyser.impl.GameMessageAnalyser;
 import com.scapelog.client.loader.analyser.impl.IdleResetAnalyser;
-import com.scapelog.client.loader.analyser.impl.LibraryLoaderAnalyser;
 import com.scapelog.client.loader.analyser.impl.MultiplierAnalyser;
 import com.scapelog.client.loader.analyser.impl.SkillAnalyser;
 import com.scapelog.client.loader.analyser.impl.StringFieldAnalyser;
@@ -69,7 +68,7 @@ public final class ClientLoader {
 				new MultiplierAnalyser(),
 				new ClassLoaderAnalyser(),
 				new StringFieldAnalyser(),
-				new LibraryLoaderAnalyser(),
+				//new LibraryLoaderAnalyser(),
 
 				new SkillAnalyser(),
 				new IdleResetAnalyser(),

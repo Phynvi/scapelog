@@ -11,6 +11,7 @@ import com.scapelog.client.plugins.PluginLoader;
 import com.scapelog.client.ui.component.PopUp;
 import com.scapelog.client.ui.component.tab.DashboardTab;
 import com.scapelog.client.ui.component.tab.DeveloperTab;
+import com.scapelog.client.ui.component.tab.NewsTab;
 import com.scapelog.client.ui.component.tab.ReflectionTab;
 import com.scapelog.client.ui.component.tab.SettingsTab;
 import com.sun.javafx.scene.control.skin.TabPaneSkin;
@@ -18,7 +19,6 @@ import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Side;
-import javafx.scene.CacheHint;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
@@ -59,12 +59,9 @@ public final class FeaturesWindow {
 
 		tabs.getTabs().addAll(
 				new DashboardTab().getTab(),
-				new SettingsTab().getTab()
+				new SettingsTab().getTab(),
+				new NewsTab().getTab()
 		);
-
-		/*for (int i = 0; i < 5; i++) {
-			tabs.getTabs().add(new SettingsTab().getTab());
-		}*/
 
 		tabs.skinProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue.getClass().equals(TabPaneSkin.class)) {
