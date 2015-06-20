@@ -178,6 +178,8 @@ public final class ScapeLog {
 	static {
 		System.setProperty("java.net.preferIPv4Stack", "true");
 		System.setProperty("prism.lcdtext", "false");
+		System.setProperty("sun.java2d.opengl", "true");
+		System.setProperty("awt.useSystemAAFontSettings", "on");
 
 		String osName = System.getProperty("os.name", "generic").toLowerCase();
 		if (osName.startsWith("mac") || osName.startsWith("darwin")) {
