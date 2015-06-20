@@ -173,13 +173,10 @@ public final class HighscoresPlugin extends ButtonPlugin {
 	}
 
 	private void getStats(String username, TextField searchField, Button search) {
-		String cleanedUsername = username.replace(" ", "+");
-
 		Webb webb = Webb.create();
 		webb.setBaseUri("http://hiscore.runescape.com");
 		webb.setFollowRedirects(true);
 		webb.setDefaultHeader(Webb.HDR_USER_AGENT, "scapelog/1.0");
-
 
 		searchField.setDisable(true);
 		search.setDisable(true);
@@ -193,6 +190,9 @@ public final class HighscoresPlugin extends ButtonPlugin {
 		}
 
 		ScapeLog.getExecutor().submit(() -> {
+			String cleanedUsername = username.replaceAll("\\s", "+");
+			cleanedUsername = cleanedUsername.toLowerCase();
+
 			Response<String> response = webb.get("/index_lite.ws").param("player", cleanedUsername).asString();
 			String result = response.getBody();
 
