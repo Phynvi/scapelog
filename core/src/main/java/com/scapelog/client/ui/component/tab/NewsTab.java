@@ -48,13 +48,15 @@ public final class NewsTab extends IconTab {
 				" - Loader should now properly find the portable Java's executable on OSX"
 		});
 		insertNews(textArea, new String[] {
-				"Updates #3 - ## June 2015",
+				"Updates #3 - 20 June 2015",
 				" - Loader will now download the portable Java package again in case it's needed but not present",
 				" - Portable Java version updated from update 20 to update 45",
 				" - Repositioned the window control buttons",
 				" - Slayer tasks should now update properly when switching characters",
 				" - Skill tracker should no longer show that you've gained 0 xp in a skill",
-				" - Numeric fields that are controlled with + and - buttons are now more pleasant to cycle through"
+				" - Numeric fields that are controlled with + and - buttons are now more pleasant to cycle through",
+				" - Popup menu can now be detached and dragged by the tabs area",
+				" - Attemps to improve 2D performance"
 		});
 	}
 
