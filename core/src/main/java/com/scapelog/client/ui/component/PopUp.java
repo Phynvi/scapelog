@@ -18,6 +18,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Screen;
@@ -93,7 +94,7 @@ public class PopUp {
 
 	static {
 		openPopOver.addListener((observable, oldValue, newValue) -> {
-			if (oldValue == null) {
+			if (oldValue == null || oldValue.isDetached()) {
 				return;
 			}
 			oldValue.hide();
@@ -163,6 +164,8 @@ public class PopUp {
 
 		visiblityProperty.set(true);
 		openPopOver.set(this);
+
+		setDetached(false);
 
 		stage.setAlwaysOnTop(true);
 		stage.show();
@@ -268,6 +271,9 @@ public class PopUp {
 	}
 
 	public void reposition() {
+		if (isDetached()) {
+			return;
+		}
 		if (stage.isIconified()) {
 			stage.toFront();
 		}
@@ -288,6 +294,18 @@ public class PopUp {
 		return detached.get();
 	}
 
+	public void setDetached(boolean detached) {
+		this.detached.set(detached);
+	}
+
+	public void toggleDetach() {
+		boolean detached = !isDetached();
+		setDetached(detached);
+		if (!detached) {
+			reposition();
+		}
+	}
+
 	public SimpleBooleanProperty getVisibilityProperty() {
 		return visiblityProperty;
 	}
@@ -305,6 +323,9 @@ public class PopUp {
 		SimpleBooleanProperty restorePopOver = new SimpleBooleanProperty(false);
 		frame.iconifiedPropertyProperty().addListener((observable, oldValue, iconified) -> {
 			Platform.runLater(() -> {
+				if (isDetached()) {
+					return;
+				}
 				boolean restore = restorePopOver.get();
 
 				// re-open when frame is de-iconified
@@ -318,6 +339,30 @@ public class PopUp {
 				}
 
 			});
+		});
+	}
+
+	private boolean isMovingWindow = false;
+
+	public void setDraggable(Node node) {
+		class Delta {
+			double x, y;
+		}
+		final Delta delta = new Delta();
+
+		node.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+			if (e.isPrimaryButtonDown()) {
+				isMovingWindow = true;
+			}
+			delta.x = stage.getX() - e.getScreenX();
+			delta.y = stage.getY() - e.getScreenY();
+		});
+		node.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> isMovingWindow = false);
+		node.addEventFilter(MouseEvent.MOUSE_DRAGGED, e -> {
+			if (isMovingWindow && isDetached()) {
+				stage.setX(e.getScreenX() + delta.x);
+				stage.setY(e.getScreenY() + delta.y);
+			}
 		});
 	}
 

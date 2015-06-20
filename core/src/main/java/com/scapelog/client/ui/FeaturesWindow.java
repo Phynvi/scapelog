@@ -1,6 +1,7 @@
 package com.scapelog.client.ui;
 
 import com.scapelog.api.plugin.Plugin;
+import com.scapelog.api.util.Components;
 import com.scapelog.client.ScapeLog;
 import com.scapelog.client.event.ClientEventDispatcher;
 import com.scapelog.client.event.ClientEventListener;
@@ -12,24 +13,33 @@ import com.scapelog.client.ui.component.tab.DashboardTab;
 import com.scapelog.client.ui.component.tab.DeveloperTab;
 import com.scapelog.client.ui.component.tab.ReflectionTab;
 import com.scapelog.client.ui.component.tab.SettingsTab;
+import com.sun.javafx.scene.control.skin.TabPaneSkin;
+import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Side;
+import javafx.scene.CacheHint;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+
+import java.lang.reflect.Field;
 
 public final class FeaturesWindow {
 
-	private final PopUp popOver;
+	private final PopUp popup;
 	private final ToggleButton trigger;
 
 	public FeaturesWindow(ToggleButton trigger, ScapeFrame frame) {
 		this.trigger = trigger;
-		this.popOver = new PopUp(500, 400);
-		this.popOver.setTitle("ScapeLog - features");
-		this.popOver.addFrameEvents(frame, trigger);
+		this.popup = new PopUp(500, 400);
+		this.popup.setTitle("ScapeLog - features");
+		this.popup.addFrameEvents(frame, trigger);
 	}
 
 	public void setup(PluginLoader pluginLoader) {
@@ -51,6 +61,47 @@ public final class FeaturesWindow {
 				new DashboardTab().getTab(),
 				new SettingsTab().getTab()
 		);
+
+		/*for (int i = 0; i < 5; i++) {
+			tabs.getTabs().add(new SettingsTab().getTab());
+		}*/
+
+		tabs.skinProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue.getClass().equals(TabPaneSkin.class)) {
+				TabPaneSkin skin = (TabPaneSkin) newValue;
+				for (Node child : skin.getChildren()) {
+					if (!child.getStyleClass().contains("tab-header-area")) {
+						continue;
+					}
+					StackPane stackPane = (StackPane) child;
+					popup.setDraggable(stackPane);
+					try {
+						Field controlButtons = stackPane.getClass().getDeclaredField("controlButtons");
+						boolean accessible = controlButtons.isAccessible();
+						controlButtons.setAccessible(true);
+
+						StackPane controlButtonsPane = (StackPane) controlButtons.get(stackPane);
+						controlButtons.setAccessible(accessible);
+
+						controlButtonsPane.setVisible(true);
+						controlButtonsPane.setPrefHeight(33);
+						controlButtonsPane.setPrefWidth(30);
+						controlButtonsPane.getChildren().clear();
+
+						Button iconButton = Components.createIconButton(AwesomeIcon.THUMB_TACK, "20.0");
+						iconButton.setTooltip(new Tooltip("Detach"));
+						iconButton.setStyle("-fx-rotate: 135;");
+						controlButtonsPane.getChildren().add(iconButton);
+						iconButton.setLayoutX(15);
+						iconButton.setLayoutY(15);
+
+						iconButton.setOnAction(e -> popup.toggleDetach());
+					} catch (NoSuchFieldException | IllegalAccessException e) {
+						System.err.println("Failed to create detach button");
+					}
+				}
+			}
+		});
 
 		if (ScapeLog.debug || (ScapeLog.getUser() != null && ScapeLog.getUser().getGroups().contains(UserGroup.PLUGIN_DEVELOPER))) {
 			tabs.getTabs().addAll(
@@ -84,24 +135,24 @@ public final class FeaturesWindow {
 		pane.setCenter(tabs);
 		pane.setPrefSize(500, 400);
 		// todo:
-		popOver.setContent(pane);
+		popup.setContent(pane);
 		//popOver.setDragNode(tabs);
 	}
 
 	public void toggle() {
-		if (popOver.isShowing()) {
-			popOver.hide();
+		if (popup.isShowing()) {
+			popup.hide();
 			return;
 		}
-		popOver.show(trigger, 0);
+		popup.show(trigger, 0);
 	}
 
 	public boolean isVisible() {
-		return popOver.isShowing();
+		return popup.isShowing();
 	}
 
 	public SimpleBooleanProperty getVisibilityProperty() {
-		return popOver.getVisibilityProperty();
+		return popup.getVisibilityProperty();
 	}
 
 }
