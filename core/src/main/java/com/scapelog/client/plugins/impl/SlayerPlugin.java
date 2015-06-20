@@ -147,13 +147,18 @@ public final class SlayerPlugin extends Plugin {
 	private ImmutableMap<Integer, SlayerCategory> loadSlayerCategories() {
 		ImmutableMap.Builder<Integer, SlayerCategory> builder = new ImmutableMap.Builder<>();
 
-		// todo: replace with rs-api when it's public
-		String pageContent = WebUtils.readPage("http://services.runescape.com/m=itemdb_rs/bestiary/bestiary", "/slayerCatNames.json");
-		Map<String, Integer> categories = new Gson().fromJson(pageContent, new TypeToken<Map<String, Integer>>() {}.getType());
-		for (Map.Entry<String, Integer> categoryEntry : categories.entrySet()) {
-			int id = categoryEntry.getValue();
-			String name = categoryEntry.getKey();
-			builder.put(id, new SlayerCategory(id, name));
+		try {
+			// todo: replace with rs-api when it's public
+			String pageContent = WebUtils.readPage("http://services.runescape.com/m=itemdb_rs/bestiary/bestiary", "/slayerCatNames.json");
+			Map<String, Integer> categories = new Gson().fromJson(pageContent, new TypeToken<Map<String, Integer>>() {
+			}.getType());
+			for (Map.Entry<String, Integer> categoryEntry : categories.entrySet()) {
+				int id = categoryEntry.getValue();
+				String name = categoryEntry.getKey();
+				builder.put(id, new SlayerCategory(id, name));
+			}
+		} catch (Exception e) {
+			/**/
 		}
 		return builder.build();
 	}

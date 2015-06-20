@@ -9,12 +9,9 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 
-import java.awt.MouseInfo;
 import java.awt.Point;
-import java.awt.PointerInfo;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 
 public final class TitleBar extends HBox {
 
@@ -29,11 +26,6 @@ public final class TitleBar extends HBox {
 
 	private final HBox content;
 	private final HBox staticContent;
-
-	private final PrivilegedExceptionAction getLocationAction = () -> {
-		PointerInfo pointerInfo = MouseInfo.getPointerInfo();
-		return pointerInfo == null ? null : pointerInfo.getLocation();
-	};
 
 	private boolean isMovingWindow;
 
@@ -97,7 +89,7 @@ public final class TitleBar extends HBox {
 			if (isMovingWindow && isDraggableTarget(e)) {
 				Point windowPoint;
 				try {
-					windowPoint = (Point) AccessController.doPrivileged(getLocationAction);
+					windowPoint = AccessController.doPrivileged(Components.GET_LOCATION_ACTION);
 					if (windowPoint != null) {
 						windowPoint.x = (int) (windowPoint.x - toolbarOffsetX);
 						windowPoint.y = (int) (windowPoint.y - toolbarOffsetY);

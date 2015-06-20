@@ -1,5 +1,6 @@
 package com.scapelog.api.util;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import com.scapelog.client.ui.util.Fonts;
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
@@ -9,10 +10,20 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.PointerInfo;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Helper class for creating common UI components in a more inline way
@@ -103,5 +114,10 @@ public final class Components {
 		node.getStylesheets().add(Fonts.getWebFontStyleSheet(name));
 		node.setStyle("-fx-font-family: " + name + ";");
 	}
+
+	public static final PrivilegedExceptionAction<Point> GET_LOCATION_ACTION = () -> {
+		PointerInfo pointerInfo = MouseInfo.getPointerInfo();
+		return pointerInfo == null ? null : pointerInfo.getLocation();
+	};
 
 }
