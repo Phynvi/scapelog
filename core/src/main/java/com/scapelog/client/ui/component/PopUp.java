@@ -6,7 +6,6 @@ import com.sun.javafx.tk.Toolkit;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.WeakInvalidationListener;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -68,7 +67,7 @@ public class PopUp {
 
 	private Window ownerWindow;
 	private Direction direction = Direction.SOUTH_WEST;
-	private final BooleanProperty detached = new SimpleBooleanProperty(false);
+	private final SimpleBooleanProperty detached = new SimpleBooleanProperty(false);
 
 	private int lastOffset = 0;
 	private Node lastOwner = null;
@@ -114,8 +113,15 @@ public class PopUp {
 		parent.setCenter(content);
 		Scene scene = new Scene(parent);
 
+		TitleBar titleBar = new TitleBar(stage);
+
+		titleBar.draggabilityProperty().bind(detached);
+		detached.addListener((observable, wasDetached, isDetached) -> {
+			parent.setTop(isDetached ? titleBar : null);
+		});
+
 		this.stage.setScene(scene);
-		this.stage.setOnCloseRequest(e -> close());
+		this.stage.setOnHiding(e -> close());
 
 		CSS.addStylesheets(PopUp.class, scene.getStylesheets(), "/css/popover.css");
 		CSS.addDefaultStyles(scene.getStylesheets());
@@ -168,6 +174,7 @@ public class PopUp {
 		setDetached(false);
 
 		stage.setAlwaysOnTop(true);
+		stage.setIconified(false);
 		stage.show();
 		setX(x);
 		setY(y);
@@ -304,6 +311,10 @@ public class PopUp {
 		if (!detached) {
 			reposition();
 		}
+	}
+
+	public SimpleBooleanProperty detachedProperty() {
+		return detached;
 	}
 
 	public SimpleBooleanProperty getVisibilityProperty() {

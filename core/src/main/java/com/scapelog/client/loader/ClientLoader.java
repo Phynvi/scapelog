@@ -92,23 +92,27 @@ public final class ClientLoader {
 		print("Loading config...");
 		JavConfig config = new JavConfig(this, world, language);
 		if (!config.load()) {
-			print("Failed to load client config, please try again.");
+			print("-> Failed to load client config, please try again.");
+			printDiagnosticsInstructions();
 			return null;
 		}
 		String gamePack = config.getConfig(JavConfig.GAMEPACK_NAME);
 		String appletClass = config.getConfig(JavConfig.MAIN_CLASS);
 		String codebase = config.getConfig(JavConfig.CODE_BASE);
-		print("- Loaded");
+		print("-> Loaded");
 
 		print("Downloading client...");
 		Path jar;
 		try {
-			jar = WebUtils.download(codebase, gamePack, outputPath, gamePack.replace("/", ""));
+			jar = WebUtils.download(codebase, gamePack, outputPath, cleanGamepackName(gamePack));
 		} catch (Exception e) {
-			print("Failed to download the client, please try again.");
+			print("-> Failed to download the client");
+			print(e.toString());
+			printDiagnosticsInstructions();
+			e.printStackTrace();
 			return null;
 		}
-		print("- Downloaded");
+		print("-> Downloaded");
 
 		GamePackArchives gamePackArchives = getGamePackArchive(jar, config);
 		JarArchive archive = gamePackArchives.getGamepackArchive();
@@ -117,14 +121,17 @@ public final class ClientLoader {
 			try {
 				archive = analyse(jar, config, gamePackArchives);
 			} catch (CryptographyException | IOException e) {
-				print("Failed to analyse the client, retrying after redownloading.");
+				print("-> Failed to analyse the client, retrying after redownloading.");
+				print(e.toString());
+				printDiagnosticsInstructions();
 				jar = WebUtils.download(codebase, gamePack, outputPath, gamePack.replace("/", ""));
 				archive = analyse(jar, config, gamePackArchives);
 			}
-			print("- Analysed");
+			print("-> Analysed");
 
 			if (archive == null) {
-				print("Something went wrong with the client archive, please restart or report on forums.");
+				print("-> Something unexpected and serious happened while loading the client");
+				printDiagnosticsInstructions();
 				return null;
 			}
 		}
@@ -137,6 +144,13 @@ public final class ClientLoader {
 		applet.setStub(new ClientAppletStub(config, new URL(codebase)));
 
 		return applet;
+	}
+
+	private void printDiagnosticsInstructions() {
+		print("");
+		print("Please use the key shortcut CTRL+SHIFT+INSERT to copy the error diagnostics to your clipboard");
+		print("and then deliver the message to the developers");
+		print("Meanwhile you can restart ScapeLog to see if the problem is persistent");
 	}
 
 	private GamePackArchives getGamePackArchive(Path file, JavConfig config) throws Exception {
@@ -227,6 +241,10 @@ public final class ClientLoader {
 			}
 		}
 		return "n/a";
+	}
+
+	private String cleanGamepackName(String name) {
+		return name.replaceAll("[^A-Za-z0-9\\.]", "");
 	}
 
 }
