@@ -3,11 +3,14 @@ package com.scapelog.client.ui.component;
 import com.scapelog.api.util.Components;
 import com.scapelog.client.ui.ScapeFrame;
 import com.scapelog.client.ui.StyleConstants;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.stage.Stage;
 
 import java.awt.Point;
 import java.security.AccessController;
@@ -20,45 +23,66 @@ public final class TitleBar extends HBox {
 	private double toolbarOffsetX = 0;
 	private double toolbarOffsetY = 0;
 
-	private final Label logo, beta;
+	private final Label logo;
+	private final Label beta = new Label("");
 	private final WindowControls windowControls;
 	private final Region spacer = Components.createSpacer();
+	private final ScrollPane contentScroll;
 
 	private final HBox content;
 	private final HBox staticContent;
 
-	private boolean isMovingWindow;
+	private final SimpleBooleanProperty draggabilityProperty = new SimpleBooleanProperty(false);
 
-	public TitleBar(ScapeFrame frame) {
+	private boolean isMovingWindow = false;
+
+	private TitleBar(int height, String title, WindowControls windowControls) {
 		this.content = new HBox();
 		this.staticContent = new HBox();
-		setId("title-bar");
-		setMinHeight(StyleConstants.TITLEBAR_DIMENSIONS.height);
+		this.windowControls = windowControls;
 
-		logo = new Label(frame.getTitle());
+		setId("title-bar");
+		setMinHeight(height);
+		setMaxHeight(height);
+
+		logo = new Label(title);
 		logo.setId("logo");
 		logo.setMinWidth(67);
 		logo.setPrefWidth(67);
 
-		beta = new Label("Beta");
-		beta.setId("beta");
-		beta.setMinWidth(40);
-		beta.setPrefWidth(40);
-
-		windowControls = new WindowControls(frame);
-
-		ScrollPane contentScroll = new ScrollPane(content);
+		contentScroll = new ScrollPane(content);
 		contentScroll.setPadding(new Insets(0, 0, 0, 0));
 		contentScroll.setPannable(true);
 		contentScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 		contentScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
-		getChildren().addAll(logo, beta, spacer, contentScroll, staticContent, windowControls);
-
 		logo.impl_processCSS(true);
-		beta.impl_processCSS(true);
 		spacer.impl_processCSS(true);
 		contentScroll.impl_processCSS(true);
+
+		getChildren().addAll(logo, spacer, contentScroll, staticContent, windowControls);
+	}
+
+	public TitleBar(Stage stage) {
+		this(StyleConstants.TITLEBAR_DIMENSIONS.height, stage.getTitle(), new WindowControls(stage));
+		stage.titleProperty().bindBidirectional(logo.textProperty());
+
+		setStyle("-fx-border-width: 1 1 0 1;");
+
+		// todo: resize listener?
+
+		setDraggable(stage);
+	}
+
+	public TitleBar(ScapeFrame frame) {
+		this(StyleConstants.TITLEBAR_DIMENSIONS.height, frame.getTitle(), new WindowControls(frame));
+
+		beta.setText("Beta");
+		beta.setId("beta");
+		beta.setMinWidth(40);
+		beta.setPrefWidth(40);
+		beta.impl_processCSS(true);
+		getChildren().add(1, beta);
 
 		frame.addResizeListener((observable, oldValue, newValue) -> {
 			int frameWidth = newValue.width;
@@ -112,6 +136,40 @@ public final class TitleBar extends HBox {
 
 	public HBox getStaticContent() {
 		return staticContent;
+	}
+
+	public boolean isDraggable() {
+		return draggabilityProperty.get();
+	}
+
+	public void setDraggable(boolean draggable) {
+		draggabilityProperty.set(draggable);
+	}
+
+	public SimpleBooleanProperty draggabilityProperty() {
+		return draggabilityProperty;
+	}
+
+	private void setDraggable(Stage stage) {
+		class Delta {
+			double x, y;
+		}
+		final Delta delta = new Delta();
+
+		addEventFilter(MouseEvent.MOUSE_PRESSED, e -> {
+			if (e.isPrimaryButtonDown() && isDraggable()) {
+				isMovingWindow = true;
+			}
+			delta.x = stage.getX() - e.getScreenX();
+			delta.y = stage.getY() - e.getScreenY();
+		});
+		addEventFilter(MouseEvent.MOUSE_RELEASED, e -> isMovingWindow = false);
+		addEventFilter(MouseEvent.MOUSE_DRAGGED, e -> {
+			if (isMovingWindow && isDraggable()) {
+				stage.setX(e.getScreenX() + delta.x);
+				stage.setY(e.getScreenY() + delta.y);
+			}
+		});
 	}
 
 }

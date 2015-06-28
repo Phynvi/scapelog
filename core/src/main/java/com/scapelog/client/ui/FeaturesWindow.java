@@ -31,6 +31,7 @@ import javafx.scene.layout.StackPane;
 import java.lang.reflect.Field;
 
 public final class FeaturesWindow {
+	private final String TITLE = "Features";
 
 	private final PopUp popup;
 	private final ToggleButton trigger;
@@ -38,7 +39,7 @@ public final class FeaturesWindow {
 	public FeaturesWindow(ToggleButton trigger, ScapeFrame frame) {
 		this.trigger = trigger;
 		this.popup = new PopUp(500, 400);
-		this.popup.setTitle("ScapeLog - features");
+		this.popup.setTitle(TITLE);
 		this.popup.addFrameEvents(frame, trigger);
 	}
 
@@ -85,14 +86,19 @@ public final class FeaturesWindow {
 						controlButtonsPane.setPrefWidth(30);
 						controlButtonsPane.getChildren().clear();
 
-						Button iconButton = Components.createIconButton(AwesomeIcon.THUMB_TACK, "20.0");
+						final Button iconButton = Components.createIconButton(AwesomeIcon.THUMB_TACK, "15.0");
 						iconButton.setTooltip(new Tooltip("Detach"));
 						iconButton.setStyle("-fx-rotate: 135;");
 						controlButtonsPane.getChildren().add(iconButton);
-						iconButton.setLayoutX(15);
+						iconButton.setLayoutX(10);
 						iconButton.setLayoutY(15);
-
 						iconButton.setOnAction(e -> popup.toggleDetach());
+
+						popup.detachedProperty().addListener((observable1, oldVal, newVal) -> {
+							Tooltip tooltip = iconButton.getTooltip();
+							tooltip.setText(newVal ? "Attach" : "Detach");
+							iconButton.setStyle("-fx-rotate: " + (newVal ? "90" : "135"));
+						});
 					} catch (NoSuchFieldException | IllegalAccessException e) {
 						System.err.println("Failed to create detach button");
 					}
@@ -133,12 +139,12 @@ public final class FeaturesWindow {
 		pane.setPrefSize(500, 400);
 		// todo:
 		popup.setContent(pane);
-		//popOver.setDragNode(tabs);
 	}
 
 	public void toggle() {
 		if (popup.isShowing()) {
 			popup.hide();
+			popup.setDetached(false);
 			return;
 		}
 		popup.show(trigger, 0);

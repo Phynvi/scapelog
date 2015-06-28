@@ -127,8 +127,8 @@ public final class DashboardTab extends IconTab {
 	}
 
 	private void update(int tick) {
-		// updateRates online player count every 60 seconds
-		if (tick == 0 || tick % 60 == 0) {
+		// updateRates online player count every 2 minutes
+		if (tick == 0 || tick % 120 == 0) {
 			updateOnlineUsers();
 		}
 		updatePlaytime();

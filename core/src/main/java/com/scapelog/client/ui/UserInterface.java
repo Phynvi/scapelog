@@ -1,7 +1,9 @@
 package com.scapelog.client.ui;
 
+import com.google.common.collect.Maps;
 import com.scapelog.api.plugin.OpenTechnique;
 import com.scapelog.api.plugin.Plugin;
+import com.scapelog.api.ui.TimedNotification;
 import com.scapelog.api.ui.tab.BaseTab;
 import com.scapelog.client.config.ClientConfigKeys;
 import com.scapelog.client.config.Config;
@@ -14,6 +16,7 @@ import com.scapelog.client.plugins.PluginLoader;
 import com.scapelog.client.ui.component.AppletPanel;
 import com.scapelog.client.ui.component.TitleBar;
 import com.scapelog.client.ui.util.Fonts;
+import com.scapelog.client.util.DiagnosticsLogger;
 import com.sun.javafx.application.PlatformImpl;
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
@@ -23,10 +26,17 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.DataFormat;
 import javafx.scene.layout.HBox;
 
 import java.applet.Applet;
+import java.awt.AWTEvent;
 import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public final class UserInterface {
 	public static final String SECTION_NAME = "ui";
@@ -59,8 +69,10 @@ public final class UserInterface {
 				}
 			};
 
-			Scene scene = frame.getScene();
+			final Scene scene = frame.getScene();
 			Fonts.addDefaults(scene);
+
+			setupOutputCopying();
 
 			scene.widthProperty().addListener((observable, oldValue, newValue) -> {
 				double newWidth = (double) newValue;
@@ -173,6 +185,29 @@ public final class UserInterface {
 		});
 		content.getChildren().addAll(buttonBox);
 		staticContent.getChildren().addAll(featuresButton);
+	}
+
+	private void setupOutputCopying() {
+		Toolkit.getDefaultToolkit().addAWTEventListener(e -> {
+			if (e.getID() != KeyEvent.KEY_PRESSED) {
+				KeyEvent keyEvent = (KeyEvent) e;
+
+				if (keyEvent.isShiftDown() && keyEvent.isControlDown() && keyEvent.getKeyCode() == KeyEvent.VK_INSERT) {
+					Platform.runLater(() -> {
+						boolean added = false;
+
+						String output = DiagnosticsLogger.getHashedOutput();
+						if (output != null) {
+							Map<DataFormat, Object> content = Maps.newHashMap();
+							content.put(DataFormat.PLAIN_TEXT, output);
+							added = Clipboard.getSystemClipboard().setContent(content);
+						}
+						new TimedNotification(added ? "ScapeLog's diagnostics have been copied to your clipboard!" : "Failed to copy diagnostics to clipboard!")
+								.show(frame.getTitleBar().getContent(), 5, TimeUnit.SECONDS);
+					});
+				}
+			}
+		}, AWTEvent.KEY_EVENT_MASK);
 	}
 
 	public void saveSize() {

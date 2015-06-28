@@ -22,4 +22,4 @@ build
 !.mailmap
 
 scapelog.properties
-tools
+tool_scripts

@@ -15,6 +15,7 @@ import com.scapelog.client.model.WorldList;
 import com.scapelog.client.plugins.PluginLoader;
 import com.scapelog.client.ui.LoginWindow;
 import com.scapelog.client.ui.UserInterface;
+import com.scapelog.client.util.DiagnosticsLogger;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.stage.Stage;
@@ -136,7 +137,7 @@ public final class ScapeLog {
 			}
 		});
 
-		if (!debug)
+//		if (!debug)
 		{
 			loadClient();
 		}
@@ -177,9 +178,10 @@ public final class ScapeLog {
 
 	static {
 		System.setProperty("java.net.preferIPv4Stack", "true");
-		System.setProperty("prism.lcdtext", "false");
-		System.setProperty("sun.java2d.opengl", "true");
 		System.setProperty("awt.useSystemAAFontSettings", "on");
+
+		System.setErr(new DiagnosticsLogger(System.err));
+		System.setOut(new DiagnosticsLogger(System.out));
 
 		String osName = System.getProperty("os.name", "generic").toLowerCase();
 		if (osName.startsWith("mac") || osName.startsWith("darwin")) {
