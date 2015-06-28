@@ -58,6 +58,11 @@ public final class NewsTab extends IconTab {
 				" - Popup menu can now be detached and dragged by the tabs area",
 				" - Attemps to improve 2D performance"
 		});
+		insertNews(textArea, new String[] {
+				"Updates #4 - 28 June 2015",
+				" - Added a way to copy problem diagnostics to clipboard (CTRL+SHIFT+INSERT to trigger)",
+				" - Detached popup windows now show their \"detachness\" more clearly"
+		});
 	}
 
 	private void insertNews(TextArea textArea, String[] lines) {

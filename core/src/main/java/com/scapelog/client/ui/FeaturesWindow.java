@@ -72,7 +72,6 @@ public final class FeaturesWindow {
 						continue;
 					}
 					StackPane stackPane = (StackPane) child;
-					popup.setDraggable(stackPane);
 					try {
 						Field controlButtons = stackPane.getClass().getDeclaredField("controlButtons");
 						boolean accessible = controlButtons.isAccessible();
