@@ -10,7 +10,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import javafx.stage.Stage;
+import javafx.stage.Popup;
 
 import java.awt.Point;
 import java.security.AccessController;
@@ -63,15 +63,15 @@ public final class TitleBar extends HBox {
 		getChildren().addAll(logo, spacer, contentScroll, staticContent, windowControls);
 	}
 
-	public TitleBar(Stage stage) {
-		this(StyleConstants.TITLEBAR_DIMENSIONS.height, stage.getTitle(), new WindowControls(stage));
-		stage.titleProperty().bindBidirectional(logo.textProperty());
+	public TitleBar(PopupWindow popup) {
+		this(StyleConstants.TITLEBAR_DIMENSIONS.height, popup.getTitleProperty().get(), new WindowControls(popup.getPopup()));
+		popup.getTitleProperty().bindBidirectional(logo.textProperty());
 
 		setStyle("-fx-border-width: 1 1 0 1;");
 
 		// todo: resize listener?
 
-		setDraggable(stage);
+		setDraggable(popup.getPopup());
 	}
 
 	public TitleBar(ScapeFrame frame) {
@@ -150,7 +150,7 @@ public final class TitleBar extends HBox {
 		return draggabilityProperty;
 	}
 
-	private void setDraggable(Stage stage) {
+	private void setDraggable(Popup popup) {
 		class Delta {
 			double x, y;
 		}
@@ -160,14 +160,14 @@ public final class TitleBar extends HBox {
 			if (e.isPrimaryButtonDown() && isDraggable()) {
 				isMovingWindow = true;
 			}
-			delta.x = stage.getX() - e.getScreenX();
-			delta.y = stage.getY() - e.getScreenY();
+			delta.x = popup.getX() - e.getScreenX();
+			delta.y = popup.getY() - e.getScreenY();
 		});
 		addEventFilter(MouseEvent.MOUSE_RELEASED, e -> isMovingWindow = false);
 		addEventFilter(MouseEvent.MOUSE_DRAGGED, e -> {
 			if (isMovingWindow && isDraggable()) {
-				stage.setX(e.getScreenX() + delta.x);
-				stage.setY(e.getScreenY() + delta.y);
+				popup.setX(e.getScreenX() + delta.x);
+				popup.setY(e.getScreenY() + delta.y);
 			}
 		});
 	}

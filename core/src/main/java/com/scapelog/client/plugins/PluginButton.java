@@ -3,7 +3,7 @@ package com.scapelog.client.plugins;
 import com.scapelog.api.plugin.OpenTechnique;
 import com.scapelog.api.plugin.Plugin;
 import com.scapelog.client.ui.ScapeFrame;
-import com.scapelog.client.ui.component.PopUp;
+import com.scapelog.client.ui.component.PopupWindow;
 import com.scapelog.client.ui.component.TitleBar;
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
@@ -54,7 +54,7 @@ public final class PluginButton extends BorderPane {
 				}
 				break;
 			case DRAWER:
-				PopUp popOver = new PopUp(content, 300, 300);
+				PopupWindow popOver = new PopupWindow(content, 300, 300);
 				popOver.addFrameEvents(scapeFrame, button);
 
 				button.setOnAction(e -> {
