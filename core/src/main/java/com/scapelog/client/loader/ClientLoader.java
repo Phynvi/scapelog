@@ -64,7 +64,7 @@ public final class ClientLoader {
 		ImmutableList.Builder<Analyser> analyserBuilder = new ImmutableList.Builder<>();
 		ImmutableList.Builder<ReflectionAnalyser> reflectionBuilder = new ImmutableList.Builder<>();
 		analyserBuilder.add(
-				// keep these three analysers first
+				// keep these analysers first
 				new MultiplierAnalyser(),
 				new ClassLoaderAnalyser(),
 				new StringFieldAnalyser(),
@@ -72,9 +72,10 @@ public final class ClientLoader {
 
 				new SkillAnalyser(),
 				new IdleResetAnalyser(),
-				new VariableAnalyser(), // temp
-				new GameMessageAnalyser()/*,
-				new VariableAnalyser()*/
+				new VariableAnalyser(),
+				new GameMessageAnalyser()
+//				new CameraZoomAnalyser()
+//				new VariableAnalyser()
 		);
 		reflectionBuilder.add(
 				new WorldTypeAnalyser(),

@@ -2,16 +2,10 @@ package com.scapelog.agent;
 
 import com.google.common.collect.Maps;
 import com.scapelog.agent.util.ClassNodeUtils;
-import com.scapelog.agent.util.tree.MethodInfo;
-import com.scapelog.client.ClientFeatures;
-import com.scapelog.client.loader.analyser.ClassInjection;
-import com.scapelog.client.util.Debug;
+import com.scapelog.client.loader.analyser.injection.Injection;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.InsnList;
-import org.objectweb.asm.tree.MethodNode;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
@@ -20,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public final class RSClassTransformer implements ClassFileTransformer {
-	private static Map<String, List<ClassInjection>> injections = Maps.newHashMap();
+	private static Map<String, List<Injection>> injections = Maps.newHashMap();
 
 	@Override
 	public byte[] transform(ClassLoader loader, String fullyQualifiedClassName, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
@@ -36,31 +30,12 @@ public final class RSClassTransformer implements ClassFileTransformer {
 			boolean transformed = false;
 			try {
 				if (injections != null && !injections.isEmpty()) {
-					List<ClassInjection> classInjections = injections.get(classNode.name);
-					if (classInjections == null) {
+					List<Injection> injections = RSClassTransformer.injections.get(classNode.name);
+					if (injections == null) {
 						return classfileBuffer;
 					}
-					for (ClassInjection injection : classInjections) {
-						InsnList instructions = injection.getInstructions();
-						MethodNode method = getMethod(classNode, injection.getMethodInfo());
-						if (method == null) {
-							continue;
-						}
-						int index = injection.getIndex();
-						if (index == -2) {
-							method.instructions.insert(instructions);
-						} else {
-							AbstractInsnNode indexNode = method.instructions.get(index);
-							if (indexNode == null) {
-								Debug.println("no index found!!");
-								continue;
-							}
-							method.instructions.insert(indexNode, instructions);
-							if (injection.getFeatures() != null) {
-								injection.getFeatures().forEach(ClientFeatures::enable);
-							}
-						}
-						transformed = true;
+					for (Injection injection : injections) {
+						transformed = injection.execute(classNode);
 					}
 				}
 			} catch (Exception e) {
@@ -84,16 +59,7 @@ public final class RSClassTransformer implements ClassFileTransformer {
 		return classfileBuffer;
 	}
 
-	private MethodNode getMethod(ClassNode classNode, MethodInfo methodInfo) {
-		for (MethodNode methodNode : classNode.methods) {
-			if (methodNode.name.equals(methodInfo.getName()) && methodNode.desc.equals(methodInfo.getDescription())) {
-				return methodNode;
-			}
-		}
-		return null;
-	}
-
-	public static void addInjections(Map<String, List<ClassInjection>> injections) {
+	public static void addInjections(Map<String, List<Injection>> injections) {
 		RSClassTransformer.injections.putAll(injections);
 	}
 }
