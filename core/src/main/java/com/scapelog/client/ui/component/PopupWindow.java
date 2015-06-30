@@ -1,13 +1,13 @@
 package com.scapelog.client.ui.component;
 
 import com.scapelog.client.ui.ScapeFrame;
-import com.scapelog.client.ui.util.CSS;
 import com.sun.javafx.tk.Toolkit;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.WeakInvalidationListener;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.WeakChangeListener;
 import javafx.collections.ObservableList;
@@ -15,17 +15,14 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Modality;
+import javafx.stage.Popup;
 import javafx.stage.Screen;
-import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.stage.Window;
 
-public class PopUp {
+public class PopupWindow {
 	enum Direction {
 		NORTH_WEST,
 		NORTH_EAST,
@@ -62,7 +59,7 @@ public class PopUp {
 
 	}
 
-	private final Stage stage;
+	private Popup popup;
 	private final BorderPane parent;
 
 	private Window ownerWindow;
@@ -88,8 +85,9 @@ public class PopUp {
 	private final WeakChangeListener<Number> weakXListener = new WeakChangeListener<>(xListener);
 	private final WeakChangeListener<Number> weakYListener = new WeakChangeListener<>(yListener);
 
-	private static SimpleObjectProperty<PopUp> openPopOver = new SimpleObjectProperty<>();
+	private static SimpleObjectProperty<PopupWindow> openPopOver = new SimpleObjectProperty<>();
 	private final SimpleBooleanProperty visiblityProperty = new SimpleBooleanProperty(false);
+	private final SimpleStringProperty titleProperty = new SimpleStringProperty("");
 
 	static {
 		openPopOver.addListener((observable, oldValue, newValue) -> {
@@ -100,10 +98,8 @@ public class PopUp {
 		});
 	}
 
-	public PopUp(Node content, int initialWidth, int initialHeight) {
-		this.stage = new Stage(StageStyle.UNDECORATED);
-		this.stage.initModality(Modality.WINDOW_MODAL);
-		this.stage.setAlwaysOnTop(true);
+	public PopupWindow(Node content, int initialWidth, int initialHeight) {
+		this.popup = new Popup();
 
 		this.initialWidth = initialWidth;
 		this.initialHeight = initialHeight;
@@ -111,27 +107,27 @@ public class PopUp {
 		parent = new BorderPane();
 		parent.getStyleClass().addAll("popup", "frame");
 		parent.setCenter(content);
-		Scene scene = new Scene(parent);
 
-		TitleBar titleBar = new TitleBar(stage);
+		TitleBar titleBar = new TitleBar(this);
 
 		titleBar.draggabilityProperty().bind(detached);
 		detached.addListener((observable, wasDetached, isDetached) -> {
 			parent.setTop(isDetached ? titleBar : null);
 		});
 
-		this.stage.setScene(scene);
-		this.stage.setOnHiding(e -> close());
+		popup.setOnCloseRequest(e -> hide());
 
-		CSS.addStylesheets(PopUp.class, scene.getStylesheets(), "/css/popover.css");
-		CSS.addDefaultStyles(scene.getStylesheets());
+		popup.getContent().add(parent);
+
+		//CSS.addStylesheets(PopUp.class, popup.getStylesheets(), "/css/popover.css");
+		//CSS.addDefaultStyles(scene.getStylesheets());
 	}
 
-	public PopUp(int initialWidth, int initialHeight) {
+	public PopupWindow(int initialWidth, int initialHeight) {
 		this(new Label("no content"), initialWidth, initialHeight);
 	}
 
-	public PopUp() {
+	public PopupWindow() {
 		this(100, 25);
 	}
 
@@ -140,7 +136,7 @@ public class PopUp {
 	}
 
 	public void show(Node owner, int offset) {
-		if (stage.isShowing()) {
+		if (popup.isShowing()) {
 			return;
 		}
 		Bounds bounds = owner.localToScreen(owner.getBoundsInLocal());
@@ -151,7 +147,7 @@ public class PopUp {
 	}
 
 	private void show(Node owner, double x, double y) {
-		if (owner == null || stage.isShowing()) {
+		if (owner == null || popup.isShowing()) {
 			return;
 		}
 
@@ -173,13 +169,15 @@ public class PopUp {
 
 		setDetached(false);
 
-		stage.setAlwaysOnTop(true);
-		stage.setIconified(false);
-		stage.show();
+		popup.show(owner, x, y);
 		setX(x);
 		setY(y);
 
 		lastOwner = owner;
+	}
+
+	public void setTitle(String title) {
+		titleProperty.set(title);
 	}
 
 	private Point2D getRelativePoint(Node owner, int offset) {
@@ -239,18 +237,9 @@ public class PopUp {
 		return new Point2D(x, y);
 	}
 
-	public void setTitle(String title) {
-		stage.setTitle(title);
-	}
-
 	public void hide() {
 		visiblityProperty.set(false);
-		stage.hide();
-	}
-
-	public void close() {
-		visiblityProperty.set(false);
-		stage.close();
+		popup.hide();
 	}
 
 	public void setContent(Node content) {
@@ -262,27 +251,28 @@ public class PopUp {
 	}
 
 	private void setX(double x) {
-		stage.setX(x);
+		popup.setX(x);
 	}
 
 	private void setY(double y) {
-		stage.setY(y);
+		popup.setY(y);
 	}
 
 	private double getX() {
-		return stage.getX();
+		return popup.getX();
 	}
 
 	private double getY() {
-		return stage.getY();
+		return popup.getY();
+	}
+
+	public Popup getPopup() {
+		return popup;
 	}
 
 	public void reposition() {
 		if (isDetached()) {
 			return;
-		}
-		if (stage.isIconified()) {
-			stage.toFront();
 		}
 		Point2D point = getRelativePoint(lastOwner, lastOffset);
 		setX(point.getX());
@@ -319,6 +309,10 @@ public class PopUp {
 
 	public SimpleBooleanProperty getVisibilityProperty() {
 		return visiblityProperty;
+	}
+
+	public SimpleStringProperty getTitleProperty() {
+		return titleProperty;
 	}
 
 	private void setShowing(boolean value) {
@@ -365,14 +359,14 @@ public class PopUp {
 			if (e.isPrimaryButtonDown()) {
 				isMovingWindow = true;
 			}
-			delta.x = stage.getX() - e.getScreenX();
-			delta.y = stage.getY() - e.getScreenY();
+			delta.x = getX() - e.getScreenX();
+			delta.y = getY() - e.getScreenY();
 		});
 		node.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> isMovingWindow = false);
 		node.addEventFilter(MouseEvent.MOUSE_DRAGGED, e -> {
 			if (isMovingWindow && isDetached()) {
-				stage.setX(e.getScreenX() + delta.x);
-				stage.setY(e.getScreenY() + delta.y);
+				setX(e.getScreenX() + delta.x);
+				setY(e.getScreenY() + delta.y);
 			}
 		});
 	}

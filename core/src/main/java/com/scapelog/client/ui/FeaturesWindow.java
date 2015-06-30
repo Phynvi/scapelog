@@ -8,7 +8,7 @@ import com.scapelog.client.event.ClientEventListener;
 import com.scapelog.client.event.impl.PluginStartEvent;
 import com.scapelog.client.model.UserGroup;
 import com.scapelog.client.plugins.PluginLoader;
-import com.scapelog.client.ui.component.PopUp;
+import com.scapelog.client.ui.component.PopupWindow;
 import com.scapelog.client.ui.component.tab.DashboardTab;
 import com.scapelog.client.ui.component.tab.DeveloperTab;
 import com.scapelog.client.ui.component.tab.NewsTab;
@@ -33,12 +33,12 @@ import java.lang.reflect.Field;
 public final class FeaturesWindow {
 	private final String TITLE = "Features";
 
-	private final PopUp popup;
+	private final PopupWindow popup;
 	private final ToggleButton trigger;
 
 	public FeaturesWindow(ToggleButton trigger, ScapeFrame frame) {
 		this.trigger = trigger;
-		this.popup = new PopUp(500, 400);
+		this.popup = new PopupWindow(500, 400);
 		this.popup.setTitle(TITLE);
 		this.popup.addFrameEvents(frame, trigger);
 	}

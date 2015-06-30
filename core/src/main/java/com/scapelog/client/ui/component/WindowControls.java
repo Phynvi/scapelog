@@ -10,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 import javax.swing.WindowConstants;
@@ -30,7 +31,6 @@ public final class WindowControls extends HBox {
 		minimizeButton.setId("minimize");
 		Components.setWebFont(minimizeButton, "Nunito");
 		HBox.setMargin(minimizeButton, new Insets(0, 0, 0, 0));
-		getChildren().add(minimizeButton);
 
 		maximizeButton.setId("maximize");
 		HBox.setMargin(maximizeButton, new Insets(0, 0, 0, 0));
@@ -63,9 +63,15 @@ public final class WindowControls extends HBox {
 			}
 		});
 
+		getChildren().add(0, minimizeButton);
 		if (frame.isResizable() && Toolkit.getDefaultToolkit().isFrameStateSupported(Frame.MAXIMIZED_BOTH)) {
 			getChildren().add(1, maximizeButton);
 		}
+	}
+
+	public WindowControls(Popup popup) {
+		this();
+		closeButton.setOnAction((e) -> popup.hide());
 	}
 
 	public WindowControls(Stage stage) {
@@ -74,7 +80,6 @@ public final class WindowControls extends HBox {
 		maximizeButton.setOnAction((e) -> stage.setMaximized(!stage.isMaximized()));
 		closeButton.setOnAction((e) -> stage.close());
 	}
-
 	public void sizeChanged(boolean maximized) {
 		Platform.runLater(() -> {
 			Label label = AwesomeDude.createIconLabel(maximized ? AwesomeIcon.COMPRESS : AwesomeIcon.EXPAND);

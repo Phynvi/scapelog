@@ -5,7 +5,7 @@ import com.scapelog.agent.util.tree.MethodInfo;
 import com.scapelog.api.ClientFeature;
 import com.scapelog.client.loader.analyser.Analyser;
 import com.scapelog.client.loader.analyser.AnalysingOperation;
-import com.scapelog.client.loader.analyser.ClassInjection;
+import com.scapelog.client.loader.analyser.injection.ClassInjection;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.MethodNode;

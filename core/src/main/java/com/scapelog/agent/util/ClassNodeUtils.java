@@ -1,9 +1,11 @@
 package com.scapelog.agent.util;
 
+import com.scapelog.agent.util.tree.MethodInfo;
 import com.scapelog.client.ScapeLog;
 import com.scapelog.client.util.Debug;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
 
@@ -87,6 +89,10 @@ public final class ClassNodeUtils {
 		return null;
 	}
 
+	public static MethodNode getMethod(ClassNode classNode, MethodInfo methodInfo) {
+		return getMethod(classNode, methodInfo.getName(), methodInfo.getDescription());
+	}
+
 	public static FieldNode getField(ClassNode node, String name, String desc) {
 		for (FieldNode fieldNode : node.fields) {
 			if (fieldNode.name.equals(name) && fieldNode.desc.equals(desc)) {
@@ -106,6 +112,10 @@ public final class ClassNodeUtils {
 			}
 		}
 		return null;
+	}
+
+	public static boolean fieldInsnNodeEquals(FieldInsnNode node1, FieldInsnNode node2) {
+		return node1.owner.equals(node2.owner) && node1.name.equals(node2.name) && node1.desc.equals(node2.desc);
 	}
 
 }

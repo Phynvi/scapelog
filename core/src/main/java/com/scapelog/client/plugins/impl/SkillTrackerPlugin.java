@@ -12,7 +12,6 @@ import com.scapelog.api.plugin.TabPlugin;
 import com.scapelog.api.util.Components;
 import com.scapelog.api.util.SettingsUtils;
 import com.scapelog.api.util.Utilities;
-import com.scapelog.client.ui.component.PopupFrame;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -173,13 +172,6 @@ public final class SkillTrackerPlugin extends TabPlugin {
 				});
 			}
 		});
-
-		PopupFrame popup = new PopupFrame("Title", 500, 400, true);
-
-		HBox content = new HBox(new Label("current skill content"));
-		content.setStyle("-fx-padding: 10");
-		content.setMinWidth(300);
-		popup.setContent(content);
 
 		pane.setOnMousePressed((e) -> {
 /*			// open popover
