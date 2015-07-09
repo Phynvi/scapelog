@@ -17,7 +17,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -81,7 +80,7 @@ public final class TimerPlugin extends Plugin {
 	@Override
 	public Region getContent() {
 		VBox content = new VBox(5);
-		content.setPadding(new Insets(10, 10, 10, 10));
+		Components.setPadding(content, 10);
 
 		VBox timerBox = new VBox(10, getTimerNode());
 
@@ -181,7 +180,7 @@ public final class TimerPlugin extends Plugin {
 		buttonIconPropertyProperty().set(icon);
 
 		BorderPane pane = new BorderPane();
-		pane.setPadding(new Insets(0));
+		Components.setPadding(pane, 0);
 
 		Label timerLabel = new Label();
 		timerLabel.setId("idle-label");
@@ -251,7 +250,7 @@ public final class TimerPlugin extends Plugin {
 	@Override
 	public Region getSettingsContent() {
 		VBox content = new VBox(10);
-		content.setPadding(new Insets(10, 10, 10, 10));
+		Components.setPadding(content, 10);
 
 		content.getChildren().addAll(SettingsUtils.createShowButtonSetting(getSectionName(), this));
 		return content;

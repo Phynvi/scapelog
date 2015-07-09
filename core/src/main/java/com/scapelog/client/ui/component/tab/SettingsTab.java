@@ -5,12 +5,14 @@ import com.scapelog.api.util.Components;
 import com.scapelog.api.util.SettingsUtils;
 import com.scapelog.client.config.ClientConfigKeys;
 import com.scapelog.client.config.Config;
+import com.scapelog.client.event.ClientEventDispatcher;
+import com.scapelog.client.event.impl.ClientResizeEvent;
 import com.scapelog.client.model.Language;
+import com.scapelog.client.model.WindowSizes;
 import com.scapelog.client.ui.UserInterface;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Region;
@@ -27,7 +29,7 @@ public final class SettingsTab extends IconTab {
 	@Override
 	public Node getTabContent() {
 		VBox content = new VBox(10);
-		content.setPadding(new Insets(10, 10, 10, 10));
+		Components.setPadding(content, 10);
 
 		ObservableList<Region> nodes = FXCollections.observableArrayList(
 				Components.createHeader("ScapeLog settings", "Settings for the ScapeLog client"),
@@ -39,6 +41,22 @@ public final class SettingsTab extends IconTab {
 					}
 					Config.setInt(ClientConfigKeys.SECTION_NAME, ClientConfigKeys.BORDER_RADIUS, borderRadius);
 				}),
+				SettingsUtils.createComboBoxSetting("Window size preset",
+						WindowSizes.getPresets(),
+						Optional.of((double) 175),
+						WindowSizes.EMPTY_PRESET,
+						(box, item) -> {
+							if (item == null || !item.validSize()) {
+								return;
+							}
+							if (item.getName() != null && item.getName().equals(WindowSizes.MANAGE_PRESETS)) {
+								WindowSizes.managePresets();
+							} else {
+								ClientEventDispatcher.fireEvent(new ClientResizeEvent(item.getWidth(), item.getHeight()));
+							}
+							box.getSelectionModel().selectFirst();
+						}
+				),
 
 				Components.createSpacer(),
 				Components.createHeader("RuneScape settings", "Settings for the RuneScape client"),
@@ -48,7 +66,7 @@ public final class SettingsTab extends IconTab {
 						Language.asList(),
 						Optional.of((double) 175),
 						Language.getSavedLanguage(),
-						Language::saveLanguage
+						(box, item) -> Language.saveLanguage(item)
 				)/*,
 				SettingsUtils.createComboBoxSetting("Default world",
 						WorldList.asList(),

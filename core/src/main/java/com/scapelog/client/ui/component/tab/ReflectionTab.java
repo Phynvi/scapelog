@@ -1,14 +1,13 @@
 package com.scapelog.client.ui.component.tab;
 
+import com.scapelog.api.ClassStore;
 import com.scapelog.api.ui.tab.IconTab;
 import com.scapelog.api.util.Components;
-import com.scapelog.api.ClassStore;
 import com.scapelog.client.reflection.wrappers.Client;
 import com.scapelog.client.reflection.wrappers.Player;
 import com.scapelog.client.util.Debug;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
@@ -27,7 +26,7 @@ public final class ReflectionTab extends IconTab {
 	@Override
 	public Region getTabContent() {
 		VBox content = new VBox(5);
-		content.setPadding(new Insets(10, 10, 10, 10));
+		Components.setPadding(content, 10);
 
 		Label loadedClasses = new Label("Loaded classes: 0");
 		ClassStore.addListener(change -> Platform.runLater(() -> loadedClasses.setText("Loaded classes: " + ClassStore.getClassCount())));

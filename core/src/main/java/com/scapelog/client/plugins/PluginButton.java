@@ -2,12 +2,12 @@ package com.scapelog.client.plugins;
 
 import com.scapelog.api.plugin.OpenTechnique;
 import com.scapelog.api.plugin.Plugin;
+import com.scapelog.api.util.Components;
 import com.scapelog.client.ui.ScapeFrame;
 import com.scapelog.client.ui.component.PopupWindow;
 import com.scapelog.client.ui.component.TitleBar;
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
@@ -20,7 +20,7 @@ public final class PluginButton extends BorderPane {
 	public PluginButton(Plugin plugin, ScapeFrame scapeFrame) {
 		this.scapeFrame = scapeFrame;
 		setId("plugin-button");
-		setPadding(new Insets(0, 6, 0, 6));
+		Components.setPadding(this, 0, 6, 0, 6);
 		setTranslateY(2);
 		setMaxHeight(TitleBar.HEIGHT - 6.0);
 		setPrefHeight(getMaxHeight());
@@ -56,6 +56,7 @@ public final class PluginButton extends BorderPane {
 			case DRAWER:
 				PopupWindow popOver = new PopupWindow(content, 300, 300);
 				popOver.addFrameEvents(scapeFrame, button);
+				popOver.setPrimary(true);
 
 				button.setOnAction(e -> {
 					if (popOver.isShowing()) {

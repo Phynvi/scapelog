@@ -1,29 +1,24 @@
 package com.scapelog.api.util;
 
-import com.google.common.util.concurrent.AtomicDouble;
 import com.scapelog.client.ui.util.Fonts;
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.PointerInfo;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Helper class for creating common UI components in a more inline way
@@ -108,6 +103,14 @@ public final class Components {
 		HBox box = new HBox(spacing, Components.createLabel(title), Components.createSpacer());
 		box.getChildren().addAll(nodes);
 		return box;
+	}
+
+	public static void setPadding(Region component, double padding) {
+		setPadding(component, padding, padding, padding, padding);
+	}
+
+	public static void setPadding(Region component, double top, double right, double bottom, double left) {
+		component.setPadding(new Insets(top, right, bottom, left));
 	}
 
 	public static void setWebFont(Parent node, String name) {

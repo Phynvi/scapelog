@@ -19,7 +19,6 @@ import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -57,7 +56,7 @@ public final class DeveloperTab extends IconTab {
 	@Override
 	public Node getTabContent() {
 		VBox topContent = new VBox(10);
-		topContent.setPadding(new Insets(10, 10, 10, 10));
+		Components.setPadding(topContent, 10);
 
 		textArea = new TextArea();
 		print("---> Plugin test environment\n");
@@ -135,7 +134,7 @@ public final class DeveloperTab extends IconTab {
 
 	private Parent getEventTab() {
 		VBox topContent = new VBox(10);
-		topContent.setPadding(new Insets(10, 10, 10, 10));
+		Components.setPadding(topContent, 10);
 
 		eventList = new ListView<>();
 

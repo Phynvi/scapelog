@@ -2,12 +2,12 @@ package com.scapelog.client.ui.component.tab;
 
 import com.goebl.david.Response;
 import com.goebl.david.Webb;
+import com.scapelog.api.ClientFeature;
+import com.scapelog.api.ui.tab.IconTab;
 import com.scapelog.api.util.Components;
 import com.scapelog.api.util.TimeUtils;
 import com.scapelog.api.util.Utilities;
 import com.scapelog.client.ScapeLog;
-import com.scapelog.api.ClientFeature;
-import com.scapelog.api.ui.tab.IconTab;
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.animation.Animation;
@@ -17,7 +17,6 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -56,7 +55,7 @@ public final class DashboardTab extends IconTab {
 	@Override
 	public Node getTabContent() {
 		VBox content = new VBox(10);
-		content.setPadding(new Insets(10, 10, 10, 10));
+		Components.setPadding(content, 10);
 
 		/* logo */
 		ImageView img = new ImageView(new Image(DashboardTab.class.getResourceAsStream("/img/logo.png")));
@@ -89,7 +88,7 @@ public final class DashboardTab extends IconTab {
 
 		if (ScapeLog.isAgentEnabled()) {
 			VBox featureHeader = Components.createHeader("Feature status", "Current status of the features that ScapeLog hooks into");
-			featureHeader.setPadding(new Insets(10, 0, 0, 0));
+			Components.setPadding(featureHeader, 10, 0, 0, 0);
 
 			VBox featureBox = new VBox(10);
 			featureBox.setId("feature-statuses");

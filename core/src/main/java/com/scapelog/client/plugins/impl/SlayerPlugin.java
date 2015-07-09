@@ -8,6 +8,7 @@ import com.scapelog.api.event.impl.VariableEvent;
 import com.scapelog.api.plugin.OpenTechnique;
 import com.scapelog.api.plugin.Plugin;
 import com.scapelog.api.plugin.TabMode;
+import com.scapelog.api.util.Components;
 import com.scapelog.api.util.SettingsUtils;
 import com.scapelog.client.event.EventDispatcher;
 import com.scapelog.client.reflection.wrappers.Settings;
@@ -15,7 +16,6 @@ import com.scapelog.client.ui.util.WebUtils;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -93,7 +93,7 @@ public final class SlayerPlugin extends Plugin {
 		buttonIconPropertyProperty().set(SlayerPlugin.ICON);
 
 		BorderPane pane = new BorderPane();
-		pane.setPadding(new Insets(0));
+		Components.setPadding(pane, 0);
 
 		Label killsLabel = new Label("N/A");
 		killsLabel.setId("kills-label");
@@ -131,7 +131,7 @@ public final class SlayerPlugin extends Plugin {
 	@Override
 	public Region getSettingsContent() {
 		VBox content = new VBox(10);
-		content.setPadding(new Insets(10, 10, 10, 10));
+		Components.setPadding(content, 10);
 
 		content.getChildren().addAll(SettingsUtils.createShowButtonSetting(getSectionName(), this));
 		ScrollPane scrollPane = new ScrollPane(content);

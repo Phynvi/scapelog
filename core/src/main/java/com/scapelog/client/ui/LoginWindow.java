@@ -13,7 +13,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -74,7 +73,7 @@ public final class LoginWindow extends Application {
 				Components.createSpacer(),
 				new WindowControls(stage)
 		);
-		controlsBox.setPadding(new Insets(5, 0, 0, 0));
+		Components.setPadding(controlsBox, 5, 0, 0, 0);
 
 		/* Logo */
 		ImageView img = new ImageView(new Image(LoginWindow.class.getResourceAsStream("/img/logo.png")));
@@ -85,7 +84,7 @@ public final class LoginWindow extends Application {
 
 		/* Response label */
 		Label responseLabel = new Label("Enter your ScapeLog credentials to continue");
-		responseLabel.setPadding(new Insets(10, 0, 10, 0));
+		Components.setPadding(responseLabel, 10, 0, 10, 0);
 		responseLabel.setMaxWidth(Double.MAX_VALUE);
 		responseLabel.setId("response-label");
 
@@ -135,7 +134,7 @@ public final class LoginWindow extends Application {
 				Components.createSpacer(),
 				otherLinks
 		);
-		linkBox.setPadding(new Insets(3, 10, 0, 10));
+		Components.setPadding(linkBox, 3, 10, 0, 10);
 		linkBox.setMaxWidth(Double.MAX_VALUE);
 
 		int row = 0;

@@ -1,8 +1,8 @@
 package com.scapelog.api.ui;
 
+import com.scapelog.api.util.Components;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -23,14 +23,13 @@ public final class TimedNotification extends Popup {
 		setY(y);
 
 		FlowPane flowPane = new FlowPane(Orientation.HORIZONTAL, 10.0, 10.0);
-		flowPane.setPadding(new Insets(15, 15, 15, 15));
+		Components.setPadding(flowPane, 15);
 
 		Label label = new Label(text);
 		label.setWrapText(true);
 		flowPane.getChildren().addAll(label);
 
 		getContent().add(flowPane);
-
 	}
 
 	public void show(Node node, long duration, TimeUnit timeUnit) {

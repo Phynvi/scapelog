@@ -10,7 +10,9 @@ import com.scapelog.client.config.Config;
 import com.scapelog.client.config.UserInterfaceConfigKeys;
 import com.scapelog.client.event.ClientEventDispatcher;
 import com.scapelog.client.event.ClientEventListener;
+import com.scapelog.client.event.impl.ClientResizeEvent;
 import com.scapelog.client.event.impl.PluginStartEvent;
+import com.scapelog.client.model.WindowSizes;
 import com.scapelog.client.plugins.PluginButton;
 import com.scapelog.client.plugins.PluginLoader;
 import com.scapelog.client.ui.component.AppletPanel;
@@ -30,6 +32,7 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.DataFormat;
 import javafx.scene.layout.HBox;
 
+import javax.swing.SwingUtilities;
 import java.applet.Applet;
 import java.awt.AWTEvent;
 import java.awt.Dimension;
@@ -72,6 +75,7 @@ public final class UserInterface {
 			final Scene scene = frame.getScene();
 			Fonts.addDefaults(scene);
 
+			setupResizeEvents();
 			setupOutputCopying();
 
 			scene.widthProperty().addListener((observable, oldValue, newValue) -> {
@@ -96,6 +100,7 @@ public final class UserInterface {
 			if (frameMaximized) {
 				scapeFrame.toggleMaximize();
 			}
+			WindowSizes.setFrame(scapeFrame);
 		});
 	}
 
@@ -185,6 +190,17 @@ public final class UserInterface {
 		});
 		content.getChildren().addAll(buttonBox);
 		staticContent.getChildren().addAll(featuresButton);
+	}
+
+	private void setupResizeEvents() {
+		ClientEventDispatcher.registerListener(new ClientEventListener<ClientResizeEvent>(ClientResizeEvent.class) {
+			@Override
+			public void eventExecuted(ClientResizeEvent event) {
+				int width = event.getWidth();
+				int height = event.getHeight();
+				SwingUtilities.invokeLater(() -> frame.getFrame().setSize(width, height));
+			}
+		});
 	}
 
 	private void setupOutputCopying() {
