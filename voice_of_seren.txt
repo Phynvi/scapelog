@@ -1,0 +1,11 @@
+id: 4783
+values:
+- 82818: trahaearn/hefin
+  & 0xFF: 130
+  >> 8: 323
+- 82947: crwys/ithell
+  & 0xFF: 3
+  >> 8: 324
+- 99077: amlodd/meilyr
+  & 0xFF: 5
+  >> 8: 387
