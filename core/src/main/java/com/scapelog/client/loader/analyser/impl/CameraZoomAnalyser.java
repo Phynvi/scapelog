@@ -47,12 +47,9 @@ public final class CameraZoomAnalyser extends Analyser {
 					if (!valid) {
 						continue;
 					}
-					System.out.println("camera_zoom: " + classNode.name + "." + methodNode.name);
 					searcher.resetIndex();
 					maxZoomField = (FieldInsnNode) searcher.next(Opcodes.GETSTATIC);
 					minZoomField = (FieldInsnNode) searcher.next(Opcodes.GETSTATIC);
-					System.out.println("\tmax_zoom: " + maxZoomField.owner + "." + maxZoomField.name + ":" + maxZoomField.desc);
-					System.out.println("\tmin_zoom: " + minZoomField.owner + "." + minZoomField.name + ":" + minZoomField.desc);
 				} catch (Exception e) {
 					/**/
 				}
@@ -80,7 +77,6 @@ public final class CameraZoomAnalyser extends Analyser {
 				IntInsnNode sipush = (IntInsnNode) searcher.previous(Opcodes.SIPUSH);
 				searcher.setIndex(index);
 
-				System.out.println("\t\t" + sipush.operand);
 				IntInsnNode newSipush = new IntInsnNode(Opcodes.SIPUSH, newValue);
 
 				MethodInfo methodInfo = new MethodInfo(classNode.name, clinit.name, clinit.desc);

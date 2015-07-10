@@ -9,3 +9,9 @@ values:
 - 99077: amlodd/meilyr
   & 0xFF: 5
   >> 8: 387
+- 106753: iorwerth/trahaearn
+  & 0xFF: 1
+  >> 8: 417
+- 115719: hefin/ithell
+  & 0xFF: 7
+  >> 8: 452

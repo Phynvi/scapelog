@@ -2,6 +2,7 @@ package com.scapelog.agent;
 
 import com.google.common.collect.Maps;
 import com.scapelog.agent.util.ClassNodeUtils;
+import com.scapelog.api.jagex.jaggl.GL;
 import com.scapelog.client.loader.analyser.injection.Injection;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -19,7 +20,7 @@ public final class RSClassTransformer implements ClassFileTransformer {
 	@Override
 	public byte[] transform(ClassLoader loader, String fullyQualifiedClassName, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
 		try {
-			if (fullyQualifiedClassName == null || fullyQualifiedClassName.contains("/")) {
+			if (fullyQualifiedClassName == null || (fullyQualifiedClassName.contains("/") && !fullyQualifiedClassName.contains("jaggl"))) {
 				return classfileBuffer;
 			}
 
@@ -28,14 +29,25 @@ public final class RSClassTransformer implements ClassFileTransformer {
 			reader.accept(classNode, ClassReader.EXPAND_FRAMES | ClassReader.SKIP_DEBUG);
 
 			boolean transformed = false;
+
+			if (fullyQualifiedClassName.contains("jaggl")) {
+				classNode = modifyJaggl(classNode);
+				if (classNode == null) {
+					return classfileBuffer;
+				}
+				transformed = true;
+			}
+
 			try {
 				if (injections != null && !injections.isEmpty()) {
 					List<Injection> injections = RSClassTransformer.injections.get(classNode.name);
-					if (injections == null) {
-						return classfileBuffer;
-					}
-					for (Injection injection : injections) {
-						transformed = injection.execute(classNode);
+					if (injections != null) {
+						for (Injection injection : injections) {
+							boolean transform = injection.execute(classNode);
+							if (!transformed && transform) {
+								transformed = true;
+							}
+						}
 					}
 				}
 			} catch (Exception e) {
@@ -57,6 +69,14 @@ public final class RSClassTransformer implements ClassFileTransformer {
 			return classfileBuffer;
 		}
 		return classfileBuffer;
+	}
+
+	private static ClassNode modifyJaggl(ClassNode classNode) {
+		if (classNode.name.equals("jaggl/OpenGL")) {
+			classNode.interfaces.add(GL.class.getName().replaceAll("\\.", "/"));
+			return classNode;
+		}
+		return null;
 	}
 
 	public static void addInjections(Map<String, List<Injection>> injections) {

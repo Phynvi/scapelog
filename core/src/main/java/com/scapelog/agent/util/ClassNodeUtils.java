@@ -31,15 +31,15 @@ public final class ClassNodeUtils {
 
 	public static void dumpClass(String name, byte[] bytes) {
 		if (ScapeLog.debug) {
-			if (name.contains("/")) {
-				return;
-			}
 			try {
 				Path destination = Paths.get("/tmp/classes");
 				if (Files.notExists(destination)) {
 					Files.createDirectory(destination);
 				}
-
+				Path dest = destination.resolve(name + ".class");
+				if (Files.notExists(dest.getParent())) {
+					Files.createDirectory(dest.getParent());
+				}
 				Files.write(destination.resolve(name + ".class"), bytes);
 				Debug.println("dumped %s", name);
 			} catch (IOException e) {

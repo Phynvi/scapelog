@@ -11,6 +11,7 @@ import com.scapelog.client.loader.analyser.OperationAttributes;
 import com.scapelog.client.loader.analyser.ReflectionAnalyser;
 import com.scapelog.client.loader.analyser.ReflectionOperation;
 import com.scapelog.client.loader.analyser.impl.ClassLoaderAnalyser;
+import com.scapelog.client.loader.analyser.impl.DetourAnalyser;
 import com.scapelog.client.loader.analyser.impl.GameMessageAnalyser;
 import com.scapelog.client.loader.analyser.impl.IdleResetAnalyser;
 import com.scapelog.client.loader.analyser.impl.MultiplierAnalyser;
@@ -73,7 +74,8 @@ public final class ClientLoader {
 				new SkillAnalyser(),
 				new IdleResetAnalyser(),
 				new VariableAnalyser(),
-				new GameMessageAnalyser()
+				new GameMessageAnalyser(),
+				new DetourAnalyser()
 //				new CameraZoomAnalyser()
 //				new VariableAnalyser()
 		);
