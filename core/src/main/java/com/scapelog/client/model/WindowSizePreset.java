@@ -2,19 +2,26 @@ package com.scapelog.client.model;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
+import com.scapelog.util.proguard.Keep;
+import com.scapelog.util.proguard.KeepName;
 
 @DatabaseTable(tableName = "window_presets")
 public final class WindowSizePreset {
 
+	@Keep
+	@KeepName
 	@DatabaseField(generatedId = true)
-	private int id;
+	public int id;
 
+	@KeepName
 	@DatabaseField(canBeNull = true)
 	private final String name;
 
+	@KeepName
 	@DatabaseField
 	private final int width;
 
+	@KeepName
 	@DatabaseField
 	private final int height;
 
