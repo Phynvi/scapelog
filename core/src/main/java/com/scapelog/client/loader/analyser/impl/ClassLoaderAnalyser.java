@@ -4,7 +4,7 @@ import com.scapelog.agent.util.ClassNodeUtils;
 import com.scapelog.agent.util.InjectionUtils;
 import com.scapelog.agent.util.InstructionSearcher;
 import com.scapelog.agent.util.tree.MethodInfo;
-import com.scapelog.api.ClassStore;
+import com.scapelog.client.ClassStore;
 import com.scapelog.client.loader.AppletClassLoader;
 import com.scapelog.client.loader.analyser.Analyser;
 import com.scapelog.client.loader.analyser.AnalysingOperation;
@@ -31,7 +31,7 @@ public final class ClassLoaderAnalyser extends Analyser {
 			for (MethodNode methodNode : classNode.methods) {
 				InstructionSearcher searcher = new InstructionSearcher(methodNode);
 				while (searcher.next(MethodInsnNode.class, instr -> true) != null) {
-					MethodInsnNode methodInsnNode = (MethodInsnNode) searcher.current();
+					MethodInsnNode methodInsnNode = searcher.current();
 					if (methodInsnNode.getOpcode() == Opcodes.INVOKEVIRTUAL
 							&& methodInsnNode.name.equals("defineClass")
 							&& methodInsnNode.desc.equals("(Ljava/lang/String;[BIILjava/security/ProtectionDomain;)Ljava/lang/Class;")) {
@@ -50,6 +50,7 @@ public final class ClassLoaderAnalyser extends Analyser {
 						index = methodNode.instructions.indexOf(methodInsnNode);
 						operation.addInjection(classNode.name, new ReplaceInjection(methodInfo, index, newMethodInsnNode));
 						methodNode.instructions.set(methodInsnNode, newMethodInsnNode);
+						Debug.println("defineClass modified at %s.%s", classNode.name, methodNode.name);
 						break;
 					}
 				}
@@ -67,7 +68,7 @@ public final class ClassLoaderAnalyser extends Analyser {
 					}
 					InstructionSearcher searcher = new InstructionSearcher(methodNode);
 					while (searcher.next(Opcodes.INVOKESTATIC) != null) {
-						MethodInsnNode findClass = (MethodInsnNode) searcher.current();
+						MethodInsnNode findClass = searcher.current();
 						if (!findClass.desc.endsWith("Ljava/lang/Class;")) {
 							continue;
 						}

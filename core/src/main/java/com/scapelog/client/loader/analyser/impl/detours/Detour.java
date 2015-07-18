@@ -8,10 +8,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Detour {
-    public enum TargetType {
-        STATIC, INSTANCE
-    }
-
     TargetType type() default TargetType.STATIC;
     String target() default "";
 }

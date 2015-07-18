@@ -2,7 +2,7 @@ package com.scapelog.client.ui.component.tab;
 
 import com.scapelog.api.ui.tab.IconTab;
 import com.scapelog.api.util.Components;
-import com.scapelog.api.ClassStore;
+import com.scapelog.client.ClassStore;
 import com.scapelog.client.reflection.wrappers.Client;
 import com.scapelog.client.reflection.wrappers.Player;
 import com.scapelog.client.util.Debug;

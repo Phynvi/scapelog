@@ -1,9 +1,11 @@
-package com.scapelog.api.jagex.jaggl;
+package com.scapelog.client.jagex.jaggl;
 
 
 import com.scapelog.client.loader.analyser.impl.detours.Proxy;
+import com.scapelog.util.proguard.KeepClassMemberNames;
 
 @Proxy("jaggl/OpenGL")
+@KeepClassMemberNames
 public interface GL {
     /**
      * AccumOp

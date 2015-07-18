@@ -2,7 +2,7 @@ package com.scapelog.agent;
 
 import com.google.common.collect.Maps;
 import com.scapelog.agent.util.ClassNodeUtils;
-import com.scapelog.api.jagex.jaggl.GL;
+import com.scapelog.client.jagex.jaggl.GL;
 import com.scapelog.client.loader.analyser.injection.Injection;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -43,9 +43,13 @@ public final class RSClassTransformer implements ClassFileTransformer {
 					List<Injection> injections = RSClassTransformer.injections.get(classNode.name);
 					if (injections != null) {
 						for (Injection injection : injections) {
-							boolean transform = injection.execute(classNode);
-							if (!transformed && transform) {
-								transformed = true;
+							try {
+								boolean transform = injection.execute(classNode);
+								if (!transformed && transform) {
+									transformed = true;
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
 							}
 						}
 					}
@@ -55,9 +59,8 @@ public final class RSClassTransformer implements ClassFileTransformer {
 			}
 
 			if (transformed) {
+				ClassNodeUtils.dumpClass(classNode);
 				try {
-					ClassNodeUtils.dumpClass(classNode);
-
 					ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
 					classNode.accept(writer);
 					return writer.toByteArray();

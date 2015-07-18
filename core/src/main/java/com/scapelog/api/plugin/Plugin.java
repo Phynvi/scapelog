@@ -5,16 +5,19 @@ import com.google.common.collect.Lists;
 import com.scapelog.api.ClientFeature;
 import com.scapelog.api.event.Event;
 import com.scapelog.api.event.EventListener;
+import com.scapelog.api.ui.Overlay;
 import com.scapelog.api.ui.tab.BaseTab;
 import com.scapelog.api.ui.tab.IconTab;
 import com.scapelog.api.util.Components;
 import com.scapelog.client.config.ConfigWrapper;
 import com.scapelog.client.event.EventDispatcher;
+import com.scapelog.client.ui.UserInterface;
 import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -187,6 +190,26 @@ public abstract class Plugin extends ConfigWrapper {
 
 	public final boolean hasTab() {
 		return tabMode.equals(TabMode.ON);
+	}
+
+	public final void addOverlay(Overlay overlay) {
+		UserInterface.addOverlay(overlay);
+	}
+
+	public final void addOverlays(Overlay... overlays) {
+		UserInterface.addOverlays(overlays);
+	}
+
+	public final ObservableList<Overlay> getOverlays() {
+		return UserInterface.getOverlays();
+	}
+
+	public final void removeOverlay(Overlay overlay) {
+		UserInterface.removeOverlay(overlay);
+	}
+
+	public final void removeOverlays(Overlay... overlays) {
+		UserInterface.removeOverlays(overlays);
 	}
 
 }

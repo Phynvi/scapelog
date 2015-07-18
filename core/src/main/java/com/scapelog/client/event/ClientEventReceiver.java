@@ -1,6 +1,7 @@
 package com.scapelog.client.event;
 
 import com.scapelog.api.ClientFeature;
+import com.scapelog.api.ClientFeatureStatus;
 import com.scapelog.api.event.Event;
 
 import java.util.concurrent.BlockingQueue;

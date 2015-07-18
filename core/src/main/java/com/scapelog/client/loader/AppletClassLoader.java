@@ -1,6 +1,7 @@
 package com.scapelog.client.loader;
 
 import com.scapelog.client.reflection.Reflection;
+import com.scapelog.util.proguard.Keep;
 
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -24,6 +25,7 @@ public final class AppletClassLoader extends URLClassLoader {
 		return LOADED.get(name);
 	}
 
+	@Keep
 	public static Class __defineClass(String name, byte[] buffer, int off, int len, ProtectionDomain protectionDomain, ClassLoader from) {
 		if (jagexClassLoader == null)
 			jagexClassLoader = from;

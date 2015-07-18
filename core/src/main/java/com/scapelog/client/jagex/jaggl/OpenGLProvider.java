@@ -1,11 +1,18 @@
-package com.scapelog.api.jagex.jaggl;
+package com.scapelog.client.jagex.jaggl;
 
+import com.scapelog.api.ClientFeature;
+import com.scapelog.api.ClientFeatureStatus;
 import com.scapelog.api.event.impl.PaintEvent;
+import com.scapelog.api.ui.Overlay;
 import com.scapelog.client.event.EventDispatcher;
 import com.scapelog.client.loader.analyser.impl.detours.Detour;
 import com.scapelog.client.loader.analyser.impl.detours.Interceptor;
+import com.scapelog.client.loader.analyser.impl.detours.TargetType;
 import com.scapelog.client.loader.util.ProxyFactory;
 import com.scapelog.client.reflection.Reflection;
+import com.scapelog.client.ui.UserInterface;
+import com.scapelog.client.util.OperatingSystem;
+import com.scapelog.util.proguard.Keep;
 
 import java.awt.Canvas;
 import java.awt.Graphics2D;
@@ -31,14 +38,19 @@ public final class OpenGLProvider {
 	private static BufferedImage overlayBuffer;
 	static Graphics2D overlayGraphics;
 
-	@Detour(type = Detour.TargetType.INSTANCE)
+	@Keep
+	@Detour(type = TargetType.INSTANCE)
     public static long init(Object _this, Canvas paramCanvas, int paramInt1, int paramInt2, int paramInt3, int paramInt4, int paramInt5, int paramInt6) {
 	    if (gl == null) {
 		    gl = ProxyFactory.getProxyFor(GL.class);
 	    }
-	    // Update VBLANK
-	    // todo: crashes the vm
-        //resizeSurface();
+
+		if (OperatingSystem.getOperatingSystem() == OperatingSystem.WINDOWS) {
+			resizeSurface();
+		}
+
+		ClientFeature.OPENGL.setStatus(ClientFeatureStatus.ENABLED);
+
         try {
             bufferHook(_this);
 	        return (Long) init.invoke(_this, paramCanvas, paramInt1, paramInt2, paramInt3, paramInt4, paramInt5, paramInt6);
@@ -48,7 +60,8 @@ public final class OpenGLProvider {
         return 0;
     }
 
-    @Detour(type = Detour.TargetType.INSTANCE)
+	@Keep
+    @Detour(type = TargetType.INSTANCE)
     public static void releaseSurface(Object _this, Canvas paramCanvas, long paramLong) {
 	    overlayBuffer = null;
 	    overlayGraphics = null;
@@ -60,7 +73,8 @@ public final class OpenGLProvider {
         }
     }
 
-    @Detour(type = Detour.TargetType.INSTANCE)
+	@Keep
+    @Detour(type = TargetType.INSTANCE)
     public static void surfaceResized(Object _this, long paramLong) {
         resizeSurface();
         bufferHook(_this);
@@ -96,7 +110,8 @@ public final class OpenGLProvider {
         init = Reflection.declaredMethod("init").in(_this).withReturnType(Long.class).withParameters(Canvas.class, int.class, int.class, int.class, int.class, int.class, int.class).handle();
     }
 
-    @Detour(type = Detour.TargetType.INSTANCE)
+	@Keep
+    @Detour(type = TargetType.INSTANCE)
     public static void swapBuffers(Object _this, long paramLong) {
 	    gl.glEnable(GL.GL_TEXTURE_2D);
         if (overlayBuffer == null) {
@@ -119,27 +134,46 @@ public final class OpenGLProvider {
 	        overlayGraphics = overlayBuffer.createGraphics();
 	        overlayGraphics.setClip(0, 0, width, height);
         }
-        byte[] buffer = ((DataBufferByte) overlayBuffer.getRaster().getDataBuffer()).getData();
-        System.arraycopy(VBLANK, 0, buffer, 0, VBLANK.length);
-        try {
-	        EventDispatcher.fireEvent(new PaintEvent(overlayGraphics, width, height));
-        } catch (Throwable error) {
-            System.err.println("An error occurred while painting:");
-            error.printStackTrace();
-        }
-        gl.glTexImage2Dub(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA, width, height, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, buffer, 0);
-        gl.glColor4f(1, 1, 1, 1);
-        gl.glBegin(GL.GL_QUADS);
-        gl.glTexCoord2f(0, 0);
-        gl.glVertex2f(0, 0);
-        gl.glTexCoord2f(0, 1);
-        gl.glVertex2f(0, height);
-        gl.glTexCoord2f(1, 1);
-        gl.glVertex2f(width, height);
-        gl.glTexCoord2f(1, 0);
-        gl.glVertex2f(width, 0);
-        gl.glEnd();
-        bufferHook(_this);
+	    try {
+		    byte[] buffer = ((DataBufferByte) overlayBuffer.getRaster().getDataBuffer()).getData();
+		    if (VBLANK != null) {
+			    System.arraycopy(VBLANK, 0, buffer, 0, VBLANK.length);
+		    }
+		    try {
+			    overlayGraphics.drawString("OpenGL", 10, 15);
+			    EventDispatcher.fireEvent(new PaintEvent(overlayGraphics, width, height));
+
+			    for (Overlay overlay : UserInterface.getOverlays()) {
+				    if (!overlay.isVisible()) {
+					    continue;
+				    }
+				    BufferedImage bufferedImage = overlay.getBufferedImage();
+				    Graphics2D graphics = (Graphics2D) bufferedImage.getGraphics();
+				    overlay.paint(graphics);
+
+				    overlayGraphics.drawImage(bufferedImage, overlay.getX(), overlay.getY(), null);
+			    }
+		    } catch (Throwable error) {
+			    System.err.println("An error occurred while painting:");
+			    error.printStackTrace();
+		    }
+		    gl.glTexImage2Dub(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA, width, height, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, buffer, 0);
+		    gl.glColor4f(1, 1, 1, 1);
+		    gl.glBegin(GL.GL_QUADS);
+		    gl.glTexCoord2f(0, 0);
+		    gl.glVertex2f(0, 0);
+		    gl.glTexCoord2f(0, 1);
+		    gl.glVertex2f(0, height);
+		    gl.glTexCoord2f(1, 1);
+		    gl.glVertex2f(width, height);
+		    gl.glTexCoord2f(1, 0);
+		    gl.glVertex2f(width, 0);
+		    gl.glEnd();
+		    bufferHook(_this);
+	    } catch (Exception e) {
+		    System.err.println("An error occurred while painting:");
+		    e.printStackTrace();
+	    }
         try {
             swapBuffers.invoke(_this, paramLong);
         } catch (Throwable throwable) {

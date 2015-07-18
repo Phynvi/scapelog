@@ -1,6 +1,8 @@
 package com.scapelog.client.loader.analyser.impl.reflection;
 
+import com.scapelog.agent.util.ClassNodeUtils;
 import com.scapelog.agent.util.InstructionSearcher;
+import com.scapelog.agent.util.tree.MethodNodeInfo;
 import com.scapelog.client.loader.analyser.ReflectionAnalyser;
 import com.scapelog.client.loader.analyser.ReflectionOperation;
 import com.scapelog.client.loader.analyser.impl.StringFieldAnalyser;
@@ -35,11 +37,11 @@ public final class NpcAnalyser extends ReflectionAnalyser {
 				break;
 			}
 		}
-		findCombatLevels(classNodes, operation);
+		findFields(operation);
 	}
 
-	private void findCombatLevels(Collection<ClassNode> classNodes, ReflectionOperation operation) {
-		List<MethodNode> menuBuilders = operation.getAttributes().get("menu_builder_npc_*");
+	private void findFields(ReflectionOperation operation) {
+		List<MethodNodeInfo> menuBuilders = operation.getAttributes().get("menu_builder_npc_*");
 		if (menuBuilders.isEmpty()) {
 			return;
 		}
@@ -51,11 +53,21 @@ public final class NpcAnalyser extends ReflectionAnalyser {
 		StringFieldAnalyser.TranslatedString translatedString = levelString.get();
 		FieldInsnNode levelReference = translatedString.getFieldInsnNode();
 
-		for (MethodNode methodNode : menuBuilders) {
+		for (MethodNodeInfo methodNodeInfo : menuBuilders) {
+			ClassNode classNode = methodNodeInfo.getOwner();
+			MethodNode methodNode = ClassNodeUtils.getMethod(classNode, methodNodeInfo.getName(), methodNodeInfo.getDescription());
 			InstructionSearcher searcher = new InstructionSearcher(methodNode);
 
+			if (!ReflectedFields.NPC_NAME.getFieldName().isPresent()) {
+				FieldInsnNode nameFieldNode = searcher.next(FieldInsnNode.class, instr -> instr.desc.equals("Ljava/lang/String;"));
+				ReflectedFields.NPC_NAME.setClassName(nameFieldNode.owner).setFieldName(nameFieldNode.name);
+				Debug.println("npc_name identified as %s.%s", nameFieldNode.owner, nameFieldNode.name);
+			}
+
+			searcher.resetIndex();
+
 			while(searcher.next(Opcodes.GETSTATIC) != null) {
-				FieldInsnNode field = (FieldInsnNode) searcher.current();
+				FieldInsnNode field = searcher.current();
 				if (!field.owner.equals(levelReference.owner) || !field.name.equals(levelReference.name)) {
 					continue;
 				}
@@ -68,7 +80,7 @@ public final class NpcAnalyser extends ReflectionAnalyser {
 				if (ClassNames.PLAYER != null && ClassNames.PLAYER.equals(combatCall.owner)) {
 					if (!ReflectedFields.PLAYER_COMBAT_LEVEL.getClassName().isPresent()) {
 						ReflectedFields.PLAYER_COMBAT_LEVEL.setClassName(combatCall.owner).setFieldName(combatCall.name);
-						Debug.println("player_combat: %s.%s:%s", combatCall.owner, combatCall.name, combatCall.desc);
+						Debug.println("player_combat identified as %s.%s:%s", combatCall.owner, combatCall.name, combatCall.desc);
 						players = true;
 					}
 				}
@@ -76,7 +88,7 @@ public final class NpcAnalyser extends ReflectionAnalyser {
 				if (!players) {
 					if (!ReflectedFields.NPC_COMBAT_LEVEL.getClassName().isPresent()) {
 						ReflectedFields.NPC_COMBAT_LEVEL.setClassName(combatCall.owner).setFieldName(combatCall.name);
-						Debug.println("npc_combat: %s.%s:%s", combatCall.owner, combatCall.name, combatCall.desc);
+						Debug.println("npc_combat identified as %s.%s:%s", combatCall.owner, combatCall.name, combatCall.desc);
 					}
 				}
 			}
@@ -87,7 +99,8 @@ public final class NpcAnalyser extends ReflectionAnalyser {
 	public ReflectedField[] getRequiredFields() {
 		return new ReflectedField[] {
 				ReflectedFields.PLAYER_COMBAT_LEVEL,
-				ReflectedFields.NPC_COMBAT_LEVEL
+				ReflectedFields.NPC_COMBAT_LEVEL,
+				ReflectedFields.NPC_NAME
 		};
 	}
 

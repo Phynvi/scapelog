@@ -12,12 +12,14 @@ public class Direct3DHookProvider implements IHookProvider {
     }
 
     static Direct3DProxy d3d;
-    static Direct3DDeviceProxy d3dDevice;
+    public static Direct3DDeviceProxy d3dDevice;
     static HookManager.IHookExecutor executor;
     static Direct3DHookProvider instance;
     static boolean isActive;
 
-    public Direct3DHookProvider() {
+	public static Direct3DDetour d3d;
+
+	public Direct3DHookProvider() {
         assert instance != null;
         Direct3DHookProvider.instance = this;
     }

@@ -5,11 +5,12 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.scapelog.agent.util.InstructionSearcher;
 import com.scapelog.agent.util.tree.MethodInfo;
-import com.scapelog.api.jagex.jaggl.OpenGLProvider;
+import com.scapelog.client.jagex.jaggl.OpenGLProvider;
 import com.scapelog.client.loader.analyser.Analyser;
 import com.scapelog.client.loader.analyser.AnalysingOperation;
 import com.scapelog.client.loader.analyser.impl.detours.Detour;
 import com.scapelog.client.loader.analyser.impl.detours.Interceptor;
+import com.scapelog.client.loader.analyser.impl.detours.TargetType;
 import com.scapelog.client.loader.analyser.injection.ReplaceInjection;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
@@ -24,7 +25,9 @@ import java.util.List;
 public final class DetourAnalyser extends Analyser {
 
 	private final List<Class<?>> detouredClasses = Lists.newArrayList(
-			OpenGLProvider.class
+			OpenGLProvider.class/*,
+			Direct3DDetour.class,
+			Direct3DDeviceDetour.class*/
 	);
 
 	private final ImmutableMap<String, ImmutableList<DetouredMethod>> detouredClassMap;
@@ -35,6 +38,9 @@ public final class DetourAnalyser extends Analyser {
 
 	@Override
 	public void analyse(Collection<ClassNode> classNodes, AnalysingOperation operation) {
+		/*if (OperatingSystem.getOperatingSystem() != OperatingSystem.LINUX) {
+			return;
+		}*/
 		for (ClassNode classNode : classNodes) {
 			for (MethodNode methodNode : classNode.methods) {
 				InstructionSearcher searcher = new InstructionSearcher(methodNode);
@@ -47,7 +53,7 @@ public final class DetourAnalyser extends Analyser {
 					for (DetouredMethod detouredMethod : detouredMethods) {
 						if (methodInsnNode.name.equals(detouredMethod.detouredMethod)) {
 							String desc = methodInsnNode.desc;
-							if (detouredMethod.targetType == Detour.TargetType.INSTANCE) {
+							if (detouredMethod.targetType == TargetType.INSTANCE) {
 								desc = "(Ljava/lang/Object;" + desc.substring(1);
 							}
 							MethodInsnNode newInstruction = new MethodInsnNode(Opcodes.INVOKESTATIC, detouredMethod.ownerClass.replaceAll("\\.", "/"), methodInsnNode.name, desc, false);
@@ -95,11 +101,11 @@ public final class DetourAnalyser extends Analyser {
 
 		private final String ownerClass;
 
-		private final Detour.TargetType targetType;
+		private final TargetType targetType;
 
 		private final String detouredMethod;
 
-		public DetouredMethod(String ownerClass, Detour.TargetType targetType, String detouredMethod) {
+		public DetouredMethod(String ownerClass, TargetType targetType, String detouredMethod) {
 			this.ownerClass = ownerClass;
 			this.targetType = targetType;
 			this.detouredMethod = detouredMethod;
