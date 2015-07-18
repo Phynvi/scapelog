@@ -2,7 +2,7 @@ package com.scapelog.client;
 
 import com.scapelog.api.ClientFeature;
 import com.scapelog.client.event.ClientEventDispatcher;
-import com.scapelog.client.event.ClientFeatureStatus;
+import com.scapelog.api.ClientFeatureStatus;
 import com.scapelog.client.event.impl.FeatureEnableEvent;
 
 public final class ClientFeatures {

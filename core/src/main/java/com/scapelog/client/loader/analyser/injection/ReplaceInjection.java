@@ -36,7 +36,6 @@ public final class ReplaceInjection extends Injection {
 			return false;
 		}
 		instructions.set(instruction, newInstruction);
-		System.out.println("replaced instruction");
 		return true;
 	}
 

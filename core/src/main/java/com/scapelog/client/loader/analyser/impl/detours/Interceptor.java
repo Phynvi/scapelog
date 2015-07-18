@@ -1,0 +1,17 @@
+package com.scapelog.client.loader.analyser.impl.detours;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Interceptor {
+    /**
+     * Fetches the unqualified getName of the class to intercept.
+     *
+     * @return The getName of the unqualified class to intercept
+     */
+    String value();
+}

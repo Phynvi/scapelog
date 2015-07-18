@@ -1,6 +1,7 @@
 package com.scapelog.client.loader.analyser.impl.reflection;
 
 import com.scapelog.agent.util.InstructionSearcher;
+import com.scapelog.agent.util.tree.MethodNodeInfo;
 import com.scapelog.client.loader.analyser.ReflectionAnalyser;
 import com.scapelog.client.loader.analyser.ReflectionOperation;
 import com.scapelog.client.loader.analyser.impl.StringFieldAnalyser;
@@ -46,10 +47,11 @@ public final class MenuBuilderAnalyser extends ReflectionAnalyser {
 
 				searcher.resetIndex();
 
+				MethodNodeInfo methodNodeInfo = new MethodNodeInfo(classNode, methodNode.name, methodNode.desc);
 				if (searcher.next(IntInsnNode.class, instr -> instr.getOpcode() == Opcodes.BIPUSH && instr.operand == 13) != null) {
-					operation.getAttributes().set("menu_builder_npc_" + methodNode.name, methodNode);
+					operation.getAttributes().set("menu_builder_npc_" + methodNode.name, methodNodeInfo);
 				} else {
-					operation.getAttributes().set("menu_builder_player_" + methodNode.name, methodNode);
+					operation.getAttributes().set("menu_builder_player_" + methodNode.name, methodNodeInfo);
 				}
 			}
 		}

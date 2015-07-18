@@ -3,6 +3,7 @@ package com.scapelog.client.ui;
 import com.google.common.collect.Maps;
 import com.scapelog.api.plugin.OpenTechnique;
 import com.scapelog.api.plugin.Plugin;
+import com.scapelog.api.ui.Overlay;
 import com.scapelog.api.ui.TimedNotification;
 import com.scapelog.api.ui.tab.BaseTab;
 import com.scapelog.client.config.ClientConfigKeys;
@@ -24,6 +25,8 @@ import de.jensd.fx.fontawesome.AwesomeDude;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.ToggleButton;
@@ -49,6 +52,8 @@ public final class UserInterface {
 	private DecoratedFrame frame;
 	private AppletPanel appletPanel;
 	private FeaturesWindow features;
+
+	private static final ObservableList<Overlay> activeOverlays = FXCollections.observableArrayList();
 
 	public void setup(final PluginLoader pluginLoader) {
 		PlatformImpl.startup(() -> {
@@ -153,6 +158,9 @@ public final class UserInterface {
 						return;
 					}
 					PluginButton button = new PluginButton(plugin, frame.getFrame());
+					if (plugin.getOpenTechnique() == OpenTechnique.NONE) {
+						return;
+					}
 					BaseTab tab = plugin.getInitializedTab();
 					if (tab == null) {
 						return;
@@ -242,6 +250,26 @@ public final class UserInterface {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static void addOverlay(Overlay overlay) {
+		addOverlays(overlay);
+	}
+
+	public static void addOverlays(Overlay... overlays) {
+		activeOverlays.addAll(overlays);
+	}
+
+	public static ObservableList<Overlay> getOverlays() {
+		return activeOverlays;
+	}
+
+	public static void removeOverlay(Overlay overlay) {
+		activeOverlays.remove(overlay);
+	}
+
+	public static void removeOverlays(Overlay... overlays) {
+		activeOverlays.removeAll(overlays);
 	}
 
 	public void addApplet(Applet applet) {

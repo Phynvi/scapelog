@@ -1,5 +1,6 @@
-package com.scapelog.api;
+package com.scapelog.client;
 
+import com.scapelog.util.proguard.Keep;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
@@ -10,6 +11,7 @@ public final class ClassStore {
 
 	private static final ObservableMap<String, Class<?>> classMap = FXCollections.observableHashMap();
 
+	@Keep
 	@SuppressWarnings("unused")
 	public static void addClass(String name, Object clazz) {
 		if (clazz.getClass().equals(Class.class)) {

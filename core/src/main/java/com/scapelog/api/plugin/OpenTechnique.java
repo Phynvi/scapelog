@@ -1,5 +1,5 @@
 package com.scapelog.api.plugin;
 
 public enum OpenTechnique {
-	EXPANDED_BUTTON, DRAWER
+	EXPANDED_BUTTON, DRAWER, NONE
 }

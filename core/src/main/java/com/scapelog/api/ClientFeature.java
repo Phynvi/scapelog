@@ -1,7 +1,6 @@
 package com.scapelog.api;
 
 import com.scapelog.api.event.Event;
-import com.scapelog.client.event.ClientFeatureStatus;
 import com.scapelog.client.event.parser.EventParser;
 import com.scapelog.client.event.parser.GameMessageParser;
 import com.scapelog.client.event.parser.IdleResetParser;
@@ -16,7 +15,8 @@ public enum ClientFeature {
 	SKILLS(new SkillEventParser(), "Skills", "Skill updates"),
 	GAME_MESSAGES(new GameMessageParser(), "Game messages", "Received game messages (does not include chat messages)"),
 	IDLE_RESET(new IdleResetParser(), "Idle events", "Mouse and keyboard events that reset the idle timer"),
-	VARIABLES(new VariableEventParser(), "Settings", "Many game settings, examples being accept aid, auto retaliate, chatbox settings and object states such as farming patches");
+	VARIABLES(new VariableEventParser(), "Settings", "Many game settings, examples being accept aid, auto retaliate, chatbox settings and object states such as farming patches"),
+	OPENGL(null, "OpenGL drawing", "Ability to draw on the screen while using the OpenGL display mode (currently for Linux only)");
 
 	private final String name, description, identifier;
 	private final EventParser eventParser;

@@ -14,6 +14,7 @@ import com.scapelog.client.ui.component.tab.DeveloperTab;
 import com.scapelog.client.ui.component.tab.NewsTab;
 import com.scapelog.client.ui.component.tab.ReflectionTab;
 import com.scapelog.client.ui.component.tab.SettingsTab;
+import com.scapelog.util.proguard.Keep;
 import com.sun.javafx.scene.control.skin.TabPaneSkin;
 import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.application.Platform;
@@ -21,6 +22,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Skin;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.ToggleButton;
@@ -66,44 +68,7 @@ public final class FeaturesWindow {
 		);
 
 		tabs.skinProperty().addListener((observable, oldValue, newValue) -> {
-			if (newValue.getClass().equals(TabPaneSkin.class)) {
-				TabPaneSkin skin = (TabPaneSkin) newValue;
-				for (Node child : skin.getChildren()) {
-					if (!child.getStyleClass().contains("tab-header-area")) {
-						continue;
-					}
-					StackPane stackPane = (StackPane) child;
-					try {
-						Field controlButtons = stackPane.getClass().getDeclaredField("controlButtons");
-						boolean accessible = controlButtons.isAccessible();
-						controlButtons.setAccessible(true);
-
-						StackPane controlButtonsPane = (StackPane) controlButtons.get(stackPane);
-						controlButtons.setAccessible(accessible);
-
-						controlButtonsPane.setVisible(true);
-						controlButtonsPane.setPrefHeight(33);
-						controlButtonsPane.setPrefWidth(30);
-						controlButtonsPane.getChildren().clear();
-
-						final Button iconButton = Components.createIconButton(AwesomeIcon.THUMB_TACK, "15.0");
-						iconButton.setTooltip(new Tooltip("Detach"));
-						iconButton.setStyle("-fx-rotate: 135;");
-						controlButtonsPane.getChildren().add(iconButton);
-						iconButton.setLayoutX(10);
-						iconButton.setLayoutY(15);
-						iconButton.setOnAction(e -> popup.toggleDetach());
-
-						popup.detachedProperty().addListener((observable1, oldVal, newVal) -> {
-							Tooltip tooltip = iconButton.getTooltip();
-							tooltip.setText(newVal ? "Attach" : "Detach");
-							iconButton.setStyle("-fx-rotate: " + (newVal ? "90" : "135"));
-						});
-					} catch (NoSuchFieldException | IllegalAccessException e) {
-						System.err.println("Failed to create detach button");
-					}
-				}
-			}
+			modifySkin(newValue);
 		});
 
 		if (ScapeLog.debug || (ScapeLog.getUser() != null && ScapeLog.getUser().getGroups().contains(UserGroup.PLUGIN_DEVELOPER))) {
@@ -155,6 +120,49 @@ public final class FeaturesWindow {
 
 	public SimpleBooleanProperty getVisibilityProperty() {
 		return popup.getVisibilityProperty();
+	}
+
+	@Keep
+	private void modifySkin(Skin<?> newSkin) {
+		if (newSkin.getClass().equals(TabPaneSkin.class)) {
+			TabPaneSkin skin = (TabPaneSkin) newSkin;
+			for (Node child : skin.getChildren()) {
+				if (!child.getStyleClass().contains("tab-header-area")) {
+					continue;
+				}
+				StackPane stackPane = (StackPane) child;
+				popup.setDraggable(stackPane);
+				try {
+					Field controlButtons = stackPane.getClass().getDeclaredField("controlButtons");
+					boolean accessible = controlButtons.isAccessible();
+					controlButtons.setAccessible(true);
+
+					StackPane controlButtonsPane = (StackPane) controlButtons.get(stackPane);
+					controlButtons.setAccessible(accessible);
+
+					controlButtonsPane.setVisible(true);
+					controlButtonsPane.setPrefHeight(33);
+					controlButtonsPane.setPrefWidth(30);
+					controlButtonsPane.getChildren().clear();
+
+					final Button iconButton = Components.createIconButton(AwesomeIcon.THUMB_TACK, "15.0");
+					iconButton.setTooltip(new Tooltip("Detach"));
+					iconButton.setStyle("-fx-rotate: 135;");
+					controlButtonsPane.getChildren().add(iconButton);
+					iconButton.setLayoutX(10);
+					iconButton.setLayoutY(15);
+					iconButton.setOnAction(e -> popup.toggleDetach());
+
+					popup.detachedProperty().addListener((observable1, oldVal, newVal) -> {
+						Tooltip tooltip = iconButton.getTooltip();
+						tooltip.setText(newVal ? "Attach" : "Detach");
+						iconButton.setStyle("-fx-rotate: " + (newVal ? "90" : "135"));
+					});
+				} catch (NoSuchFieldException | IllegalAccessException e) {
+					System.err.println("Failed to create detach button");
+				}
+			}
+		}
 	}
 
 }

@@ -3,6 +3,7 @@ package com.scapelog.tools.diagnostics;
 import com.scapelog.tools.Tool;
 
 import java.math.BigInteger;
+import java.util.Base64;
 import java.util.Scanner;
 
 public final class DiagnosticsReader extends Tool {
@@ -28,11 +29,12 @@ public final class DiagnosticsReader extends Tool {
 	}
 
 	private String decrypt(String encrypted) {
-		if (encrypted == null) {
-			return null;
-		}
-		BigInteger decrypted = new BigInteger(encrypted).modPow(PRIVATE_KEY, MODULUS);
-		return new String(decrypted.toByteArray());
+		//if (encrypted == null) {
+		//	return null;
+		//}
+		//BigInteger decrypted = new BigInteger(encrypted).modPow(PRIVATE_KEY, MODULUS);
+		//return new String(decrypted.toByteArray());
+		return new String(Base64.getDecoder().decode(encrypted));
 	}
 
 }
