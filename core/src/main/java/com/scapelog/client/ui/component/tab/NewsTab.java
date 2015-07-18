@@ -62,6 +62,14 @@ public final class NewsTab extends IconTab {
 				" - Added a way to copy problem diagnostics to clipboard (CTRL+SHIFT+INSERT to trigger)",
 				" - Detached popup windows now show their \"detachness\" more clearly"
 		});
+		insertNews(textArea, new String[] {
+				"Updates #5 - 19 July 2015",
+				" - You can now copy program output (\"diagnostics\") to your clipboard by doing the key combo CTRL+SHIFT+INSERT, ",
+				"   that you may then deliver to the developers in case you have any problems",
+				" - Popup windows should no longer appear behind the main window",
+				" - Added window size presets in the settings tab in case you want to quickly resize the window for specific activities",
+				" - Added capability to draw on the OpenGL surface (DirectX will be added at some point)",
+		});
 	}
 
 	private void insertNews(TextArea textArea, String[] lines) {
