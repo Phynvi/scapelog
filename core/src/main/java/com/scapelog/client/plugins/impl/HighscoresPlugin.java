@@ -17,7 +17,6 @@ import de.jensd.fx.fontawesome.AwesomeIcon;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -72,7 +71,7 @@ public final class HighscoresPlugin extends ButtonPlugin {
 	public Region getPluginContent() {
 		VBox content = new VBox(5);
 		content.setId("highscores");
-		content.setPadding(new Insets(10, 0, 10, 0));
+		Components.setPadding(content, 10, 0, 10, 0);
 		content.setMinWidth(200);
 		content.setMinHeight(300);
 
@@ -93,12 +92,11 @@ public final class HighscoresPlugin extends ButtonPlugin {
 		searchField.setOnAction(eventHandler);
 
 		HBox topBox = new HBox(10, searchField, search);
-		topBox.setPadding(new Insets(0, 10, 0, 10));
+		Components.setPadding(topBox, 0, 10, 0, 10);
 
 		VBox hoverBox = new VBox();
-		hoverBox.setPadding(new Insets(0, 0, 5, 0));
 		hoverBox.getChildren().addAll(skillNameLabel, rankLabel, experienceLabel);
-		hoverBox.setPadding(new Insets(0, 10, 0, 10));
+		Components.setPadding(hoverBox, 0, 10, 0, 10);
 
 		content.getChildren().addAll(topBox, getMainContent(), hoverBox);
 		return content;
@@ -115,12 +113,12 @@ public final class HighscoresPlugin extends ButtonPlugin {
 		int rows = 9;
 
 		VBox skillsBox = new VBox(5);
-		skillsBox.setPadding(new Insets(0, 5, 0, 5));
+		Components.setPadding(skillsBox, 0, 5, 0, 5);
 		skillsBox.setMaxWidth(cellWidth * columns);
 
 		TilePane skillsPane = new TilePane();
 		skillsPane.setId("skills");
-		skillsPane.setPadding(new Insets(5, 5, 5, 0));
+		Components.setPadding(skillsPane, 5, 5, 5, 0);
 		skillsPane.setHgap(horizontalGap);
 		skillsPane.setVgap(verticalGap);
 		skillsPane.setPrefColumns(columns);
@@ -132,7 +130,7 @@ public final class HighscoresPlugin extends ButtonPlugin {
 		addColumn(skillsPane, SkillSet.MINING, SkillSet.SMITHING, SkillSet.FISHING, SkillSet.COOKING, SkillSet.FIREMAKING, SkillSet.WOODCUTTING, SkillSet.FARMING, SkillSet.SUMMONING);
 
 		TilePane additionalStats = new TilePane();
-		additionalStats.setPadding(new Insets(0, 0, 5, 0));
+		Components.setPadding(additionalStats, 0, 0, 5, 0);
 		additionalStats.setId("additional");
 		additionalStats.getChildren().addAll(overallNode, Components.createSpacer(), combatNode);
 
@@ -142,7 +140,7 @@ public final class HighscoresPlugin extends ButtonPlugin {
 		activitiesBox.setMaxWidth(activityCellWidth * 2);
 
 		TilePane activitiesPane = new TilePane();
-		activitiesPane.setPadding(new Insets(5, 5, 5, 10));
+		Components.setPadding(activitiesPane, 5, 5, 5, 10);
 		activitiesPane.setHgap(horizontalGap);
 		activitiesPane.setVgap(verticalGap);
 		activitiesPane.setOrientation(Orientation.VERTICAL);

@@ -21,7 +21,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.CacheHint;
 import javafx.scene.Node;
@@ -136,7 +135,7 @@ public final class SkillTrackerPlugin extends TabPlugin {
 			}
 		});
 		content.setMaxWidth(Integer.MAX_VALUE);
-		content.setPadding(new Insets(5, 5, 5, 5));
+		Components.setPadding(content, 5);
 		HBox.setHgrow(content, Priority.ALWAYS);
 		ScrollPane scrollPane = new ScrollPane(content);
 		scrollPane.setFitToWidth(true);
@@ -211,7 +210,7 @@ public final class SkillTrackerPlugin extends TabPlugin {
 	@Override
 	public Region getSettingsContent() {
 		VBox content = new VBox(10);
-		content.setPadding(new Insets(10, 10, 10, 10));
+		Components.setPadding(content, 10);
 
 		/* skill toggle */
 		VBox header = Components.createHeader("Tracked skills", "Click to toggle tracked skills");

@@ -8,6 +8,7 @@ import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.scapelog.api.Setting;
+import com.scapelog.client.model.WindowSizePreset;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -45,6 +46,7 @@ public final class Config {
 
 //		TableUtils.dropTable(connectionSource, Setting.class, false);
 		TableUtils.createTableIfNotExists(connectionSource, Setting.class);
+		TableUtils.createTableIfNotExists(connectionSource, WindowSizePreset.class);
 	}
 
 	public static void setBoolean(String sectionName, String key, boolean value) {
@@ -120,6 +122,10 @@ public final class Config {
 
 	public static <T> T runTransactional(Callable<T> callable) throws SQLException {
 		return TransactionManager.callInTransaction(connectionSource, callable);
+	}
+
+	public static ConnectionSource getConnectionSource() {
+		return connectionSource;
 	}
 
 }

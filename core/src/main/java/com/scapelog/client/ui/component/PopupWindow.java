@@ -1,5 +1,6 @@
 package com.scapelog.client.ui.component;
 
+import com.google.common.base.Preconditions;
 import com.scapelog.client.ui.ScapeFrame;
 import com.sun.javafx.tk.Toolkit;
 import javafx.application.Platform;
@@ -21,6 +22,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Popup;
 import javafx.stage.Screen;
 import javafx.stage.Window;
+
+import java.util.List;
 
 public class PopupWindow {
 	enum Direction {
@@ -72,9 +75,12 @@ public class PopupWindow {
 	private final int initialWidth;
 	private final int initialHeight;
 
+	private boolean isPrimary;
+	private boolean isMovingWindow = false;
+
 	private final InvalidationListener hideListener = observable -> {
 		if (!isDetached()) {
-			hide();
+			reposition();
 		}
 	};
 
@@ -91,15 +97,18 @@ public class PopupWindow {
 
 	static {
 		openPopOver.addListener((observable, oldValue, newValue) -> {
-			if (oldValue == null || oldValue.isDetached()) {
+			if (oldValue == null || oldValue.isDetached() || !newValue.isPrimary()) {
 				return;
 			}
-			oldValue.hide();
+			if (oldValue.isPrimary && newValue.isPrimary) {
+				oldValue.hide();
+			}
 		});
 	}
 
 	public PopupWindow(Node content, int initialWidth, int initialHeight) {
 		this.popup = new Popup();
+		this.popup.setAutoFix(false);
 
 		this.initialWidth = initialWidth;
 		this.initialHeight = initialHeight;
@@ -116,11 +125,7 @@ public class PopupWindow {
 		});
 
 		popup.setOnCloseRequest(e -> hide());
-
 		popup.getContent().add(parent);
-
-		//CSS.addStylesheets(PopUp.class, popup.getStylesheets(), "/css/popover.css");
-		//CSS.addDefaultStyles(scene.getStylesheets());
 	}
 
 	public PopupWindow(int initialWidth, int initialHeight) {
@@ -131,11 +136,11 @@ public class PopupWindow {
 		this(100, 25);
 	}
 
-	public void show(Node owner) {
-		show(owner, 4);
+	public final void show(Node owner) {
+		show(owner, 0);
 	}
 
-	public void show(Node owner, int offset) {
+	public final void show(Node owner, int offset) {
 		if (popup.isShowing()) {
 			return;
 		}
@@ -165,18 +170,46 @@ public class PopupWindow {
 		ownerWindow.heightProperty().addListener(weakHideListener);
 
 		visiblityProperty.set(true);
-		openPopOver.set(this);
+		if (isPrimary) {
+			openPopOver.set(this);
+		}
 
 		setDetached(false);
 
 		popup.show(owner, x, y);
-		setX(x);
-		setY(y);
+		_setX(x);
+		_setY(y);
 
 		lastOwner = owner;
 	}
 
-	public void setTitle(String title) {
+	public void show(Window window, double x, double y) {
+		if (window == null || popup.isShowing()) {
+			return;
+		}
+
+		if (ownerWindow != null) {
+			ownerWindow.xProperty().removeListener(weakXListener);
+			ownerWindow.xProperty().removeListener(weakYListener);
+		}
+
+		ownerWindow = window;
+		ownerWindow.xProperty().addListener(weakXListener);
+		ownerWindow.yProperty().addListener(weakYListener);
+
+		visiblityProperty.set(true);
+		if (isPrimary) {
+			openPopOver.set(this);
+		}
+
+		setDetached(false);
+
+		popup.show(window);
+		_setX(x);
+		_setY(y);
+	}
+
+	public final void setTitle(String title) {
 		titleProperty.set(title);
 	}
 
@@ -237,65 +270,92 @@ public class PopupWindow {
 		return new Point2D(x, y);
 	}
 
-	public void hide() {
+	public final void centerToScreen() {
+		List<Screen> screens = Screen.getScreensForRectangle(popup.getX(), popup.getY(), popup.getWidth(), popup.getHeight());
+		if (screens.size() == 0) {
+			System.out.println("No screens found, centering aborted");
+			return;
+		}
+		Screen screen = screens.get(0);
+		Rectangle2D bounds = screen.getBounds();
+
+		double width = popup.getWidth();
+		double height = popup.getHeight();
+
+		popup.setX(bounds.getMinX() + (bounds.getWidth() - width) / 2);
+		popup.setY(bounds.getMinY() + (bounds.getHeight() - height) / 2);
+	}
+
+	public final void hide() {
 		visiblityProperty.set(false);
 		popup.hide();
 	}
 
-	public void setContent(Node content) {
+	public final void setContent(Node content) {
+		content.getStyleClass().add("content");
 		parent.setCenter(content);
 	}
 
-	public Node getContent() {
+	public final Node getContent() {
 		return parent.getCenter();
 	}
 
-	private void setX(double x) {
+	public final void setX(double x) {
+		Preconditions.checkState(!isDetached(), "Position can only be set for detached popup windows!");
+		_setX(x);
+	}
+
+	public final void setY(double y) {
+		Preconditions.checkState(!isDetached(), "Position can only be set for detached popup windows!");
+		_setY(y);
+	}
+
+	private void _setX(double x) {
 		popup.setX(x);
 	}
 
-	private void setY(double y) {
+	private void _setY(double y) {
 		popup.setY(y);
 	}
 
-	private double getX() {
+	public final double getX() {
 		return popup.getX();
 	}
 
-	private double getY() {
+	public final double getY() {
 		return popup.getY();
 	}
 
-	public Popup getPopup() {
+	public final Popup getPopup() {
 		return popup;
 	}
 
-	public void reposition() {
+	public final void reposition() {
 		if (isDetached()) {
 			return;
 		}
 		Point2D point = getRelativePoint(lastOwner, lastOffset);
-		setX(point.getX());
-		setY(point.getY());
+		_setX(point.getX());
+		_setY(point.getY());
 	}
 
-	public Direction getDirection() {
+	public final Direction getDirection() {
 		return direction;
 	}
 
-	public void setDirection(Direction direction) {
+	public final void setDirection(Direction direction) {
 		this.direction = direction;
 	}
 
-	public boolean isDetached() {
+	public final boolean isDetached() {
 		return detached.get();
 	}
 
-	public void setDetached(boolean detached) {
+	public final void setDetached(boolean detached) {
 		this.detached.set(detached);
 	}
 
-	public void toggleDetach() {
+	public final void toggleDetach() {
 		boolean detached = !isDetached();
 		setDetached(detached);
 		if (!detached) {
@@ -303,15 +363,15 @@ public class PopupWindow {
 		}
 	}
 
-	public SimpleBooleanProperty detachedProperty() {
+	public final SimpleBooleanProperty detachedProperty() {
 		return detached;
 	}
 
-	public SimpleBooleanProperty getVisibilityProperty() {
+	public final SimpleBooleanProperty getVisibilityProperty() {
 		return visiblityProperty;
 	}
 
-	public SimpleStringProperty getTitleProperty() {
+	public final SimpleStringProperty getTitleProperty() {
 		return titleProperty;
 	}
 
@@ -322,6 +382,14 @@ public class PopupWindow {
 
 	public final boolean isShowing() {
 		return visiblityProperty.get();
+	}
+
+	public void setPrimary(boolean isPrimary) {
+		this.isPrimary = isPrimary;
+	}
+
+	public boolean isPrimary() {
+		return isPrimary;
 	}
 
 	public final void addFrameEvents(ScapeFrame frame, Node owner) {
@@ -342,14 +410,11 @@ public class PopupWindow {
 				if (iconified && isShowing()) {
 					hide();
 				}
-
 			});
 		});
 	}
 
-	private boolean isMovingWindow = false;
-
-	public void setDraggable(Node node) {
+	public final void setDraggable(Node node) {
 		class Delta {
 			double x, y;
 		}
@@ -365,8 +430,8 @@ public class PopupWindow {
 		node.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> isMovingWindow = false);
 		node.addEventFilter(MouseEvent.MOUSE_DRAGGED, e -> {
 			if (isMovingWindow && isDetached()) {
-				setX(e.getScreenX() + delta.x);
-				setY(e.getScreenY() + delta.y);
+				_setX(e.getScreenX() + delta.x);
+				_setY(e.getScreenY() + delta.y);
 			}
 		});
 	}

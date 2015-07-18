@@ -27,7 +27,7 @@ public final class ReflectionTab extends IconTab {
 	@Override
 	public Region getTabContent() {
 		VBox content = new VBox(5);
-		content.setPadding(new Insets(10, 10, 10, 10));
+		Components.setPadding(content, 10);
 
 		Label loadedClasses = new Label("Loaded classes: 0");
 		ClassStore.addListener(change -> Platform.runLater(() -> loadedClasses.setText("Loaded classes: " + ClassStore.getClassCount())));

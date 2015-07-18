@@ -42,6 +42,7 @@ public final class FeaturesWindow {
 		this.trigger = trigger;
 		this.popup = new PopupWindow(500, 400);
 		this.popup.setTitle(TITLE);
+		this.popup.setPrimary(true);
 		this.popup.addFrameEvents(frame, trigger);
 	}
 
@@ -101,7 +102,6 @@ public final class FeaturesWindow {
 
 		pane.setCenter(tabs);
 		pane.setPrefSize(500, 400);
-		// todo:
 		popup.setContent(pane);
 	}
 

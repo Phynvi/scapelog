@@ -40,18 +40,20 @@ public class NumberTextField extends TextField {
 	}
 
 	private void parseAndFormatInput() {
+		BigDecimal value = number.get();
 		try {
 			String input = getText();
 			if (input == null || input.length() == 0) {
 				return;
 			}
 			Number parsedNumber = numberFormat.parse(input);
-			BigDecimal newValue = new BigDecimal(parsedNumber.toString());
-			setNumber(newValue);
+			value = new BigDecimal(parsedNumber.toString());
+			setNumber(value);
 			selectAll();
 		} catch (ParseException e) {
-			setText(numberFormat.format(number.get()));
+			/**/
 		}
+		setText(numberFormat.format(value));
 	}
 
 	public BigDecimal getNumber() {

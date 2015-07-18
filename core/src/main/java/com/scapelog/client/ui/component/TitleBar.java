@@ -4,13 +4,13 @@ import com.scapelog.api.util.Components;
 import com.scapelog.client.ui.ScapeFrame;
 import com.scapelog.client.ui.StyleConstants;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import javafx.stage.Popup;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.awt.Point;
 import java.security.AccessController;
@@ -32,7 +32,7 @@ public final class TitleBar extends HBox {
 	private final HBox content;
 	private final HBox staticContent;
 
-	private final SimpleBooleanProperty draggabilityProperty = new SimpleBooleanProperty(false);
+	private final SimpleBooleanProperty draggabilityProperty = new SimpleBooleanProperty(true);
 
 	private boolean isMovingWindow = false;
 
@@ -51,8 +51,9 @@ public final class TitleBar extends HBox {
 		logo.setPrefWidth(67);
 
 		contentScroll = new ScrollPane(content);
-		contentScroll.setPadding(new Insets(0, 0, 0, 0));
+		Components.setPadding(contentScroll, 0);
 		contentScroll.setPannable(true);
+		contentScroll.setFitToHeight(true);
 		contentScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 		contentScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
@@ -66,12 +67,15 @@ public final class TitleBar extends HBox {
 	public TitleBar(PopupWindow popup) {
 		this(StyleConstants.TITLEBAR_DIMENSIONS.height, popup.getTitleProperty().get(), new WindowControls(popup.getPopup()));
 		popup.getTitleProperty().bindBidirectional(logo.textProperty());
-
 		setStyle("-fx-border-width: 1 1 0 1;");
-
-		// todo: resize listener?
-
 		setDraggable(popup.getPopup());
+	}
+
+	public TitleBar(Stage stage) {
+		this(StyleConstants.TITLEBAR_DIMENSIONS.height, stage.getTitle(), new WindowControls(stage));
+		stage.titleProperty().bindBidirectional(logo.textProperty());
+		setStyle("-fx-border-width: 1 1 0 1;");
+		setDraggable(stage);
 	}
 
 	public TitleBar(ScapeFrame frame) {
@@ -150,7 +154,7 @@ public final class TitleBar extends HBox {
 		return draggabilityProperty;
 	}
 
-	private void setDraggable(Popup popup) {
+	private void setDraggable(Window window) {
 		class Delta {
 			double x, y;
 		}
@@ -160,14 +164,14 @@ public final class TitleBar extends HBox {
 			if (e.isPrimaryButtonDown() && isDraggable()) {
 				isMovingWindow = true;
 			}
-			delta.x = popup.getX() - e.getScreenX();
-			delta.y = popup.getY() - e.getScreenY();
+			delta.x = window.getX() - e.getScreenX();
+			delta.y = window.getY() - e.getScreenY();
 		});
 		addEventFilter(MouseEvent.MOUSE_RELEASED, e -> isMovingWindow = false);
 		addEventFilter(MouseEvent.MOUSE_DRAGGED, e -> {
 			if (isMovingWindow && isDraggable()) {
-				popup.setX(e.getScreenX() + delta.x);
-				popup.setY(e.getScreenY() + delta.y);
+				window.setX(e.getScreenX() + delta.x);
+				window.setY(e.getScreenY() + delta.y);
 			}
 		});
 	}

@@ -8,6 +8,9 @@ import com.scapelog.api.ui.event.ComboBoxSelectEvent;
 import com.scapelog.client.config.Config;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.HBox;
@@ -26,6 +29,12 @@ public final class SettingsUtils {
 		return Components.createBox(title, spinner);
 	}
 
+	public static HBox createButtonSetting(String title, String buttonTitle, EventHandler<ActionEvent> eventHandler) {
+		Button button = Components.createBorderedButton(buttonTitle);
+		button.setOnAction(eventHandler);
+		return Components.createBox(title, button);
+	}
+
 	public static HBox createNumberFieldSetting(String title, int value, ChangeListener<Number> listener) {
 		NumberTextField textField = new NumberTextField(BigDecimal.valueOf(value));
 		textField.numberProperty().addListener(listener);
@@ -36,7 +45,7 @@ public final class SettingsUtils {
 	public static <T> HBox createComboBoxSetting(String title, ObservableList<T> items, Optional<Double> prefWidth, T selectedItem, ComboBoxSelectEvent<T> selectEvent) {
 		ComboBox<T> box = new ComboBox<>(items);
 		if (selectEvent != null) {
-			box.setOnAction(e -> selectEvent.selected(box.getSelectionModel().getSelectedItem()));
+			box.setOnAction(e -> selectEvent.selected(box, box.getSelectionModel().getSelectedItem()));
 		}
 		if (prefWidth.isPresent()) {
 			box.setPrefWidth(prefWidth.get());

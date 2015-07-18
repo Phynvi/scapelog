@@ -3,7 +3,6 @@ package com.scapelog.client.ui.component.tab;
 import com.scapelog.api.ui.tab.IconTab;
 import com.scapelog.api.util.Components;
 import de.jensd.fx.fontawesome.AwesomeIcon;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
@@ -17,7 +16,7 @@ public final class NewsTab extends IconTab {
 	@Override
 	public Node getTabContent() {
 		BorderPane content = new BorderPane();
-		content.setPadding(new Insets(10, 10, 10, 10));
+		Components.setPadding(content, 10);
 
 		TextArea newsArea = new TextArea();
 		addNews(newsArea);
