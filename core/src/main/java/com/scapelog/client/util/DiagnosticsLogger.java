@@ -25,7 +25,9 @@ public final class DiagnosticsLogger extends PrintStream {
 
 	@Override
 	public void println(Object x) {
-		addOutput(x.toString());
+		if (x != null) {
+			addOutput(x.toString());
+		}
 		super.println(x);
 	}
 

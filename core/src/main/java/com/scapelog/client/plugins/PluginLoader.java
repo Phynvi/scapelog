@@ -49,6 +49,7 @@ public final class PluginLoader {
 		plugins.add(new SlayerPlugin());
 		plugins.add(new HighscoresPlugin());
 		plugins.add(new TimerPlugin());
+		//plugins.add(new AraxxorPlugin());
 	}
 
 	public void startPlugins() {

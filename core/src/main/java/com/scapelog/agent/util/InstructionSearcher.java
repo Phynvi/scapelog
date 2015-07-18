@@ -41,8 +41,8 @@ public final class InstructionSearcher {
 		setIndex(-1);
 	}
 
-    public AbstractInsnNode current() {
-        return (index < 0 || index >= instructions.length) ? null : instructions[index];
+    public <T extends AbstractInsnNode> T current() {
+        return (index < 0 || index >= instructions.length) ? null : (T) instructions[index];
     }
 
     public AbstractInsnNode next(int opcode) {

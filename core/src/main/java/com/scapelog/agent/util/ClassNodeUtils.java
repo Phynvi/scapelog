@@ -3,6 +3,7 @@ package com.scapelog.agent.util;
 import com.scapelog.agent.util.tree.MethodInfo;
 import com.scapelog.client.ScapeLog;
 import com.scapelog.client.util.Debug;
+import com.scapelog.client.util.OperatingSystem;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldInsnNode;
@@ -23,23 +24,31 @@ public final class ClassNodeUtils {
 
 	public static void dumpClass(ClassNode node) {
 		if (ScapeLog.debug) {
-			ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-			node.accept(writer);
-			dumpClass(node.name, writer.toByteArray());
+			try {
+				if (OperatingSystem.getOperatingSystem() != OperatingSystem.LINUX) {
+					return;
+				}
+				ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+				node.accept(writer);
+				dumpClass(node.name, writer.toByteArray());
+			} catch (Exception e) {
+				Debug.println("Failed to dump %s", node.name);
+				e.printStackTrace();
+			}
 		}
 	}
 
 	public static void dumpClass(String name, byte[] bytes) {
 		if (ScapeLog.debug) {
-			if (name.contains("/")) {
-				return;
-			}
 			try {
 				Path destination = Paths.get("/tmp/classes");
 				if (Files.notExists(destination)) {
 					Files.createDirectory(destination);
 				}
-
+				Path dest = destination.resolve(name + ".class");
+				if (Files.notExists(dest.getParent())) {
+					Files.createDirectories(dest.getParent());
+				}
 				Files.write(destination.resolve(name + ".class"), bytes);
 				Debug.println("dumped %s", name);
 			} catch (IOException e) {

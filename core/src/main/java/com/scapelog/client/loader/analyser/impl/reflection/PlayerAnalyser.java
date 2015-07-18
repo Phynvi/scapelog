@@ -48,6 +48,7 @@ public final class PlayerAnalyser extends ReflectionAnalyser {
 				continue;
 			}
 			ReflectedFields.LOCAL_PLAYERS.setClassName(field.owner).setFieldName(field.name);
+			Debug.println("local_players identified as %s.%s", field.owner, field.name);
 			className = findClassName(field.desc, "[\\[|L]*(.*)[;]*");
 		}
 		if (className == null) {
@@ -78,6 +79,7 @@ public final class PlayerAnalyser extends ReflectionAnalyser {
 				continue;
 			}
 			ReflectedFields.PLAYER_USERNAME.setClassName(classNode.name).setFieldName(usernameField.name);
+			Debug.println("player_username identified as %s.%s", classNode.name, usernameField.name);
 			break;
 		}
 	}

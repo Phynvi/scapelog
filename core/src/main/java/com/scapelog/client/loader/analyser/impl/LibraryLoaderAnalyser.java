@@ -86,7 +86,7 @@ public final class LibraryLoaderAnalyser extends Analyser {
 					instructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC, Type.getInternalName(LibraryModifier.class), "modifyLibrary", Type.getMethodDescriptor(Type.getType(byte[].class), Type.getType(String.class), Type.getType(byte[].class)), false));
 					instructions.add(new VarInsnNode(Opcodes.ASTORE, payloadAload.var));
 					InjectionUtils.inject(methodNode, injectionIndex, instructions);
-					operation.addInjection(classNode.name, new ClassInjection(new MethodInfo(classNode.name, methodNode.name, methodNode.desc), methodNode.instructions.indexOf(injectionIndex), instructions, null));
+					operation.addInjection(classNode.name, new ClassInjection(new MethodInfo(classNode.name, methodNode.name, methodNode.desc), methodNode.instructions.indexOf(injectionIndex), instructions));
 
 					searcher.setIndex(index);
 				}

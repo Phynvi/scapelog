@@ -1,4 +1,4 @@
-package com.scapelog.client.event;
+package com.scapelog.api;
 
 public enum ClientFeatureStatus {
 	DISABLED("Disabled", "disabled"),

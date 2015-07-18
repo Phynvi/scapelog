@@ -6,6 +6,8 @@ import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.JumpInsnNode;
+import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
@@ -67,8 +69,13 @@ public final class InjectionUtils implements Opcodes {
 
 	public static void inject(MethodNode method, AbstractInsnNode indexNode, InsnList instructions) {
 		InsnList copiedList = new InsnList();
-		for (AbstractInsnNode node : instructions.toArray()) {
-			copiedList.add(node.clone(null));
+		for (int i = 0; i < instructions.size(); i++) {
+			AbstractInsnNode node = instructions.get(i);
+			if (node.getClass().equals(LabelNode.class) || node.getClass().equals(JumpInsnNode.class)) {
+				copiedList.add(node);
+			} else {
+				copiedList.add(node.clone(null));
+			}
 		}
 		if (indexNode == null) {
 			method.instructions.insert(copiedList);
