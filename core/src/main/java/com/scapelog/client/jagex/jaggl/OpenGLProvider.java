@@ -15,7 +15,9 @@ import com.scapelog.client.util.OperatingSystem;
 import com.scapelog.util.proguard.Keep;
 
 import java.awt.Canvas;
+import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.ComponentColorModel;
@@ -37,6 +39,31 @@ public final class OpenGLProvider {
     private static byte[] VBLANK;
 	private static BufferedImage overlayBuffer;
 	static Graphics2D overlayGraphics;
+
+	private static Font[] fonts = null;
+	private static final Object[][] fontNames = {
+			{"rs_dialogue_font_16", 16F},
+			{"rs_fancy_font_large_32", 32F},
+			{"rs_fancy_font_medium_32", 32F},
+			{"rs_fancy_font_small_32", 32F},
+			{"rs_gravestone_font_16", 16F},
+			{"rs_login_font_16", 16F},
+			{"rs_small_font_16", 16F},
+			{"rs_small_font_bold_16", 16F},
+			{"rs_tiny_font_16", 16F}
+	};
+
+	static {
+		fonts = new Font[fontNames.length];
+		for (int i = 0; i < fontNames.length; i++) {
+			try {
+				Font f = Font.createFont(Font.TRUETYPE_FONT, OpenGLProvider.class.getResourceAsStream("/fonts/" + fontNames[i][0] + ".ttf"));
+				fonts[i] = f.deriveFont((Float) fontNames[i][1]);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 	@Keep
 	@Detour(type = TargetType.INSTANCE)
@@ -133,6 +160,8 @@ public final class OpenGLProvider {
 			        new Hashtable());
 	        overlayGraphics = overlayBuffer.createGraphics();
 	        overlayGraphics.setClip(0, 0, width, height);
+	        overlayGraphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	        overlayGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         }
 	    try {
 		    byte[] buffer = ((DataBufferByte) overlayBuffer.getRaster().getDataBuffer()).getData();
@@ -140,7 +169,6 @@ public final class OpenGLProvider {
 			    System.arraycopy(VBLANK, 0, buffer, 0, VBLANK.length);
 		    }
 		    try {
-			    overlayGraphics.drawString("OpenGL", 10, 15);
 			    EventDispatcher.fireEvent(new PaintEvent(overlayGraphics, width, height));
 
 			    for (Overlay overlay : UserInterface.getOverlays()) {
