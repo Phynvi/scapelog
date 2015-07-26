@@ -4,6 +4,7 @@ import com.scapelog.api.ClientFeature;
 import com.scapelog.api.ClientFeatureStatus;
 import com.scapelog.api.event.impl.PaintEvent;
 import com.scapelog.api.ui.Overlay;
+import com.scapelog.api.ui.RSFont;
 import com.scapelog.client.event.EventDispatcher;
 import com.scapelog.client.loader.analyser.impl.detours.Detour;
 import com.scapelog.client.loader.analyser.impl.detours.Interceptor;
@@ -15,6 +16,7 @@ import com.scapelog.client.util.OperatingSystem;
 import com.scapelog.util.proguard.Keep;
 
 import java.awt.Canvas;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.color.ColorSpace;
@@ -139,12 +141,14 @@ public final class OpenGLProvider {
         }
 	    try {
 		    byte[] buffer = ((DataBufferByte) overlayBuffer.getRaster().getDataBuffer()).getData();
-		    if (VBLANK != null) {
-			    System.arraycopy(VBLANK, 0, buffer, 0, VBLANK.length);
-		    }
+		    System.arraycopy(VBLANK, 0, buffer, 0, VBLANK.length);
 		    try {
-			    EventDispatcher.fireEvent(new PaintEvent(overlayGraphics, width, height));
+			    Font font = overlayGraphics.getFont();
+			    overlayGraphics.setFont(RSFont.GRAVESTONE.getFont());
+			    overlayGraphics.drawString("OpenGL", 10, 15);
+			    overlayGraphics.setFont(font);
 
+			    EventDispatcher.fireEvent(new PaintEvent(overlayGraphics, width, height));
 			    for (Overlay overlay : UserInterface.getOverlays()) {
 				    if (!overlay.isVisible()) {
 					    continue;

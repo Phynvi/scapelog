@@ -2,6 +2,7 @@ package com.scapelog.client.loader;
 
 import com.google.common.collect.ImmutableList;
 import com.scapelog.agent.RSClassTransformer;
+import com.scapelog.agent.util.ClassNodeUtils;
 import com.scapelog.client.ScapeLog;
 import com.scapelog.client.event.ClientEventDispatcher;
 import com.scapelog.client.event.impl.LoadingEvent;
@@ -12,7 +13,6 @@ import com.scapelog.client.loader.analyser.ReflectionAnalyser;
 import com.scapelog.client.loader.analyser.ReflectionOperation;
 import com.scapelog.client.loader.analyser.impl.ClassLoaderAnalyser;
 import com.scapelog.client.loader.analyser.impl.DetourAnalyser;
-import com.scapelog.client.loader.analyser.impl.GameMessageAnalyser;
 import com.scapelog.client.loader.analyser.impl.InputEventAnalyser;
 import com.scapelog.client.loader.analyser.impl.MultiplierAnalyser;
 import com.scapelog.client.loader.analyser.impl.SkillAnalyser;
@@ -74,7 +74,7 @@ public final class ClientLoader {
 				new SkillAnalyser(),
 				new InputEventAnalyser(),
 				new VariableAnalyser(),
-				new GameMessageAnalyser(),
+				//new GameMessageAnalyser(),
 				new DetourAnalyser()
 //				new CameraZoomAnalyser()
 //				new VariableAnalyser()
@@ -182,9 +182,9 @@ public final class ClientLoader {
 		checkRequiredFields();
 
 		// todo: temp
-		/*if (ScapeLog.debug) {
+		if (ScapeLog.debug) {
 			classNodes.forEach(ClassNodeUtils::dumpClass);
-		}*/
+		}
 
 		RSClassTransformer.addInjections(analysingOperation.getClassInjections());
 		return archives.getGamepackArchive();

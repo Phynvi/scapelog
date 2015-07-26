@@ -1002,4 +1002,6 @@ public interface GL {
 
 	void glBlendFunc(int glSrcAlpha, int glOneMinusSrcAlpha);
 
+	void swapBuffers(long l);
+
 }

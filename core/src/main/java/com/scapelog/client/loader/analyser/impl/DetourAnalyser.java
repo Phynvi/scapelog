@@ -5,7 +5,6 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.scapelog.agent.util.InstructionSearcher;
 import com.scapelog.agent.util.tree.MethodInfo;
-import com.scapelog.client.jagex.jaggl.OpenGLProvider;
 import com.scapelog.client.loader.analyser.Analyser;
 import com.scapelog.client.loader.analyser.AnalysingOperation;
 import com.scapelog.client.loader.analyser.impl.detours.Detour;
@@ -25,7 +24,7 @@ import java.util.List;
 public final class DetourAnalyser extends Analyser {
 
 	private final List<Class<?>> detouredClasses = Lists.newArrayList(
-			OpenGLProvider.class/*,
+			/*OpenGLProvider.class/*,
 			Direct3DDetour.class,
 			Direct3DDeviceDetour.class*/
 	);
@@ -45,7 +44,7 @@ public final class DetourAnalyser extends Analyser {
 			for (MethodNode methodNode : classNode.methods) {
 				InstructionSearcher searcher = new InstructionSearcher(methodNode);
 				while (searcher.next(MethodInsnNode.class, instr -> true) != null) {
-					MethodInsnNode methodInsnNode = (MethodInsnNode) searcher.current();
+					MethodInsnNode methodInsnNode = searcher.current();
 					ImmutableList<DetouredMethod> detouredMethods = detouredClassMap.get(methodInsnNode.owner);
 					if (detouredMethods == null || detouredMethods.isEmpty()) {
 						continue;

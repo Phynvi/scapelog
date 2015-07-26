@@ -6,6 +6,7 @@ import com.scapelog.client.event.parser.GameMessageParser;
 import com.scapelog.client.event.parser.IdleResetParser;
 import com.scapelog.client.event.parser.SkillEventParser;
 import com.scapelog.client.event.parser.VariableEventParser;
+import com.scapelog.client.util.Debug;
 import javafx.beans.property.SimpleObjectProperty;
 
 import java.math.BigInteger;
@@ -28,6 +29,7 @@ public enum ClientFeature {
 		this.identifier = generateRandom();
 		this.name = name;
 		this.description = description;
+		Debug.println("[ClientFeature] name=" + name + ", identifier=" + identifier);
 	}
 
 	public static Event parseEvent(String identifier, String[] parts) {
