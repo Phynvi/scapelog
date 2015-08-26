@@ -716,11 +716,19 @@
 }
 
 /* Highscores */
-#highscores #skills, #highscores, #additional {
+#highscores #skills {
     -fx-border-width: 0 1 0 0;
     -fx-border-color: -fx-border-darker;
 }
 
+#highscores #username {
+    -fx-font-size: 20;
+}
+
+#avatar {
+    -fx-background-color: -fx-background-fill-darker;
+    -fx-border-color: -fx-border-lighter;
+}
 
 /**
  * SpinnerField

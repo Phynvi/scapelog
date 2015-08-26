@@ -3,6 +3,7 @@ package com.scapelog.client.plugins.impl;
 import com.goebl.david.Response;
 import com.goebl.david.Webb;
 import com.google.common.collect.Maps;
+import com.google.gson.Gson;
 import com.scapelog.api.model.Activities;
 import com.scapelog.api.model.SkillSet;
 import com.scapelog.api.plugin.ButtonPlugin;
@@ -10,6 +11,7 @@ import com.scapelog.api.plugin.TabMode;
 import com.scapelog.api.util.Components;
 import com.scapelog.api.util.Utilities;
 import com.scapelog.client.ScapeLog;
+import com.scapelog.client.model.PlayerDetails;
 import com.scapelog.client.reflection.wrappers.Client;
 import com.scapelog.client.reflection.wrappers.Player;
 import com.scapelog.client.ui.component.AutoCompleteTextField;
@@ -26,6 +28,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.TilePane;
@@ -112,6 +115,12 @@ public final class HighscoresPlugin extends ButtonPlugin {
 		int columns = 3;
 		int rows = 9;
 
+		/* player information */
+
+		Pane informationPane = getInformationPane();
+
+		/* skills */
+
 		VBox skillsBox = new VBox(5);
 		Components.setPadding(skillsBox, 0, 5, 0, 5);
 		skillsBox.setMaxWidth(cellWidth * columns);
@@ -129,6 +138,8 @@ public final class HighscoresPlugin extends ButtonPlugin {
 		addColumn(skillsPane, SkillSet.CONSTITUTION, SkillSet.AGILITY, SkillSet.HERBLORE, SkillSet.THIEVING, SkillSet.CRAFTING, SkillSet.FLETCHING, SkillSet.SLAYER, SkillSet.HUNTER, SkillSet.DIVINATION);
 		addColumn(skillsPane, SkillSet.MINING, SkillSet.SMITHING, SkillSet.FISHING, SkillSet.COOKING, SkillSet.FIREMAKING, SkillSet.WOODCUTTING, SkillSet.FARMING, SkillSet.SUMMONING);
 
+		/* additional */
+
 		TilePane additionalStats = new TilePane();
 		Components.setPadding(additionalStats, 0, 0, 5, 0);
 		additionalStats.setId("additional");
@@ -137,7 +148,7 @@ public final class HighscoresPlugin extends ButtonPlugin {
 		skillsBox.getChildren().addAll(skillsPane, additionalStats);
 
 		VBox activitiesBox = new VBox(5);
-		activitiesBox.setMaxWidth(activityCellWidth * 2);
+		activitiesBox.setMaxWidth(activityCellWidth);
 
 		TilePane activitiesPane = new TilePane();
 		Components.setPadding(activitiesPane, 5, 5, 5, 10);
@@ -157,9 +168,79 @@ public final class HighscoresPlugin extends ButtonPlugin {
 		}
 		activitiesBox.getChildren().addAll(activitiesPane);
 
+		grids.setTop(informationPane);
 		grids.setCenter(skillsBox);
 		grids.setRight(activitiesBox);
 		return grids;
+	}
+
+	private final ImageView avatar = new ImageView();
+	private final Label usernameLabel = new Label("");
+	private final Label clanLabel = new Label("");
+
+	private Pane getInformationPane() {
+		avatar.setImage(new Image("http://services.runescape.com/m=avatar-rs/default_chat.png", true));
+		avatar.setFitHeight(50.0);
+		avatar.setPreserveRatio(true);
+
+		HBox avatarBox = new HBox();
+		avatarBox.setId("avatar");
+		avatarBox.setMaxWidth(50.0);
+		avatarBox.setMaxHeight(50.0);
+		avatarBox.getChildren().add(avatar);
+
+		VBox pane = new VBox();
+		pane.setId("#player-info");
+		Components.setPadding(pane, 0, 5, 5, 5);
+		pane.setMinWidth(250.0);
+		pane.setMaxWidth(250.0);
+
+		BorderPane header = new BorderPane();
+		header.setId("header");
+		header.setCenter(avatarBox);
+		header.setMinWidth(50.0);
+		header.setMinHeight(50.0);
+
+		usernameLabel.setId("username");
+		usernameLabel.setMaxWidth(Double.MAX_VALUE);
+
+		// todo: hyperlink?
+		clanLabel.setId("clan-name");
+		clanLabel.setMaxWidth(Double.MAX_VALUE);
+
+		pane.getChildren().addAll(usernameLabel, clanLabel);
+		HBox box = new HBox(5, header, pane);
+		Components.setPadding(box, 5, 10, 5, 10);
+		return box;
+	}
+
+	private void updateCharacterInformation(String username) {
+		avatar.setImage(new Image("http://services.runescape.com/m=avatar-rs/" + username + "/chat.png", true));
+		usernameLabel.setText(Utilities.formatUsername(username.replace("+", " "))); // todo: formatted name
+
+		Webb webb = Webb.create();
+		webb.setBaseUri("http://services.runescape.com");
+		webb.setFollowRedirects(true);
+		webb.setDefaultHeader(Webb.HDR_USER_AGENT, "scapelog/1.0");
+		String time = String.valueOf(System.currentTimeMillis() / 1000);
+		String callback = "jQuery111003411935893962298_" + time;
+		Response<String> response = webb.get("/m=website-data/a=12/playerDetails.ws")
+				.param("names", "[\"" + username + "\"]")
+				.param("callback", callback)
+				.param("_", time)
+				.asString();
+		String result = response.getBody();
+		if (result != null) {
+			result = result.substring(callback.length() + 2, result.length() - 4);
+		}
+		String strippedResult = result;
+
+		Platform.runLater(() -> {
+			if (response.getStatusCode() == 200 && strippedResult != null) {
+				PlayerDetails playerDetails = new Gson().fromJson(strippedResult, PlayerDetails.class);
+				clanLabel.setText(playerDetails.getClan());
+			}
+		});
 	}
 
 	private void addColumn(TilePane grid, SkillSet... skills) {
@@ -188,14 +269,15 @@ public final class HighscoresPlugin extends ButtonPlugin {
 		}
 
 		ScapeLog.getExecutor().submit(() -> {
-			String cleanedUsername = username.replaceAll("\\s", "+");
-			cleanedUsername = cleanedUsername.toLowerCase();
+			final String cleanedUsername = username.replaceAll("\\s", "+").toLowerCase();
 
 			Response<String> response = webb.get("/index_lite.ws").param("player", cleanedUsername).asString();
 			String result = response.getBody();
 
 			Platform.runLater(() -> {
 				if (response.getStatusCode() == 200 && result != null) {
+					updateCharacterInformation(cleanedUsername);
+
 					String[] lines = result.split("\\n");
 					for (int i = 0; i < lines.length; i++) {
 						String[] parts = lines[i].split(",");

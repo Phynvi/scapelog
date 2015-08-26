@@ -42,10 +42,11 @@ public final class Fonts {
 		return "file://" + stylesheet.toString();
 	}
 
-	public static Path getWebFontFile(String name) {
+	private static Path getWebFontFile(String name) {
 		try {
 			String stylesheetPath = System.getProperty("user.home") + "/.scapelog/fonts/";
 			String stylesheetName = name + ".css";
+			stylesheetName = stylesheetName.replace("+", "");
 			Path stylesheet = Paths.get(stylesheetPath, stylesheetName);
 
 			if (Files.exists(stylesheet)) {

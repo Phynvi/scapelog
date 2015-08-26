@@ -53,4 +53,25 @@ public final class Utilities {
 		return new String(chars, 0, chars.length);
 	}
 
+	public static String formatUsername(String username) {
+		username = username.toLowerCase();
+		char[] chars = username.toCharArray();
+		boolean sentenceStart = true;
+		for (int i = 0; i < chars.length; i++) {
+			char c = chars[i];
+			if (sentenceStart) {
+				if (c >= 'a' && c <= 'z') {
+					chars[i] -= 0x20;
+					sentenceStart = false;
+				} else if (c >= 'A' && c <= 'Z') {
+					sentenceStart = false;
+				}
+			}
+			if (c == ' ') {
+				sentenceStart = true;
+			}
+		}
+		return new String(chars, 0, chars.length);
+	}
+
 }
