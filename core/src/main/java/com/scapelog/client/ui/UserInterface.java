@@ -21,8 +21,8 @@ import com.scapelog.client.ui.component.TitleBar;
 import com.scapelog.client.ui.util.Fonts;
 import com.scapelog.client.util.DiagnosticsLogger;
 import com.sun.javafx.application.PlatformImpl;
-import de.jensd.fx.fontawesome.AwesomeDude;
-import de.jensd.fx.fontawesome.AwesomeIcon;
+import de.jensd.fx.glyphs.GlyphsDude;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
@@ -134,7 +134,7 @@ public final class UserInterface {
 		});
 */
 		ToggleButton featuresButton = new ToggleButton();
-		AwesomeDude.setIcon(featuresButton, AwesomeIcon.BARS);
+		GlyphsDude.setIcon(featuresButton, FontAwesomeIcon.BARS, "16");
 		featuresButton.setId("features");
 		HBox.setMargin(featuresButton, new Insets(2, 8, 0, 4));
 		featuresButton.setTooltip(new Tooltip("Features"));

@@ -8,8 +8,7 @@ import com.scapelog.api.util.Components;
 import com.scapelog.api.util.TimeUtils;
 import com.scapelog.api.util.Utilities;
 import com.scapelog.client.ScapeLog;
-import de.jensd.fx.fontawesome.AwesomeDude;
-import de.jensd.fx.fontawesome.AwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -35,7 +34,7 @@ public final class DashboardTab extends IconTab {
 	private final SimpleIntegerProperty onlinePlayersProperty = new SimpleIntegerProperty(0);
 
 	public DashboardTab() {
-		super(AwesomeIcon.HOME, "Dashboard");
+		super(FontAwesomeIcon.HOME, "Dashboard");
 
 		Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0), new EventHandler<ActionEvent>() {
 			int tick = 0;
@@ -95,7 +94,7 @@ public final class DashboardTab extends IconTab {
 			for (ClientFeature feature : ClientFeature.values()) {
 				HBox box = new HBox(10);
 
-				Label explanationLabel = AwesomeDude.createIconLabel(AwesomeIcon.QUESTION, "12");
+				Label explanationLabel = Components.createIconLabel(FontAwesomeIcon.QUESTION, "12");
 				explanationLabel.setTooltip(new Tooltip(feature.getDescription()));
 
 				Label statusLabel = new Label(feature.getStatus().getStatus());

@@ -2,7 +2,7 @@ package com.scapelog.client.ui.component.tab;
 
 import com.scapelog.api.ui.tab.IconTab;
 import com.scapelog.api.util.Components;
-import de.jensd.fx.fontawesome.AwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.scene.Node;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
@@ -10,7 +10,7 @@ import javafx.scene.layout.BorderPane;
 public final class NewsTab extends IconTab {
 
 	public NewsTab() {
-		super(AwesomeIcon.ENVELOPE, "News and updates");
+		super(FontAwesomeIcon.ENVELOPE, "News and updates");
 	}
 
 	@Override

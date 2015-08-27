@@ -8,8 +8,7 @@ import com.scapelog.api.plugin.TabMode;
 import com.scapelog.api.util.Components;
 import com.scapelog.api.util.SettingsUtils;
 import com.scapelog.api.util.TimeUtils;
-import de.jensd.fx.fontawesome.AwesomeDude;
-import de.jensd.fx.fontawesome.AwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -34,7 +33,7 @@ import java.util.Optional;
 // todo: do something about the settings
 // todo: persisted timers
 public final class TimerPlugin extends Plugin {
-	private static final AwesomeIcon icon = AwesomeIcon.CLOCK_ALT;
+	private static final FontAwesomeIcon icon = FontAwesomeIcon.CLOCK_ALT;
 
 	private final Label timerLabel = new Label("00:00");
 	private final Label sessionLabel = new Label("00:00:00");
@@ -275,15 +274,15 @@ public final class TimerPlugin extends Plugin {
 			this.duration = duration;
 			this.startTime = System.currentTimeMillis();
 
-			Button reset = Components.createIconButton(AwesomeIcon.REFRESH, "13");
-			Button remove = Components.createIconButton(AwesomeIcon.REMOVE, "13");
-			Button pause = Components.createIconButton(AwesomeIcon.PAUSE, "13");
+			Button reset = Components.createIconButton(FontAwesomeIcon.REFRESH, "13");
+			Button remove = Components.createIconButton(FontAwesomeIcon.REMOVE, "13");
+			Button pause = Components.createIconButton(FontAwesomeIcon.PAUSE, "13");
 
 			reset.setOnAction(e -> startTime = System.currentTimeMillis());
 			remove.setOnAction(e -> timerList.remove(this));
 			pause.setOnAction(e -> {
 				paused = !paused;
-				pause.setGraphic(AwesomeDude.createIconLabel(paused ? AwesomeIcon.PLAY : AwesomeIcon.PAUSE, "13"));
+				pause.setGraphic(Components.createIconLabel(paused ? FontAwesomeIcon.PLAY : FontAwesomeIcon.PAUSE, "13"));
 
 				if (paused) {
 					pauseStart = System.currentTimeMillis();

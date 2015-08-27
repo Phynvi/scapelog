@@ -12,7 +12,7 @@ import com.scapelog.api.plugin.TabPlugin;
 import com.scapelog.api.util.Components;
 import com.scapelog.api.util.SettingsUtils;
 import com.scapelog.api.util.Utilities;
-import de.jensd.fx.fontawesome.AwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -55,7 +55,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 //todo: level goals
 public final class SkillTrackerPlugin extends TabPlugin {
-	private static final AwesomeIcon ICON = AwesomeIcon.BAR_CHART_ALT;
+	private static final FontAwesomeIcon ICON = FontAwesomeIcon.BAR_CHART_ALT;
 
 	private final SimpleObjectProperty<SkillBox> draggedBox = new SimpleObjectProperty<>();
 	private final String dragKey = "skillbox";
@@ -409,11 +409,11 @@ public final class SkillTrackerPlugin extends TabPlugin {
 			};
 			skill.xpProperty().addListener(xpListener);*/
 
-			Button refreshButton = Components.createIconButton(AwesomeIcon.REFRESH, "10.0", (e) -> {
+			Button refreshButton = Components.createIconButton(FontAwesomeIcon.REFRESH, "10.0", (e) -> {
 				skill.resetStartTime();
 				skill.resetGainedXp();
 			});
-			Button closeButton = Components.createIconButton(AwesomeIcon.TIMES, "10.0", (e) -> {
+			Button closeButton = Components.createIconButton(FontAwesomeIcon.TIMES, "10.0", (e) -> {
 				skill.reset();
 				skillBoxes.remove(this);
 				boxedSkills.remove(skill);

@@ -12,11 +12,12 @@ import com.scapelog.client.ui.component.PopupWindow;
 import com.scapelog.client.ui.component.tab.DashboardTab;
 import com.scapelog.client.ui.component.tab.DeveloperTab;
 import com.scapelog.client.ui.component.tab.NewsTab;
+import com.scapelog.client.ui.component.tab.NotificationTab;
 import com.scapelog.client.ui.component.tab.ReflectionTab;
 import com.scapelog.client.ui.component.tab.SettingsTab;
 import com.scapelog.util.proguard.Keep;
 import com.sun.javafx.scene.control.skin.TabPaneSkin;
-import de.jensd.fx.fontawesome.AwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Side;
@@ -33,7 +34,6 @@ import javafx.scene.layout.StackPane;
 import java.lang.reflect.Field;
 
 public final class FeaturesWindow {
-	private final String TITLE = "Features";
 
 	private final PopupWindow popup;
 	private final ToggleButton trigger;
@@ -41,7 +41,7 @@ public final class FeaturesWindow {
 	public FeaturesWindow(ToggleButton trigger, ScapeFrame frame) {
 		this.trigger = trigger;
 		this.popup = new PopupWindow(500, 400);
-		this.popup.setTitle(TITLE);
+		this.popup.setTitle("Features");
 		this.popup.setPrimary(true);
 		this.popup.addFrameEvents(frame, trigger);
 	}
@@ -64,6 +64,7 @@ public final class FeaturesWindow {
 		tabs.getTabs().addAll(
 				new DashboardTab().getTab(),
 				new SettingsTab().getTab(),
+				new NotificationTab().getTab(),
 				new NewsTab().getTab()
 		);
 
@@ -145,7 +146,7 @@ public final class FeaturesWindow {
 					controlButtonsPane.setPrefWidth(30);
 					controlButtonsPane.getChildren().clear();
 
-					final Button iconButton = Components.createIconButton(AwesomeIcon.THUMB_TACK, "15.0");
+					final Button iconButton = Components.createIconButton(FontAwesomeIcon.THUMB_TACK, "15.0");
 					iconButton.setTooltip(new Tooltip("Detach"));
 					iconButton.setStyle("-fx-rotate: 135;");
 					controlButtonsPane.getChildren().add(iconButton);

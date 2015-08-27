@@ -5,7 +5,7 @@ import com.scapelog.api.plugin.OpenTechnique;
 import com.scapelog.api.plugin.Plugin;
 import com.scapelog.api.plugin.TabMode;
 import com.scapelog.api.ui.Overlay;
-import de.jensd.fx.fontawesome.AwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
@@ -17,7 +17,7 @@ import java.util.Optional;
 public final class AraxxorPlugin extends Plugin {
 
 	public AraxxorPlugin() {
-		super(TabMode.ON, AwesomeIcon.TH, "Araxxor", Optional.of("araxxor-plugin"), ClientFeature.OPENGL);
+		super(TabMode.ON, FontAwesomeIcon.TH, "Araxxor", Optional.of("araxxor-plugin"), ClientFeature.OPENGL);
 	}
 
 	private final Overlay overlay = new Overlay(200, 20) {

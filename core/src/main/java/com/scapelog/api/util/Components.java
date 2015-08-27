@@ -1,8 +1,9 @@
 package com.scapelog.api.util;
 
 import com.scapelog.client.ui.util.Fonts;
-import de.jensd.fx.fontawesome.AwesomeDude;
-import de.jensd.fx.fontawesome.AwesomeIcon;
+import de.jensd.fx.glyphs.GlyphIcons;
+import de.jensd.fx.glyphs.GlyphsDude;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -14,6 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -46,17 +48,30 @@ public final class Components {
 	 * @param size Size of the icon in JavaFX compatible format for -fx-font-size
 	 * @return A button with an icon of given size
 	 */
-	public static Button createIconButton(AwesomeIcon icon, String size) {
+	public static Button createIconButton(FontAwesomeIcon icon, String size) {
 		return createIconButton(icon, size, null);
 	}
 
-	public static Button createIconButton(AwesomeIcon icon, String size, EventHandler<ActionEvent> event) {
+	public static Button createIconButton(FontAwesomeIcon icon, String size, EventHandler<ActionEvent> event) {
+		Text label = GlyphsDude.createIcon(icon, size);
 		Button button = new Button();
-		button.setGraphic(AwesomeDude.createIconLabel(icon, size));
+		button.setGraphic(label);
 		if (event != null) {
 			button.setOnAction(event);
 		}
 		return button;
+	}
+
+	public static Label createIconLabel(GlyphIcons icon) {
+		return createIconLabel(icon, "16.0");
+	}
+
+	public static Label createIconLabel(GlyphIcons icon, String size) {
+		Text iconLabel = GlyphsDude.createIcon(icon, size);
+		Label label = new Label();
+		label.setStyle("-fx-font-size: " + size + ";");
+		label.setGraphic(iconLabel);
+		return label;
 	}
 
 	public static Button createBorderedButton(String text) {

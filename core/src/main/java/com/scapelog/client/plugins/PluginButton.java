@@ -6,8 +6,7 @@ import com.scapelog.api.util.Components;
 import com.scapelog.client.ui.ScapeFrame;
 import com.scapelog.client.ui.component.PopupWindow;
 import com.scapelog.client.ui.component.TitleBar;
-import de.jensd.fx.fontawesome.AwesomeDude;
-import de.jensd.fx.fontawesome.AwesomeIcon;
+import de.jensd.fx.glyphs.GlyphIcons;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
@@ -76,8 +75,8 @@ public final class PluginButton extends BorderPane {
 		setPrefWidth(prefWidth);
 	}
 
-	private void setGraphic(Button button, AwesomeIcon icon) {
-		Label iconLabel = AwesomeDude.createIconLabel(icon);
+	private void setGraphic(Button button, GlyphIcons icon) {
+		Label iconLabel = Components.createIconLabel(icon);
 		button.setGraphic(iconLabel);
 	}
 

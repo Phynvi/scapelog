@@ -1,21 +1,21 @@
 package com.scapelog.api.plugin;
 
 import com.scapelog.api.ClientFeature;
-import de.jensd.fx.fontawesome.AwesomeIcon;
+import de.jensd.fx.glyphs.GlyphIcons;
 
 import java.util.Optional;
 
 public abstract class TabPlugin extends Plugin {
 
-	public TabPlugin(AwesomeIcon icon, String name) {
+	public TabPlugin(GlyphIcons icon, String name) {
 		super(TabMode.ON, icon, name);
 	}
 
-	public TabPlugin(AwesomeIcon icon, String name, Optional<String> configSectionName) {
+	public TabPlugin(GlyphIcons icon, String name, Optional<String> configSectionName) {
 		super(TabMode.ON, icon, name, configSectionName);
 	}
 
-	public TabPlugin(AwesomeIcon icon, String name, Optional<String> configSectionName, ClientFeature... dependingFeatures) {
+	public TabPlugin(GlyphIcons icon, String name, Optional<String> configSectionName, ClientFeature... dependingFeatures) {
 		super(TabMode.ON, icon, name, configSectionName, dependingFeatures);
 	}
 

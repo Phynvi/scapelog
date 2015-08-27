@@ -2,8 +2,8 @@ package com.scapelog.client.ui.component;
 
 import com.scapelog.api.util.Components;
 import com.scapelog.client.ui.ScapeFrame;
-import de.jensd.fx.fontawesome.AwesomeDude;
-import de.jensd.fx.fontawesome.AwesomeIcon;
+import de.jensd.fx.glyphs.GlyphsDude;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -20,7 +20,7 @@ import java.awt.event.WindowEvent;
 
 public final class WindowControls extends HBox {
 	Button minimizeButton = new Button("_");
-	Button maximizeButton = AwesomeDude.createIconButton(AwesomeIcon.EXPAND);
+	Button maximizeButton = GlyphsDude.createIconButton(FontAwesomeIcon.EXPAND);
 	Button closeButton = new Button("x");
 
 	public WindowControls() {
@@ -82,7 +82,7 @@ public final class WindowControls extends HBox {
 	}
 	public void sizeChanged(boolean maximized) {
 		Platform.runLater(() -> {
-			Label label = AwesomeDude.createIconLabel(maximized ? AwesomeIcon.COMPRESS : AwesomeIcon.EXPAND);
+			Label label = Components.createIconLabel(maximized ? FontAwesomeIcon.COMPRESS : FontAwesomeIcon.EXPAND);
 			maximizeButton.setGraphic(label);
 		});
 	}
