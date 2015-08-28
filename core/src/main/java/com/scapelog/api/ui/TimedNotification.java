@@ -6,6 +6,7 @@ import javafx.animation.Timeline;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.Popup;
 import javafx.util.Duration;
@@ -28,6 +29,8 @@ public final class TimedNotification extends Popup {
 		Label label = new Label(text);
 		label.setWrapText(true);
 		flowPane.getChildren().addAll(label);
+
+		getScene().addEventHandler(MouseEvent.MOUSE_PRESSED, event -> hide());
 
 		getContent().add(flowPane);
 	}

@@ -93,6 +93,10 @@ public final class Components {
 		return label;
 	}
 
+	public static VBox createHeader(String title) {
+		return createHeader(title, null);
+	}
+
 	public static VBox createHeader(String title, String description) {
 		VBox box = new VBox();
 		box.getStyleClass().add("header");

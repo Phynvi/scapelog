@@ -12,6 +12,7 @@ import com.scapelog.client.config.UserInterfaceConfigKeys;
 import com.scapelog.client.event.ClientEventDispatcher;
 import com.scapelog.client.event.ClientEventListener;
 import com.scapelog.client.event.impl.ClientResizeEvent;
+import com.scapelog.client.event.impl.ClientWindowInitializedEvent;
 import com.scapelog.client.event.impl.PluginStartEvent;
 import com.scapelog.client.model.WindowSizes;
 import com.scapelog.client.plugins.PluginButton;
@@ -106,6 +107,8 @@ public final class UserInterface {
 				scapeFrame.toggleMaximize();
 			}
 			WindowSizes.setFrame(scapeFrame);
+
+			ClientEventDispatcher.fireEvent(new ClientWindowInitializedEvent(frame));
 		});
 	}
 
