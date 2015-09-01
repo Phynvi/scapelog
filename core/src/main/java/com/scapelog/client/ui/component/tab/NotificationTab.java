@@ -44,7 +44,7 @@ public final class NotificationTab extends IconTab {
 		tabContent.getChildren().add(Components.createHeader("Notifications"));
 
 		for (NotificationManager notificationManager : notificationManagers) {
-			Region header = getHeader(notificationManager.getName(), getTabContent(), notificationManager.getPanelContent());
+			Region header = getHeader(notificationManager.getName(), tabContent, notificationManager.getPanelContent());
 			tabContent.getChildren().add(header);
 		}
 		return tabContent;

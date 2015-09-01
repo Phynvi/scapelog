@@ -8,6 +8,7 @@ import com.scapelog.api.util.Components;
 import com.scapelog.api.util.TimeUtils;
 import com.scapelog.api.util.Utilities;
 import com.scapelog.client.ScapeLog;
+import com.scapelog.client.model.VoiceOfSeren;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -72,10 +73,21 @@ public final class DashboardTab extends IconTab {
 			username = "Logged in as " + Utilities.capitalize(ScapeLog.getUser().getUsername());
 		}
 
+		ImageView voice1 = new ImageView();
+		ImageView voice2 = new ImageView();
+		updateVoice(voice1, voice2, VoiceOfSeren.getCurrentVoice().get());
+
+		VoiceOfSeren.getCurrentVoice().addListener((observable, oldValue, newVoice) -> {
+			updateVoice(voice1, voice2, newVoice);
+		});
+
+		VoiceOfSeren.getCurrentVoice().set(new VoiceOfSeren.Clan[]{VoiceOfSeren.Clan.AMLODD, VoiceOfSeren.Clan.TRAHAEARN});
+
 		HBox statsBox = new HBox(10,
 				new VBox(5,
-						playerCountLabel
+						playerCountLabel,
 						//new Label("ScapeLog online: TODO") //TODO: Implement
+						new HBox(10, new Label("Voice of Seren:"), voice1, voice2)
 				),
 				Components.createSpacer(),
 				new VBox(10,
@@ -83,7 +95,7 @@ public final class DashboardTab extends IconTab {
 						new Label(username)
 				)
 		);
-		content.getChildren().addAll(logoPane, statsBox);
+		content.getChildren().addAll(logoPane, statsBox, Components.createSpacer(), Components.createSpacer());
 
 		if (ScapeLog.isAgentEnabled()) {
 			VBox featureHeader = Components.createHeader("Feature status", "Current status of the features that ScapeLog hooks into");
@@ -92,6 +104,10 @@ public final class DashboardTab extends IconTab {
 			VBox featureBox = new VBox(10);
 			featureBox.setId("feature-statuses");
 			for (ClientFeature feature : ClientFeature.values()) {
+				// todo: remove when fixed
+				if (feature == ClientFeature.GAME_MESSAGES || feature == ClientFeature.OPENGL) {
+					continue;
+				}
 				HBox box = new HBox(10);
 
 				Label explanationLabel = Components.createIconLabel(FontAwesomeIcon.QUESTION, "12");
@@ -154,6 +170,17 @@ public final class DashboardTab extends IconTab {
 				/**/
 			}
 		});
+	}
+
+	private void updateVoice(ImageView voice1, ImageView voice2, VoiceOfSeren.Clan[] clans) {
+		if (clans.length != 2 || clans[0] == null || clans[1] == null) {
+			return;
+		}
+		voice1.setImage(clans[0].getImage());
+		voice2.setImage(clans[1].getImage());
+
+		voice1.setSmooth(true);
+		voice2.setSmooth(true);
 	}
 
 }
