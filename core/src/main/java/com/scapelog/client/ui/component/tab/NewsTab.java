@@ -70,6 +70,15 @@ public final class NewsTab extends IconTab {
 				" - Added window size presets in the settings tab in case you want to quickly resize the window for specific activities",
 				" - Added capability to draw on the OpenGL surface (DirectX will be added at some point)",
 		});
+		insertNews(textArea, new String[] {
+				"Updates #6 - 1 September 2015",
+				" - Hid game messages and OpenGL features as they are manually disabled for now",
+				" - Disabled the slayer plugin",
+				" - Added player's clan and avatar view in the highscores plugin",
+				" - Added current Voice of Seren in the dashboard tab",
+				" - Added notifications for Voice of Seren change (disabled by default)",
+				" - Updated some third party dependencies"
+		});
 	}
 
 	private void insertNews(TextArea textArea, String[] lines) {
