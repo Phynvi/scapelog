@@ -15,7 +15,7 @@ import com.scapelog.client.model.PlayerDetails;
 import com.scapelog.client.reflection.wrappers.Client;
 import com.scapelog.client.reflection.wrappers.Player;
 import com.scapelog.client.ui.component.AutoCompleteTextField;
-import de.jensd.fx.fontawesome.AwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -53,7 +53,7 @@ public final class HighscoresPlugin extends ButtonPlugin {
 	private Region content;
 
 	public HighscoresPlugin() {
-		super(TabMode.OFF, AwesomeIcon.TROPHY, "Highscores");
+		super(TabMode.OFF, FontAwesomeIcon.TROPHY, "Highscores");
 	}
 
 	@Override

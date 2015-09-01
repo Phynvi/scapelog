@@ -6,9 +6,8 @@ import com.scapelog.client.ClassStore;
 import com.scapelog.client.reflection.wrappers.Client;
 import com.scapelog.client.reflection.wrappers.Player;
 import com.scapelog.client.util.Debug;
-import de.jensd.fx.fontawesome.AwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
@@ -21,7 +20,7 @@ import java.util.Optional;
 public final class ReflectionTab extends IconTab {
 
 	public ReflectionTab() {
-		super(AwesomeIcon.CUBE, "Reflection testing");
+		super(FontAwesomeIcon.CUBE, "Reflection testing");
 	}
 
 	@Override

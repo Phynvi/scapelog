@@ -9,7 +9,7 @@
     -fx-border-darker: #151515;
     -fx-border-lighter: derive(-fx-border, 20%);
 
-    -fx-text: #a3a3a3;
+    -fx-text: #ababab;
     -fx-text-darker: #717171;
 }
 
@@ -59,6 +59,7 @@
 
 #title-bar #features {
     -fx-translate-y: 1;
+    -fx-label-padding: 1;
 }
 
 #window-controls {
@@ -127,18 +128,29 @@
 }
 
 /**
+ * Icons
+ */
+.glyph-icon {
+    -fx-fill: -fx-text;
+    -fx-background-color: transparent;
+}
+
+.glyph-icon:hover {
+    -fx-fill: -fx-text-darker;
+    -fx-background-color: transparent;
+}
+
+/**
  * Buttons
  */
 .button,
-.bordered,
-.awesome {
+.bordered {
     -fx-text-fill: -fx-text;
     -fx-background-color: transparent;
 }
 
 .button:hover,
-.bordered:hover,
-.awesome:hover {
+.bordered:hover {
     -fx-text-fill: -fx-text-darker;
     -fx-background-color: transparent;
 }
@@ -266,7 +278,7 @@
 /*    -fx-background-color: linear-gradient(#252525, -fx-background-fill);*/
 }
 
-.tab-pane .tab *.tab-label, .tab-pane .tab .awesome {
+.tab-pane .tab *.tab-label, .tab-pane .tab .glyph-icon {
     -fx-text-fill: -fx-text;
 }
 
@@ -583,6 +595,7 @@
 .header {
     -fx-border-width: 0 0 1 0;
     -fx-border-color: -fx-border-darker;
+    -fx-padding: 0 0 3 0;
 }
 
 .header > .title {
@@ -592,7 +605,7 @@
 .header > .description {
     -fx-font-size: 10;
     -fx-text-fill: -fx-text-darker;
-    -fx-padding: 0 0 5 0;
+    -fx-padding: 0 0 2 0;
 }
 
 /*******************************************************************************

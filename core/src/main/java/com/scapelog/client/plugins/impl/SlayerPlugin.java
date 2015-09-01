@@ -13,7 +13,7 @@ import com.scapelog.api.util.SettingsUtils;
 import com.scapelog.client.event.EventDispatcher;
 import com.scapelog.client.reflection.wrappers.Settings;
 import com.scapelog.client.ui.util.WebUtils;
-import de.jensd.fx.fontawesome.AwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Pos;
@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public final class SlayerPlugin extends Plugin {
-	private static final AwesomeIcon ICON = AwesomeIcon.CROSSHAIRS;
+	private static final FontAwesomeIcon ICON = FontAwesomeIcon.CROSSHAIRS;
 
 	private SlayerTask slayerTask = new SlayerTask(0, 0);
 

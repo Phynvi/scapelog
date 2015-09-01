@@ -5,6 +5,7 @@ import com.scapelog.client.ui.listeners.FrameResizeHandler;
 import com.scapelog.client.ui.util.CSS;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
+import javafx.scene.SceneAntialiasing;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -47,7 +48,7 @@ public class DecoratedFrame {
 
 		addTitleBar();
 
-		scene = new Scene(layerPane, width, sceneHeight);
+		scene = new Scene(layerPane, width, sceneHeight, false, SceneAntialiasing.BALANCED);
 		if(frame.isResizable()) {
 			FrameResizeHandler resizeHandler = new FrameResizeHandler(scene, frame);
 			scene.addEventFilter(MouseEvent.MOUSE_MOVED, resizeHandler);

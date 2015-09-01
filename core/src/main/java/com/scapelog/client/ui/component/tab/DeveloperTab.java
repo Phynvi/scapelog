@@ -15,7 +15,7 @@ import com.scapelog.api.util.SettingsUtils;
 import com.scapelog.client.ScapeLog;
 import com.scapelog.client.event.EventDispatcher;
 import com.scapelog.client.plugins.PluginLoader;
-import de.jensd.fx.fontawesome.AwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -49,7 +49,7 @@ public final class DeveloperTab extends IconTab {
 	private ScrollPane scrollPane;
 
 	public DeveloperTab(PluginLoader pluginLoader) {
-		super(AwesomeIcon.TERMINAL, "Developer tab");
+		super(FontAwesomeIcon.TERMINAL, "Developer tab");
 		this.pluginLoader = pluginLoader;
 	}
 

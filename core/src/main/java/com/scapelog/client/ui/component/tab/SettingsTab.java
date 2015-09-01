@@ -10,7 +10,7 @@ import com.scapelog.client.event.impl.ClientResizeEvent;
 import com.scapelog.client.model.Language;
 import com.scapelog.client.model.WindowSizes;
 import com.scapelog.client.ui.UserInterface;
-import de.jensd.fx.fontawesome.AwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -23,7 +23,7 @@ import java.util.Optional;
 public final class SettingsTab extends IconTab {
 
 	public SettingsTab() {
-		super(AwesomeIcon.COGS, "Settings");
+		super(FontAwesomeIcon.COGS, "Settings");
 	}
 
 	@Override
@@ -58,6 +58,7 @@ public final class SettingsTab extends IconTab {
 						}
 				),
 
+				Components.createSpacer(),
 				Components.createSpacer(),
 				Components.createHeader("RuneScape settings", "Settings for the RuneScape client"),
 

@@ -12,8 +12,8 @@ import com.scapelog.api.util.Components;
 import com.scapelog.client.config.ConfigWrapper;
 import com.scapelog.client.event.EventDispatcher;
 import com.scapelog.client.ui.UserInterface;
-import de.jensd.fx.fontawesome.AwesomeDude;
-import de.jensd.fx.fontawesome.AwesomeIcon;
+import de.jensd.fx.glyphs.GlyphIcons;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -33,24 +33,24 @@ public abstract class Plugin extends ConfigWrapper {
 	private final ImmutableList<ClientFeature> dependingFeatures;
 	private final SimpleBooleanProperty status = new SimpleBooleanProperty(false);
 	private final List<EventListener<? extends Event>> eventListeners = Lists.newArrayList();
-	private final SimpleObjectProperty<AwesomeIcon> buttonIconProperty = new SimpleObjectProperty<>(AwesomeIcon.QUESTION);
+	private final SimpleObjectProperty<GlyphIcons> buttonIconProperty = new SimpleObjectProperty<>(FontAwesomeIcon.QUESTION);
 
 	private boolean started;
 	protected BaseTab baseTab;
 
-	private final AwesomeIcon icon;
+	private final GlyphIcons icon;
 	private final String name;
 	private final TabMode tabMode;
 
-	public Plugin(TabMode tabMode, AwesomeIcon icon, String name) {
+	public Plugin(TabMode tabMode, GlyphIcons icon, String name) {
 		this(tabMode, icon, name, Optional.<String>empty());
 	}
 
-	public Plugin(TabMode tabMode, AwesomeIcon icon, String name, Optional<String> configSectionName) {
+	public Plugin(TabMode tabMode, GlyphIcons icon, String name, Optional<String> configSectionName) {
 		this(tabMode, icon, name, configSectionName, new ClientFeature[0]);
 	}
 
-	public Plugin(TabMode tabMode, AwesomeIcon icon, String name, Optional<String> configSectionName, ClientFeature... dependingFeatures) {
+	public Plugin(TabMode tabMode, GlyphIcons icon, String name, Optional<String> configSectionName, ClientFeature... dependingFeatures) {
 		super(configSectionName);
 		this.name = name;
 		this.tabMode = tabMode;
@@ -110,7 +110,7 @@ public abstract class Plugin extends ConfigWrapper {
 		return dependingFeatures;
 	}
 
-	public final SimpleObjectProperty<AwesomeIcon> buttonIconPropertyProperty() {
+	public final SimpleObjectProperty<GlyphIcons> buttonIconPropertyProperty() {
 		return buttonIconProperty;
 	}
 
@@ -137,7 +137,7 @@ public abstract class Plugin extends ConfigWrapper {
 		Region spacer = new Region();
 		HBox.setHgrow(spacer, Priority.ALWAYS);
 
-		Button settingsButton = AwesomeDude.createIconButton(AwesomeIcon.COG);
+		Button settingsButton = Components.createIconButton(FontAwesomeIcon.COG, "16.0");
 		settingsButton.setId("settings");
 		settingsButton.setOnAction(e -> {
 			BorderPane content = new BorderPane();
