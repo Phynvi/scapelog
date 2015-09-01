@@ -81,8 +81,6 @@ public final class DashboardTab extends IconTab {
 			updateVoice(voice1, voice2, newVoice);
 		});
 
-		VoiceOfSeren.getCurrentVoice().set(new VoiceOfSeren.Clan[]{VoiceOfSeren.Clan.AMLODD, VoiceOfSeren.Clan.TRAHAEARN});
-
 		HBox statsBox = new HBox(10,
 				new VBox(5,
 						playerCountLabel,
