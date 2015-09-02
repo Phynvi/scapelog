@@ -73,19 +73,20 @@ public final class DashboardTab extends IconTab {
 			username = "Logged in as " + Utilities.capitalize(ScapeLog.getUser().getUsername());
 		}
 
-		ImageView voice1 = new ImageView();
-		ImageView voice2 = new ImageView();
-		updateVoice(voice1, voice2, VoiceOfSeren.getCurrentVoice().get());
+		ImageView[] voiceImages = new ImageView[] {
+				new ImageView(), new ImageView()
+		};
+		updateVoice(voiceImages, VoiceOfSeren.getCurrentVoice().get());
 
 		VoiceOfSeren.getCurrentVoice().addListener((observable, oldValue, newVoice) -> {
-			updateVoice(voice1, voice2, newVoice);
+			updateVoice(voiceImages, newVoice);
 		});
 
 		HBox statsBox = new HBox(10,
 				new VBox(5,
 						playerCountLabel,
 						//new Label("ScapeLog online: TODO") //TODO: Implement
-						new HBox(10, new Label("Voice of Seren:"), voice1, voice2)
+						new HBox(10, new Label("Voice of Seren:"), voiceImages[0], voiceImages[1])
 				),
 				Components.createSpacer(),
 				new VBox(10,
@@ -170,15 +171,17 @@ public final class DashboardTab extends IconTab {
 		});
 	}
 
-	private void updateVoice(ImageView voice1, ImageView voice2, VoiceOfSeren.Clan[] clans) {
-		if (clans.length != 2 || clans[0] == null || clans[1] == null) {
+	private void updateVoice(ImageView[] imageViews, VoiceOfSeren.Clan[] clans) {
+		if (imageViews == null || clans == null || imageViews.length != clans.length) {
 			return;
 		}
-		voice1.setImage(clans[0].getImage());
-		voice2.setImage(clans[1].getImage());
-
-		voice1.setSmooth(true);
-		voice2.setSmooth(true);
+		for (int i = 0; i < imageViews.length; i++) {
+			if (imageViews[i] == null || clans[i] == null) {
+				continue;
+			}
+			imageViews[i].setImage(clans[i].getImage());
+			Tooltip.install(imageViews[i], new Tooltip(clans[i].getName()));
+		}
 	}
 
 }

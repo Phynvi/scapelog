@@ -52,22 +52,30 @@ public final class VoiceOfSeren {
 			int count = 0;
 			recentVoices.clear();
 			for (Element element : elements) {
-				Elements timestamps = element.getElementsByClass("_timestamp");
+				try {
+					Elements timestamps = element.getElementsByClass("_timestamp");
 
-				String timestamp = timestamps.first().attr("data-time-ms");
-				long time = Long.parseLong(timestamp);
-				long age = System.currentTimeMillis() - time;
+					String timestamp = timestamps.first().attr("data-time-ms");
+					long time = Long.parseLong(timestamp);
+					long age = System.currentTimeMillis() - time;
 
-				Element tweetText = element.getElementsByClass("tweet-text").first();
-				String tweet = tweetText.text();
+					Element tweetText = element.getElementsByClass("tweet-text").first();
+					String tweet = tweetText.text();
 
-				Optional<Clan[]> clans = parseClans(tweet);
-				if (count == 0) {
-					currentVoice.setValue(clans.get());
-				} else {
-					clans.ifPresent(recentVoices::add);
+					Optional<Clan[]> optionalClans = parseClans(tweet);
+					if (!optionalClans.isPresent()) {
+						continue;
+					}
+					Clan[] clans = optionalClans.get();
+					if (count == 0) {
+						currentVoice.setValue(clans);
+					} else {
+						recentVoices.add(clans);
+					}
+					count++;
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-				count++;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
