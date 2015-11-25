@@ -1,7 +1,6 @@
 package com.scapelog.client.loader;
 
 import com.goebl.david.WebbException;
-import com.google.common.collect.Lists;
 import com.scapelog.client.model.Language;
 import com.scapelog.client.model.WorldList;
 import com.scapelog.client.ui.util.WebUtils;
@@ -49,7 +48,7 @@ public final class JavConfig {
 					config.put(key, value);
 				}
 			}
-			return !(params.isEmpty() || config.isEmpty());
+			return !params.isEmpty() && !config.isEmpty();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

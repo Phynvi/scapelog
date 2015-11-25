@@ -229,7 +229,7 @@ public final class ClientLoader {
 	private int getWorldId(String codebase) {
 		Matcher matcher = WORLD_ID_PATTERN.matcher(codebase);
 		if (matcher.find()) {
-			String worldId = matcher.group(1);
+			String worldId = matcher.group(1).replaceAll("[^\\d.]", "");
 			return Integer.parseInt(worldId);
 		}
 		return -1;
@@ -239,7 +239,7 @@ public final class ClientLoader {
 		for (String value : parameters.values()) {
 			Matcher matcher = LOBBY_ID_PATTERN.matcher(value);
 			if (matcher.find()) {
-				return matcher.group(1);
+				return matcher.group(1).replaceAll("[^\\d]", "");
 			}
 		}
 		return "n/a";
