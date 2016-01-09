@@ -5,9 +5,11 @@ import com.scapelog.api.event.impl.IdleResetEvent;
 import com.scapelog.api.plugin.OpenTechnique;
 import com.scapelog.api.plugin.Plugin;
 import com.scapelog.api.plugin.TabMode;
+import com.scapelog.api.ui.TimedNotification;
 import com.scapelog.api.util.Components;
 import com.scapelog.api.util.SettingsUtils;
 import com.scapelog.api.util.TimeUtils;
+import com.scapelog.client.ui.DecoratedFrame;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -29,6 +31,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 // todo: do something about the settings
 // todo: persisted timers
@@ -44,8 +47,11 @@ public final class TimerPlugin extends Plugin {
 	private final ObservableList<Timer> timerList = FXCollections.observableArrayList();
 	private int timerCounter = 0;
 
-	public TimerPlugin() {
+	private final DecoratedFrame frame;
+
+	public TimerPlugin(DecoratedFrame frame) {
 		super(TabMode.ON, icon, "Timers", Optional.of("timers"));
+		this.frame = frame;
 	}
 
 	@Override
@@ -269,6 +275,8 @@ public final class TimerPlugin extends Plugin {
 		private final String label;
 		private final Label timerLabel = new Label("00:00:00");
 
+		private boolean notified;
+
 		public Timer(String label, long duration) {
 			super(5);
 			this.duration = duration;
@@ -278,7 +286,10 @@ public final class TimerPlugin extends Plugin {
 			Button remove = Components.createIconButton(FontAwesomeIcon.REMOVE, "13");
 			Button pause = Components.createIconButton(FontAwesomeIcon.PAUSE, "13");
 
-			reset.setOnAction(e -> startTime = System.currentTimeMillis());
+			reset.setOnAction(e -> {
+				startTime = System.currentTimeMillis();
+				notified = false;
+			});
 			remove.setOnAction(e -> timerList.remove(this));
 			pause.setOnAction(e -> {
 				paused = !paused;
@@ -296,6 +307,7 @@ public final class TimerPlugin extends Plugin {
 				label = "Timer " + timerCounter;
 			}
 			this.label = label;
+			update();
 			getChildren().addAll(new Label(label), Components.createSpacer(), timerLabel, pause, reset, remove);
 		}
 
@@ -306,6 +318,12 @@ public final class TimerPlugin extends Plugin {
 			long diff = (startTime + duration) - System.currentTimeMillis();
 			if (diff < 0) {
 				diff = 0;
+			}
+			if (diff == 0 && !notified) {
+				if (frame != null) {
+					new TimedNotification("Timer '" + label + "' has ended!").show(frame.getTitleBar().getContent(), 10, TimeUnit.SECONDS);
+				}
+				notified = true;
 			}
 			String elapsed = TimeUtils.formatHours(diff);
 			timerLabel.setText(elapsed);

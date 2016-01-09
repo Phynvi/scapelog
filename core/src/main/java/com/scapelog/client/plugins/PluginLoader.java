@@ -15,6 +15,7 @@ import com.scapelog.client.loader.codec.JarArchiveCodec;
 import com.scapelog.client.plugins.impl.HighscoresPlugin;
 import com.scapelog.client.plugins.impl.SkillTrackerPlugin;
 import com.scapelog.client.plugins.impl.TimerPlugin;
+import com.scapelog.client.ui.DecoratedFrame;
 import com.scapelog.client.util.Debug;
 import javafx.application.Platform;
 import org.objectweb.asm.Type;
@@ -43,12 +44,11 @@ public final class PluginLoader {
 		startPlugins();
 	}
 
-	public void load() {
+	public void load(DecoratedFrame frame) {
 		plugins.add(new SkillTrackerPlugin());
 		//plugins.add(new SlayerPlugin());
 		plugins.add(new HighscoresPlugin());
-		plugins.add(new TimerPlugin());
-		//plugins.add(new AraxxorPlugin());
+		plugins.add(new TimerPlugin(frame));
 	}
 
 	public void startPlugins() {

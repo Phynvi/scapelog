@@ -67,6 +67,13 @@ public final class VoiceOfSeren {
 						continue;
 					}
 					Clan[] clans = optionalClans.get();
+					Clan[] current = currentVoice.get();
+
+					// check if the voice hasnt changed
+					if (count == 0 && current != null && clans[0].equals(current[0]) && clans[1].equals(current[1])) {
+						break;
+					}
+
 					if (count == 0) {
 						currentVoice.setValue(clans);
 					} else {

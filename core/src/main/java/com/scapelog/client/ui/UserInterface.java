@@ -21,7 +21,6 @@ import com.scapelog.client.ui.component.AppletPanel;
 import com.scapelog.client.ui.component.TitleBar;
 import com.scapelog.client.ui.util.Fonts;
 import com.scapelog.client.util.DiagnosticsLogger;
-import com.sun.javafx.application.PlatformImpl;
 import de.jensd.fx.glyphs.GlyphsDude;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.application.Platform;
@@ -57,7 +56,7 @@ public final class UserInterface {
 	private static final ObservableList<Overlay> activeOverlays = FXCollections.observableArrayList();
 
 	public void setup(final PluginLoader pluginLoader) {
-		PlatformImpl.startup(() -> {
+		//PlatformImpl.startup(() -> {
 			appletPanel = new AppletPanel();
 
 			int defaultWidth = 1000;
@@ -109,7 +108,7 @@ public final class UserInterface {
 			WindowSizes.setFrame(scapeFrame);
 
 			ClientEventDispatcher.fireEvent(new ClientWindowInitializedEvent(frame));
-		});
+		//});
 	}
 
 	private void resizeApplet(int width, int height) {
@@ -291,4 +290,7 @@ public final class UserInterface {
 		return borderRadius;
 	}
 
+	public DecoratedFrame getFrame() {
+		return frame;
+	}
 }

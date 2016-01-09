@@ -79,6 +79,11 @@ public final class NewsTab extends IconTab {
 				" - Added notifications for Voice of Seren change (disabled by default)",
 				" - Updated some third party dependencies"
 		});
+		insertNews(textArea, new String[] {
+				"Updates #7 - 9 January 2016",
+				" - Timers now show a notification when the time runs out",
+				" - Voice of Seren of the previous hour no longer will be notified again if the Twitter bot hadn't updated"
+		});
 	}
 
 	private void insertNews(TextArea textArea, String[] lines) {

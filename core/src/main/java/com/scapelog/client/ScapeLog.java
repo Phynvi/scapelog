@@ -59,7 +59,8 @@ public final class ScapeLog {
 		}));
 
 //		if (debug) {
-			scapeLog.startUI();
+		new JFXPanel(); // initialize toolkit
+		Platform.runLater(scapeLog::startUI);
 //		} else {
 //			scapeLog.start();
 //		}
@@ -83,7 +84,7 @@ public final class ScapeLog {
 		userInterface = new UserInterface();
 		userInterface.setup(pluginLoader);
 
-		pluginLoader.load();
+		pluginLoader.load(userInterface.getFrame());
 		pluginLoader.start();
 
 		ClientEventDispatcher.registerListener(new ClientEventListener<ClientLoadEvent>(ClientLoadEvent.class) {
