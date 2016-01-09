@@ -82,7 +82,8 @@ public final class NewsTab extends IconTab {
 		insertNews(textArea, new String[] {
 				"Updates #7 - 9 January 2016",
 				" - Timers now show a notification when the time runs out",
-				" - Voice of Seren of the previous hour no longer will be notified again if the Twitter bot hadn't updated"
+				" - Voice of Seren of the previous hour no longer will be notified again if the Twitter bot hadn't updated",
+				" - Player's clan is now displayed in the highscores again"
 		});
 	}
 

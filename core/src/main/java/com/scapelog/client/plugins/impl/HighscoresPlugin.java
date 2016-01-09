@@ -233,14 +233,11 @@ public final class HighscoresPlugin extends ButtonPlugin {
 		if (result != null) {
 			result = result.substring(callback.length() + 2, result.length() - 4);
 		}
-		String strippedResult = result;
 
-		Platform.runLater(() -> {
-			if (response.getStatusCode() == 200 && strippedResult != null) {
-				PlayerDetails playerDetails = new Gson().fromJson(strippedResult, PlayerDetails.class);
-				clanLabel.setText(playerDetails.getClan());
-			}
-		});
+		if (response.getStatusCode() == 200 && result != null) {
+			PlayerDetails playerDetails = new Gson().fromJson(result, PlayerDetails.class);
+			clanLabel.setText(playerDetails.getClan());
+		}
 	}
 
 	private void addColumn(TilePane grid, SkillSet... skills) {
