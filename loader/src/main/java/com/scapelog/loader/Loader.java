@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 public final class Loader {
-	private final int VERSION = 8;
+	private final int VERSION = 9;
 	private final OperatingSystem operatingSystem = OperatingSystem.getOperatingSystem();
 
 	private final String dataDirectory = System.getProperty("user.home") + "/.scapelog";
@@ -321,7 +321,7 @@ public final class Loader {
 		try {
 			int loaderVersion = Integer.parseInt(lines[0]);
 			if (VERSION != loaderVersion) {
-				JOptionPane.showMessageDialog(null, "Your loader is out of date, please download the new version from our website.");
+				JOptionPane.showMessageDialog(null, "Your loader is out of date, please download the new version from scapelog.com.");
 				System.exit(0);
 			}
 			for (int i = 1; i < lines.length; i++) {
