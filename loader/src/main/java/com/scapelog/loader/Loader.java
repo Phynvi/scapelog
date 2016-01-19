@@ -15,11 +15,13 @@ import java.awt.BorderLayout;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -32,7 +34,7 @@ import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 public final class Loader {
-	private final int VERSION = 7;
+	private final int VERSION = 8;
 	private final OperatingSystem operatingSystem = OperatingSystem.getOperatingSystem();
 
 	private final String dataDirectory = System.getProperty("user.home") + "/.scapelog";
@@ -45,7 +47,6 @@ public final class Loader {
 	private JProgressBar progressBar;
 
 	private boolean printOutput = false;
-	private boolean noChecksumCheck = false;
 	private boolean noMods = false;
 	private boolean forcePortableJava = false;
 	private boolean testingFiles = false;
@@ -87,7 +88,7 @@ public final class Loader {
 		try {
 			loader.loadList();
 			List<Dependency> missingDependencies = loader.checkFiles();
-			if (missingDependencies.size() > 0 && !loader.noChecksumCheck) {
+			if (missingDependencies.size() > 0) {
 				loader.downloadFiles(missingDependencies);
 			}
 		} catch (Exception e) {
@@ -120,12 +121,6 @@ public final class Loader {
 			@Override
 			public void run() {
 				printOutput = true;
-			}
-		}));
-		bootFlags.add(new BootFlag("-noupdate", "Checks for updates but does not download them", new Runnable() {
-			@Override
-			public void run() {
-				noChecksumCheck = true;
 			}
 		}));
 		bootFlags.add(new BootFlag("-nomods", "Launches the application without any modificating abilities", new Runnable() {
@@ -299,14 +294,31 @@ public final class Loader {
 	}
 
 	private void loadList() throws Exception {
-		try {
-			progressLabel.setText("Fetching file list...");
-			String[] lines;
-			try {
-				lines = downloadToMemory(testingFiles ? "http://static.scapelog.com/test/checksums" : "http://static.scapelog.com/live/checksums");
-			} catch (FileNotFoundException e) {
-				throw new Exception("Remote file list not found, please try again later");
+		File libFolder = new File(libDirectory);
+		if (!libFolder.exists()) {
+			boolean created = libFolder.mkdirs();
+			if (!created) {
+				throw new IOException("Failed to create lib directory in '" + libDirectory + "', please create it manually.");
 			}
+		}
+
+		progressLabel.setText("Fetching file list...");
+		String checksumFile = libDirectory + "/checksums";
+		String[] lines;
+		try {
+			lines = download(testingFiles ? "http://static.scapelog.com/test/checksums" : "http://static.scapelog.com/live/checksums", new File(checksumFile));
+		} catch (Exception e) {
+			e.printStackTrace();
+			progressLabel.setText("Unable to fetch file list, attemping to use local version");
+			try {
+				lines = readLines(checksumFile);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				throw new Exception("No local or remote file list found, please try again later");
+			}
+		}
+
+		try {
 			int loaderVersion = Integer.parseInt(lines[0]);
 			if (VERSION != loaderVersion) {
 				JOptionPane.showMessageDialog(null, "Your loader is out of date, please download the new version from our website.");
@@ -500,7 +512,12 @@ public final class Loader {
 		return connection;
 	}
 
-	private String[] downloadToMemory(String url) throws Exception {
+	private String[] download(String url, File output) throws Exception {
+		boolean outputExists = output.exists();
+		if (!outputExists) {
+			outputExists = output.createNewFile();
+		}
+
 		HttpURLConnection connection = getConnection(url);
 		Map<String, List<String>> headers = connection.getHeaderFields();
 		while (isRedirected(headers)) {
@@ -510,14 +527,40 @@ public final class Loader {
 		}
 		InputStream input = connection.getInputStream();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+		BufferedWriter writer = outputExists ? new BufferedWriter(new FileWriter(output)) : null;
 		String line;
 		List<String> lines = new ArrayList<String>();
 		while((line = reader.readLine()) != null) {
 			lines.add(line);
+
+			if (writer != null) {
+				writer.write(line);
+				writer.newLine();
+			}
+		}
+		if (writer != null) {
+			writer.close();
 		}
 		reader.close();
 		input.close();
 		connection.disconnect();
+		return lines.toArray(new String[lines.size()]);
+	}
+
+	private String[] readLines(String path) throws Exception {
+		List<String> lines = new ArrayList<String>();
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader(path));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				lines.add(line);
+			}
+		} finally {
+			if (reader != null) {
+				reader.close();
+			}
+		}
 		return lines.toArray(new String[lines.size()]);
 	}
 
