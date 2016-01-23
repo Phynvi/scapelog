@@ -1,11 +1,31 @@
 package com.scapelog.client.model;
 
+import com.scapelog.util.proguard.Keep;
+import com.scapelog.util.proguard.KeepClassMemberNames;
+import com.scapelog.util.proguard.KeepName;
+
+@KeepName
+@KeepClassMemberNames
 public final class PlayerDetails {
 
+	@Keep
+	@KeepName
 	private boolean isSuffix;
+
+	@Keep
+	@KeepName
 	private boolean recruiting;
+
+	@Keep
+	@KeepName
 	private String name;
+
+	@Keep
+	@KeepName
 	private String clan;
+
+	@Keep
+	@KeepName
 	private String title;
 
 	public boolean isSuffix() {
