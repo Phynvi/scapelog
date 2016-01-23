@@ -3,10 +3,11 @@ package com.scapelog.client.ui;
 import com.scapelog.api.plugin.Plugin;
 import com.scapelog.api.util.Components;
 import com.scapelog.client.ScapeLog;
+import com.scapelog.client.config.ClientConfigKeys;
+import com.scapelog.client.config.Config;
 import com.scapelog.client.event.ClientEventDispatcher;
 import com.scapelog.client.event.ClientEventListener;
 import com.scapelog.client.event.impl.PluginStartEvent;
-import com.scapelog.client.model.UserGroup;
 import com.scapelog.client.plugins.PluginLoader;
 import com.scapelog.client.ui.component.PopupWindow;
 import com.scapelog.client.ui.component.tab.DashboardTab;
@@ -31,9 +32,13 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.lang.reflect.Field;
 
 public final class FeaturesWindow {
+
+	private final Runnable focusLossEvent;
 
 	private final PopupWindow popup;
 	private final ToggleButton trigger;
@@ -44,6 +49,24 @@ public final class FeaturesWindow {
 		this.popup.setTitle("Features");
 		this.popup.setPrimary(true);
 		this.popup.addFrameEvents(frame, trigger);
+
+		this.focusLossEvent = () -> {
+			boolean close = Config.getBooleanOrAdd(ClientConfigKeys.SECTION_NAME, ClientConfigKeys.FOCUS_LOSS_CLOSE, false);
+			if (close && !popup.isDetached() && !popup.isFocused() && !frame.isFocused()) {
+				popup.hide();
+			}
+		};
+		frame.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				focusLossEvent.run();
+			}
+		});
+		popup.focusedProperty().addListener((observable, wasFocused, focused) -> {
+			if (!focused) {
+				focusLossEvent.run();
+			}
+		});
 	}
 
 	public void setup(PluginLoader pluginLoader) {
@@ -68,11 +91,13 @@ public final class FeaturesWindow {
 				new NewsTab().getTab()
 		);
 
-		tabs.skinProperty().addListener((observable, oldValue, newValue) -> {
-			modifySkin(newValue);
+		tabs.skinProperty().addListener((observable, oldSkin, newSkin) -> {
+			modifySkin(newSkin);
 		});
 
-		if (ScapeLog.debug || (ScapeLog.getUser() != null && ScapeLog.getUser().getGroups().contains(UserGroup.PLUGIN_DEVELOPER))) {
+		// Developer tab would've been visible for users with developer rank but since that's not happening
+		// we'll limit it to debug mode
+		if (ScapeLog.debug) {
 			tabs.getTabs().addAll(
 					new DeveloperTab(pluginLoader).getTab(),
 					new ReflectionTab().getTab()

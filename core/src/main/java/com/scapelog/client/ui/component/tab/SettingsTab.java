@@ -57,12 +57,14 @@ public final class SettingsTab extends IconTab {
 							box.getSelectionModel().selectFirst();
 						}
 				),
+				SettingsUtils.createCheckBoxSetting("Close this menu when ScapeLog loses focus", selected -> Config.setBoolean(ClientConfigKeys.SECTION_NAME, ClientConfigKeys.FOCUS_LOSS_CLOSE, selected), Config.getBooleanOrAdd(ClientConfigKeys.SECTION_NAME, ClientConfigKeys.FOCUS_LOSS_CLOSE, false)),
 
 				Components.createSpacer(),
 				Components.createSpacer(),
 				Components.createHeader("RuneScape settings", "Settings for the RuneScape client"),
 
-				SettingsUtils.createCheckBoxSetting("Disable modifications", selected -> Config.setBoolean("client", "disable_modifications", selected), Config.getBooleanOrAdd("client", "disable_modifications", false)),
+				SettingsUtils.createCheckBoxSetting("Disable modifications", selected -> Config.setBoolean(ClientConfigKeys.SECTION_NAME, ClientConfigKeys.DISABLE_MODIFICATIONS, selected),
+						Config.getBooleanOrAdd(ClientConfigKeys.SECTION_NAME, ClientConfigKeys.DISABLE_MODIFICATIONS, false)),
 				SettingsUtils.createComboBoxSetting("Default language",
 						Language.asList(),
 						Optional.of((double) 175),

@@ -56,59 +56,57 @@ public final class UserInterface {
 	private static final ObservableList<Overlay> activeOverlays = FXCollections.observableArrayList();
 
 	public void setup(final PluginLoader pluginLoader) {
-		//PlatformImpl.startup(() -> {
-			appletPanel = new AppletPanel();
+		appletPanel = new AppletPanel();
 
-			int defaultWidth = 1000;
-			int defaultHeight = 700;
-			int frameX = Config.getIntOrAdd(SECTION_NAME, UserInterfaceConfigKeys.X, 0);
-			int frameY = Config.getIntOrAdd(SECTION_NAME, UserInterfaceConfigKeys.Y, 0);
-			int frameWidth = Config.getIntOrAdd(SECTION_NAME, UserInterfaceConfigKeys.WIDTH, defaultWidth);
-			int frameHeight = Config.getIntOrAdd(SECTION_NAME, UserInterfaceConfigKeys.HEIGHT, defaultHeight);
-			boolean frameMaximized = Config.getBooleanOrAdd(SECTION_NAME, UserInterfaceConfigKeys.MAXIMIZED, false);
-			int width = frameMaximized ? defaultWidth : frameWidth;
-			int height = frameMaximized ? defaultWidth : frameHeight;
+		int defaultWidth = 1000;
+		int defaultHeight = 700;
+		int frameX = Config.getIntOrAdd(SECTION_NAME, UserInterfaceConfigKeys.X, 0);
+		int frameY = Config.getIntOrAdd(SECTION_NAME, UserInterfaceConfigKeys.Y, 0);
+		int frameWidth = Config.getIntOrAdd(SECTION_NAME, UserInterfaceConfigKeys.WIDTH, defaultWidth);
+		int frameHeight = Config.getIntOrAdd(SECTION_NAME, UserInterfaceConfigKeys.HEIGHT, defaultHeight);
+		boolean frameMaximized = Config.getBooleanOrAdd(SECTION_NAME, UserInterfaceConfigKeys.MAXIMIZED, false);
+		int width = frameMaximized ? defaultWidth : frameWidth;
+		int height = frameMaximized ? defaultWidth : frameHeight;
 
-			frame = new DecoratedFrame("ScapeLog", width, height, TitleBar.HEIGHT, true) {
-				@Override
-				protected void setContent(Scene scene, int width, int sceneHeight) {
-					getFrame().getContentPane().add(appletPanel);
-					super.setContent(scene, width, sceneHeight);
-				}
-			};
-
-			final Scene scene = frame.getScene();
-			Fonts.addDefaults(scene);
-
-			setupResizeEvents();
-			setupOutputCopying();
-
-			scene.widthProperty().addListener((observable, oldValue, newValue) -> {
-				double newWidth = (double) newValue;
-				resizeApplet((int) newWidth, (int) scene.getHeight());
-			});
-			scene.heightProperty().addListener((observable, oldValue, newValue) -> {
-				double newHeight = (double) newValue;
-				resizeApplet((int) scene.getWidth(), (int) newHeight);
-			});
-
-			borderRadius.addListener((observable, oldValue, newValue) -> resizeApplet((int) scene.getWidth(), (int) scene.getHeight()));
-
-			setupTitleBar(frame.getTitleBar(), pluginLoader);
-
-			appletPanel.setBounds(2, TitleBar.HEIGHT, (int) scene.getWidth() - (UserInterface.getBorderRadius() * 2), (int) scene.getHeight());
-
-			ScapeFrame scapeFrame = frame.getFrame();
-			scapeFrame.setVisible(true);
-			scapeFrame.setMinimumSize(new Dimension(220, 200));
-			scapeFrame.setBounds(frameX, frameY, frameWidth, frameHeight);
-			if (frameMaximized) {
-				scapeFrame.toggleMaximize();
+		frame = new DecoratedFrame("ScapeLog", width, height, TitleBar.HEIGHT, true) {
+			@Override
+			protected void setContent(Scene scene, int width, int sceneHeight) {
+				getFrame().getContentPane().add(appletPanel);
+				super.setContent(scene, width, sceneHeight);
 			}
-			WindowSizes.setFrame(scapeFrame);
+		};
 
-			ClientEventDispatcher.fireEvent(new ClientWindowInitializedEvent(frame));
-		//});
+		final Scene scene = frame.getScene();
+		Fonts.addDefaults(scene);
+
+		setupResizeEvents();
+		setupOutputCopying();
+
+		scene.widthProperty().addListener((observable, oldValue, newValue) -> {
+			double newWidth = (double) newValue;
+			resizeApplet((int) newWidth, (int) scene.getHeight());
+		});
+		scene.heightProperty().addListener((observable, oldValue, newValue) -> {
+			double newHeight = (double) newValue;
+			resizeApplet((int) scene.getWidth(), (int) newHeight);
+		});
+
+		borderRadius.addListener((observable, oldValue, newValue) -> resizeApplet((int) scene.getWidth(), (int) scene.getHeight()));
+
+		setupTitleBar(frame.getTitleBar(), pluginLoader);
+
+		appletPanel.setBounds(2, TitleBar.HEIGHT, (int) scene.getWidth() - (UserInterface.getBorderRadius() * 2), (int) scene.getHeight());
+
+		ScapeFrame scapeFrame = frame.getFrame();
+		scapeFrame.setVisible(true);
+		scapeFrame.setMinimumSize(new Dimension(220, 200));
+		scapeFrame.setBounds(frameX, frameY, frameWidth, frameHeight);
+		if (frameMaximized) {
+			scapeFrame.toggleMaximize();
+		}
+		WindowSizes.setFrame(scapeFrame);
+
+		ClientEventDispatcher.fireEvent(new ClientWindowInitializedEvent(frame));
 	}
 
 	private void resizeApplet(int width, int height) {

@@ -6,6 +6,7 @@ import com.sun.javafx.tk.Toolkit;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.WeakInvalidationListener;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -353,6 +354,14 @@ public class PopupWindow {
 
 	public final void setDetached(boolean detached) {
 		this.detached.set(detached);
+	}
+
+	public boolean isFocused() {
+		return popup.isFocused();
+	}
+
+	public ReadOnlyBooleanProperty focusedProperty() {
+		return popup.focusedProperty();
 	}
 
 	public final void toggleDetach() {
