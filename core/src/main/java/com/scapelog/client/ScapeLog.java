@@ -4,7 +4,6 @@ import com.scapelog.agent.Agent;
 import com.scapelog.client.config.Config;
 import com.scapelog.client.event.ClientEventDispatcher;
 import com.scapelog.client.event.ClientEventListener;
-import com.scapelog.client.event.ClientEventReceiver;
 import com.scapelog.client.event.impl.ClientLoadEvent;
 import com.scapelog.client.event.impl.ClientReloadEvent;
 import com.scapelog.client.event.impl.LoadingEvent;
@@ -43,7 +42,6 @@ public final class ScapeLog {
 
 	public static void main(String[] args) {
 		ScapeLog scapeLog = new ScapeLog();
-		executor.submit(new ClientEventReceiver());
 
 		try {
 			Config.setup();
