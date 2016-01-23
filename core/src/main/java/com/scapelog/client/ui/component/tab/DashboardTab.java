@@ -104,7 +104,7 @@ public final class DashboardTab extends IconTab {
 			featureBox.setId("feature-statuses");
 			for (ClientFeature feature : ClientFeature.values()) {
 				// todo: remove when fixed
-				if (feature == ClientFeature.GAME_MESSAGES || feature == ClientFeature.OPENGL) {
+				if (feature == ClientFeature.OPENGL) {
 					continue;
 				}
 				HBox box = new HBox(10);
