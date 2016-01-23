@@ -11,21 +11,15 @@ public final class GameMessageParser extends EventParser<GameMessageEvent> {
 
 	@Override
 	public GameMessageEvent parse(String[] messageParts) {
-		String message = messageParts[1];
-		int flags;
-		int type;
-		if (isInt(messageParts[messageParts.length - 1])) {
-			flags = Integer.parseInt(messageParts[messageParts.length - 2]);
-			type = Integer.parseInt(messageParts[messageParts.length - 1]);
-		} else {
-			flags = Integer.parseInt(messageParts[2]);
-			type = Integer.parseInt(messageParts[3]);
-		}
-		return new GameMessageEvent(message, flags, type);
-	}
-
-	private boolean isInt(String message) {
-		return Ints.tryParse(message) != null;
+		int type = Ints.tryParse(messageParts[1]);
+		int flags = Ints.tryParse(messageParts[2]);
+		String unformattedUsername = messageParts[3];
+		String username = messageParts[4];
+		String simpleUsername = messageParts[5];
+		String message = messageParts[6];
+		String channel = messageParts[7];
+		int qcId = Ints.tryParse(messageParts[8]);
+		return new GameMessageEvent(type, flags, unformattedUsername, username, simpleUsername, message, channel, qcId);
 	}
 
 }
