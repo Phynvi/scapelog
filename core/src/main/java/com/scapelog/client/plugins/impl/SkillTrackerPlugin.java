@@ -21,6 +21,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.CacheHint;
 import javafx.scene.Node;
@@ -201,7 +203,6 @@ public final class SkillTrackerPlugin extends TabPlugin {
 			}
 			SkillBox nextBox = skillBoxes.get(index);
 			setActiveSkillBox(label, activeBox, nextBox);
-//			}
 		});
 		pane.setCenter(label);
 		return pane;
@@ -258,6 +259,23 @@ public final class SkillTrackerPlugin extends TabPlugin {
 		scrollPane.setFitToHeight(true);
 		scrollPane.setFitToWidth(true);
 		return scrollPane;
+	}
+
+	@Override
+	public Optional<HBox> getHeaderContent() {
+		HBox box = new HBox();
+
+		Button refreshAll = Components.createIconButton(FontAwesomeIcon.REFRESH, "16.0");
+		Button closeAll = Components.createIconButton(FontAwesomeIcon.CLOSE, "16.0");
+
+		refreshAll.setTooltip(new Tooltip("Refresh all"));
+		closeAll.setTooltip(new Tooltip("Close all"));
+
+		refreshAll.setOnAction(e -> skillBoxes.forEach(b -> b.refreshEvent.handle(e)));
+		closeAll.setOnAction(e -> skillBoxes.clear());
+
+		box.getChildren().addAll(refreshAll, closeAll);
+		return Optional.of(box);
 	}
 
 	private void setActiveSkillBox(Label label, AtomicReference<SkillBox> skillBoxReference, SkillBox box) {
@@ -345,6 +363,9 @@ public final class SkillTrackerPlugin extends TabPlugin {
 
 		private long lastUpdate = System.currentTimeMillis();
 
+		private final EventHandler<ActionEvent> refreshEvent;
+		private final EventHandler<ActionEvent> closeEvent;
+
 		public SkillBox(Skill skill) {
 			this.skill = skill;
 			this.icon = getSkillIcon(skill.getId());
@@ -355,6 +376,15 @@ public final class SkillTrackerPlugin extends TabPlugin {
 			this.gainedXpLabel = Components.createLabel("", "gained-xp");
 			this.progressBar = new ProgressBar(0.0);
 
+			this.refreshEvent = (e) -> {
+				skill.resetStartTime();
+				skill.resetGainedXp();
+			};
+			this.closeEvent = (e) -> {
+				skill.reset();
+				skillBoxes.remove(this);
+				boxedSkills.remove(skill);
+			};
 			setup();
 		}
 
@@ -409,15 +439,8 @@ public final class SkillTrackerPlugin extends TabPlugin {
 			};
 			skill.xpProperty().addListener(xpListener);*/
 
-			Button refreshButton = Components.createIconButton(FontAwesomeIcon.REFRESH, "10.0", (e) -> {
-				skill.resetStartTime();
-				skill.resetGainedXp();
-			});
-			Button closeButton = Components.createIconButton(FontAwesomeIcon.TIMES, "10.0", (e) -> {
-				skill.reset();
-				skillBoxes.remove(this);
-				boxedSkills.remove(skill);
-			});
+			Button refreshButton = Components.createIconButton(FontAwesomeIcon.REFRESH, "10.0", refreshEvent);
+			Button closeButton = Components.createIconButton(FontAwesomeIcon.TIMES, "10.0", closeEvent);
 			refreshButton.setTooltip(new Tooltip("Refresh xp/h"));
 			closeButton.setTooltip(new Tooltip("Close"));
 
