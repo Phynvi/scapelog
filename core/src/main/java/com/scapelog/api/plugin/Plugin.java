@@ -130,6 +130,10 @@ public abstract class Plugin extends ConfigWrapper {
 		return name;
 	}
 
+	public Optional<HBox> getHeaderContent() {
+		return Optional.empty();
+	}
+
 	protected final Region getHeader() {
 		HBox pane = new HBox();
 		pane.setId("plugin-header");
@@ -148,7 +152,9 @@ public abstract class Plugin extends ConfigWrapper {
 
 		Label label = new Label(name);
 		label.setMaxHeight(Double.MAX_VALUE);
-		pane.getChildren().addAll(label, spacer, settingsButton);
+		pane.getChildren().addAll(label, spacer);
+		getHeaderContent().ifPresent(content -> pane.getChildren().add(content));
+		pane.getChildren().add(settingsButton);
 		return pane;
 	}
 
