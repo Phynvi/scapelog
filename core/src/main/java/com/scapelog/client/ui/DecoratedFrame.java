@@ -39,6 +39,7 @@ public class DecoratedFrame {
 		frame.setUndecorated(true);
 		frame.setBackground(StyleConstants.BACKGROUND_COLOR);
 		frame.setPreferredSize(new Dimension(width, height));
+		frame.setSize(width, height);
 		frame.setResizable(resizable);
 
 		root = new BorderPane();
