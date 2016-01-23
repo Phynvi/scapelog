@@ -15,7 +15,7 @@ import org.objectweb.asm.tree.TypeInsnNode;
 
 public final class InjectionUtils implements Opcodes {
 
-	private static final String SEPARATOR = "_";
+	public static final String SEPARATOR = "<<<>>>";
 
 	public static InsnList createEventInjection(String identifier, AbstractInsnNode[] nodes, String... types) {
 		InstructionGroup[] groups = new InstructionGroup[nodes.length];

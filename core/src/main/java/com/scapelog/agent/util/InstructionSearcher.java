@@ -37,6 +37,10 @@ public final class InstructionSearcher {
         this.index = index;
     }
 
+	public void setIndex(MethodNode methodNode, AbstractInsnNode insnNode) {
+		setIndex(methodNode.instructions.indexOf(insnNode));
+	}
+
 	public void resetIndex() {
 		setIndex(-1);
 	}
