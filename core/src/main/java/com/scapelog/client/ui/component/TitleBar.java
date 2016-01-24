@@ -115,6 +115,9 @@ public final class TitleBar extends HBox {
 		setOnMouseReleased(e -> isMovingWindow = false);
 		setOnMouseDragged(e -> {
 			if (isMovingWindow && isDraggableTarget(e)) {
+				if (frame.isMaximized()) {
+					frame.toggleMaximize();
+				}
 				Point windowPoint;
 				try {
 					windowPoint = AccessController.doPrivileged(Components.GET_LOCATION_ACTION);
