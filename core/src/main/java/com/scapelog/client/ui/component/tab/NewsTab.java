@@ -83,7 +83,16 @@ public final class NewsTab extends IconTab {
 				"Updates #7 - 9 January 2016",
 				" - Timers now show a notification when the time runs out",
 				" - Voice of Seren of the previous hour no longer will be notified again if the Twitter bot hadn't updated",
-				" - Player's clan is now displayed in the highscores again"
+		});
+		insertNews(textArea, new String[] {
+				"Updates #8 - 24 January 2016",
+				" - Added buttons to skill tracker to refresh and clear all tracked skills",
+				" - Player's clan is now displayed in the highscores again",
+				" - Added a setting to make popup menu close when ScapeLog is not focused",
+				" - Fix incorrect window size on startup",
+				" - Game messages have been hooked into again, they will be put into use soon",
+				" - Dragging a maximized window now makes it unmaximized",
+				" - Popup menu will now position itself better when dragged off monitor"
 		});
 	}
 
