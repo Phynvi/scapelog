@@ -12,6 +12,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.WeakChangeListener;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -23,8 +24,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Popup;
 import javafx.stage.Screen;
 import javafx.stage.Window;
-
-import java.util.List;
 
 public class PopupWindow {
 	enum Direction {
@@ -68,9 +67,12 @@ public class PopupWindow {
 
 	private Window ownerWindow;
 	private Direction direction = Direction.SOUTH_WEST;
+	private Direction temporaryDirection = direction;
+
 	private final SimpleBooleanProperty detached = new SimpleBooleanProperty(false);
 
 	private int lastOffset = 0;
+	private int totalScreenAreaWidth;
 	private Node lastOwner = null;
 
 	private final int initialWidth;
@@ -78,6 +80,7 @@ public class PopupWindow {
 
 	private boolean isPrimary;
 	private boolean isMovingWindow = false;
+
 
 	private final InvalidationListener hideListener = observable -> {
 		if (!isDetached()) {
@@ -127,6 +130,20 @@ public class PopupWindow {
 
 		popup.setOnCloseRequest(e -> hide());
 		popup.getContent().add(parent);
+
+		totalScreenAreaWidth = calculateScreenAreaWidth();
+		Screen.getScreens().addListener((ListChangeListener<Screen>) c -> {
+			totalScreenAreaWidth = calculateScreenAreaWidth();
+		});
+	}
+
+	private int calculateScreenAreaWidth() {
+		int width = 0;
+		for (Screen screen : Screen.getScreens()) {
+			Rectangle2D bounds = screen.getBounds();
+			width += bounds.getWidth();
+		}
+		return width;
 	}
 
 	public PopupWindow(int initialWidth, int initialHeight) {
@@ -220,30 +237,51 @@ public class PopupWindow {
 	}
 
 	private Point2D checkScreenBounds(Bounds bounds, Node owner, int offset, boolean dragging) {
-		Point2D point = getPointForBounds(direction, bounds, offset);
-
+		Point2D point = getPointForBounds(temporaryDirection == null ? direction : temporaryDirection, bounds, offset);
 		Window window = owner.getScene().getWindow();
+
+		double popupX = Double.isNaN(getX()) ? window.getX() : getX();
+		double popupY = Double.isNaN(getY()) ? window.getY() : getY();
+
+		Rectangle2D windowBounds = new Rectangle2D(popupX, popupY, initialWidth, initialHeight);
+
 		ObservableList<Screen> screens = Screen.getScreensForRectangle(window.getX(), window.getY(), window.getWidth(), window.getHeight());
 		if (!screens.isEmpty()) {
 			Screen screen = screens.get(0);
 			Rectangle2D screenBounds = screen.getBounds();
 
-			boolean outside = false;
-			if ((direction == Direction.NORTH_WEST || direction == Direction.NORTH_EAST) && point.getY() < 0) {
-				outside = true;
-			}
-			if ((direction == Direction.SOUTH_WEST || direction == Direction.SOUTH_EAST) && point.getY() + initialHeight > screenBounds.getMaxY()) {
-				outside = true;
-			}
-			if (outside) {
-				point = getPointForBounds(Direction.getVerticalOpposite(direction), bounds, offset);
-			}
-
-			if (point.getX() + initialWidth > screenBounds.getMaxX() && !dragging) {
-				point = getPointForBounds(Direction.getHorizontalOpposite(direction), bounds, offset);
+			boolean withinScreen = withinScreen(screenBounds, windowBounds);
+			if (withinScreen && !temporaryDirection.equals(direction)) {
+				Point2D directionPoint = getPointForBounds(direction, bounds, offset);
+				Rectangle2D directionBounds = new Rectangle2D(directionPoint.getX(), directionPoint.getY(), initialWidth, initialHeight);
+				if (withinScreen(screenBounds, directionBounds)) {
+					temporaryDirection = direction;
+				}
+			} else {
+				boolean changed = false;
+				if (popupX < 0 && (direction == Direction.NORTH_WEST || direction == Direction.SOUTH_WEST)) {
+					temporaryDirection = Direction.getHorizontalOpposite(temporaryDirection);
+					changed = true;
+				} else if (popupX + initialWidth > totalScreenAreaWidth && (direction == Direction.NORTH_EAST || direction == Direction.SOUTH_EAST)) {
+					temporaryDirection = Direction.getHorizontalOpposite(temporaryDirection);
+					changed = true;
+				} else if (popupY + initialHeight > screenBounds.getMaxY() && (direction == Direction.SOUTH_WEST || direction == Direction.SOUTH_EAST)) {
+					temporaryDirection = Direction.getVerticalOpposite(temporaryDirection);
+					changed = true;
+				} else if (popupY < 0 && (direction == Direction.NORTH_WEST || direction == Direction.NORTH_EAST)) {
+					temporaryDirection = Direction.getVerticalOpposite(temporaryDirection);
+					changed = true;
+				}
+				if (changed) {
+					point = getPointForBounds(temporaryDirection, bounds, offset);
+				}
 			}
 		}
 		return point;
+	}
+
+	private boolean withinScreen(Rectangle2D screenBounds, Rectangle2D bounds) {
+		return screenBounds.contains(bounds);
 	}
 
 	private Point2D getPointForBounds(Direction direction, Bounds bounds, int offset) {
@@ -269,22 +307,6 @@ public class PopupWindow {
 				break;
 		}
 		return new Point2D(x, y);
-	}
-
-	public final void centerToScreen() {
-		List<Screen> screens = Screen.getScreensForRectangle(popup.getX(), popup.getY(), popup.getWidth(), popup.getHeight());
-		if (screens.size() == 0) {
-			System.out.println("No screens found, centering aborted");
-			return;
-		}
-		Screen screen = screens.get(0);
-		Rectangle2D bounds = screen.getBounds();
-
-		double width = popup.getWidth();
-		double height = popup.getHeight();
-
-		popup.setX(bounds.getMinX() + (bounds.getWidth() - width) / 2);
-		popup.setY(bounds.getMinY() + (bounds.getHeight() - height) / 2);
 	}
 
 	public final void hide() {
@@ -332,7 +354,7 @@ public class PopupWindow {
 	}
 
 	public final void reposition() {
-		if (isDetached()) {
+		if (isDetached() || !isShowing()) {
 			return;
 		}
 		Point2D point = getRelativePoint(lastOwner, lastOffset);
@@ -345,6 +367,9 @@ public class PopupWindow {
 	}
 
 	public final void setDirection(Direction direction) {
+		if (temporaryDirection != null && temporaryDirection.equals(this.direction)) {
+			temporaryDirection = direction;
+		}
 		this.direction = direction;
 	}
 
