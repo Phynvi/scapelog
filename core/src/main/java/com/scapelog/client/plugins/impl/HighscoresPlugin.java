@@ -136,7 +136,7 @@ public final class HighscoresPlugin extends ButtonPlugin {
 
 		addColumn(skillsPane, SkillSet.ATTACK, SkillSet.STRENGTH, SkillSet.DEFENCE, SkillSet.RANGED, SkillSet.PRAYER, SkillSet.MAGIC, SkillSet.RUNECRAFTING, SkillSet.CONSTRUCTION, SkillSet.DUNGEONEERING);
 		addColumn(skillsPane, SkillSet.CONSTITUTION, SkillSet.AGILITY, SkillSet.HERBLORE, SkillSet.THIEVING, SkillSet.CRAFTING, SkillSet.FLETCHING, SkillSet.SLAYER, SkillSet.HUNTER, SkillSet.DIVINATION);
-		addColumn(skillsPane, SkillSet.MINING, SkillSet.SMITHING, SkillSet.FISHING, SkillSet.COOKING, SkillSet.FIREMAKING, SkillSet.WOODCUTTING, SkillSet.FARMING, SkillSet.SUMMONING);
+		addColumn(skillsPane, SkillSet.MINING, SkillSet.SMITHING, SkillSet.FISHING, SkillSet.COOKING, SkillSet.FIREMAKING, SkillSet.WOODCUTTING, SkillSet.FARMING, SkillSet.SUMMONING, SkillSet.INVENTION);
 
 		/* additional */
 
