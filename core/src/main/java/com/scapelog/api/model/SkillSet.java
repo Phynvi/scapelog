@@ -26,7 +26,8 @@ public enum SkillSet {
 	CONSTRUCTION(22),
 	SUMMONING(23),
 	DUNGEONEERING(24),
-	DIVINATION(25);
+	DIVINATION(25),
+	INVENTION(26);
 
 	private final int id;
 
