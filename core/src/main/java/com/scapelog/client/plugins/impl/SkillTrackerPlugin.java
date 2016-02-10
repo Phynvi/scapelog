@@ -416,29 +416,6 @@ public final class SkillTrackerPlugin extends TabPlugin {
 			progressBar.setMaxWidth(Double.MAX_VALUE);
 			HBox.setHgrow(progressBar, Priority.ALWAYS);
 
-/*			ChangeListener<Number> xpListener = (observable, oldVal, newVal) -> {
-				int xp = (int) newVal;
-				int oldXp = (int) oldVal;
-
-				int level = Skills.getLevelFromExperience(xp);
-				int levelXp = Skills.getExperienceFromLevel(level);
-				int nextLevel = level >= 125 ? 126 : level + 1;
-				int nextLevelXp = Skills.getExperienceFromLevel(nextLevel);
-				int remaining = nextLevelXp - xp;
-				int gained = xp - oldXp;
-				double percent = ((double) (xp - levelXp) / (nextLevelXp - levelXp));
-
-				skill.increaseXP(gained);
-				updateRates();
-
-				levelLabel.setText(String.valueOf(level));
-				xpLabel.setText(format(xp) + " xp");
-				levelProgressLabel.setText(format(remaining) + " xp to " + nextLevel + " (" + (int) (percent * 100) + "%)");
-				gainedXpLabel.setText(format(skill.getTotalGainedXp()) + " xp gained");
-				progressBar.setProgress(percent);
-			};
-			skill.xpProperty().addListener(xpListener);*/
-
 			Button refreshButton = Components.createIconButton(FontAwesomeIcon.REFRESH, "10.0", refreshEvent);
 			Button closeButton = Components.createIconButton(FontAwesomeIcon.TIMES, "10.0", closeEvent);
 			refreshButton.setTooltip(new Tooltip("Refresh xp/h"));
@@ -474,12 +451,14 @@ public final class SkillTrackerPlugin extends TabPlugin {
 		}
 
 		public void update() {
+			int id = skill.getId();
 			int xp = skill.getXP();
+			int maxLevel = skill.getMaxLevel();
 
-			int level = Skills.getLevelFromExperience(xp);
-			int levelXp = Skills.getExperienceFromLevel(level);
-			int nextLevel = level >= 125 ? 126 : level + 1;
-			int nextLevelXp = Skills.getExperienceFromLevel(nextLevel);
+			int level = Skills.getLevelFromExperience(id, xp);
+			int levelXp = Skills.getExperienceFromLevel(id, level);
+			int nextLevel = level >= maxLevel - 1 ? maxLevel : level + 1;
+			int nextLevelXp = Skills.getExperienceFromLevel(id, nextLevel);
 			int remaining = nextLevelXp - xp;
 			double percent = ((double) (xp - levelXp) / (nextLevelXp - levelXp));
 
