@@ -88,6 +88,10 @@ public final class Skill {
 		return getLevel() != -1 && getXP() != -1;
 	}
 
+	public int getMaxLevel() {
+		return id == SkillSet.INVENTION.getId() ? 150 : 126;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
