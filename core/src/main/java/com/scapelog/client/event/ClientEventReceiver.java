@@ -1,5 +1,7 @@
 package com.scapelog.client.event;
 
+import java.util.Arrays;
+
 import com.scapelog.agent.util.InjectionUtils;
 import com.scapelog.api.ClientFeature;
 import com.scapelog.api.ClientFeatureStatus;
@@ -24,6 +26,9 @@ public final class ClientEventReceiver {
 					Event event = ClientFeature.parseEvent(identifier, parts);
 					if (event == null) {
 						return;
+					}
+					if (identifier.equals(ClientFeature.GAME_MESSAGES.getIdentifier())) {
+						System.out.println(Arrays.toString(parts));
 					}
 					EventDispatcher.fireEvent(event);
 				}

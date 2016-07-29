@@ -1,5 +1,9 @@
 package com.scapelog.client.ui;
 
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.lang.reflect.Field;
+
 import com.scapelog.api.plugin.Plugin;
 import com.scapelog.api.util.Components;
 import com.scapelog.client.ScapeLog;
@@ -32,31 +36,29 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.lang.reflect.Field;
-
 public final class FeaturesWindow {
 
 	private final Runnable focusLossEvent;
 
 	private final PopupWindow popup;
 	private final ToggleButton trigger;
+	private final DecoratedFrame frame;
 
-	public FeaturesWindow(ToggleButton trigger, ScapeFrame frame) {
+	public FeaturesWindow(ToggleButton trigger, DecoratedFrame frame) {
 		this.trigger = trigger;
+		this.frame = frame;
 		this.popup = new PopupWindow(500, 400);
 		this.popup.setTitle("Features");
 		this.popup.setPrimary(true);
-		this.popup.addFrameEvents(frame, trigger);
+		this.popup.addFrameEvents(frame.getFrame(), trigger);
 
 		this.focusLossEvent = () -> {
 			boolean close = Config.getBooleanOrAdd(ClientConfigKeys.SECTION_NAME, ClientConfigKeys.FOCUS_LOSS_CLOSE, false);
-			if (close && !popup.isDetached() && !popup.isFocused() && !frame.isFocused()) {
+			if (close && !popup.isDetached() && !popup.isFocused() && !frame.getFrame().isFocused()) {
 				popup.hide();
 			}
 		};
-		frame.addFocusListener(new FocusAdapter() {
+		frame.getFrame().addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusLost(FocusEvent e) {
 				focusLossEvent.run();
@@ -87,7 +89,7 @@ public final class FeaturesWindow {
 		tabs.getTabs().addAll(
 				new DashboardTab().getTab(),
 				new SettingsTab().getTab(),
-				new NotificationTab().getTab(),
+				new NotificationTab(frame.getTitleBar()).getTab(),
 				new NewsTab().getTab()
 		);
 

@@ -3,8 +3,10 @@ package com.scapelog.client.ui.component.tab;
 import com.google.common.collect.ImmutableList;
 import com.scapelog.api.ui.tab.IconTab;
 import com.scapelog.api.util.Components;
+import com.scapelog.client.notification.AugmentedItemNotificationManager;
 import com.scapelog.client.notification.NotificationManager;
 import com.scapelog.client.notification.VosNotificationManager;
+import com.scapelog.client.ui.component.TitleBar;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -21,12 +23,13 @@ public final class NotificationTab extends IconTab {
 
 	private final VBox tabContent;
 
-	public NotificationTab() {
+	public NotificationTab(TitleBar titleBar) {
 		super(FontAwesomeIcon.BELL, "Notifications");
 
 		ImmutableList.Builder<NotificationManager> builder = new ImmutableList.Builder<>();
 		builder.add(
-				new VosNotificationManager()
+				new VosNotificationManager(),
+				new AugmentedItemNotificationManager(titleBar)
 		);
 		this.notificationManagers = builder.build();
 		this.tabContent = getCachedContent();

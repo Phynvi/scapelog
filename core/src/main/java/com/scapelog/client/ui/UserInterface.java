@@ -142,7 +142,7 @@ public final class UserInterface {
 			features.toggle();
 			featuresButton.setSelected(features.isVisible());
 		});
-		features = new FeaturesWindow(featuresButton, frame.getFrame());
+		features = new FeaturesWindow(featuresButton, frame);
 		features.setup(pluginLoader);
 		features.getVisibilityProperty().addListener((observable, oldValue, newValue) -> {
 			featuresButton.setSelected(newValue);
