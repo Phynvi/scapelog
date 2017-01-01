@@ -51,10 +51,11 @@
 }
 
 #title-bar #beta {
-    -fx-text-fill: -fx-text-darker;
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
     -fx-font-size: 11px;
     -fx-translate-x: 8;
-    -fx-translate-y: 6;
+    -fx-translate-y: 7;
 }
 
 #title-bar #features {

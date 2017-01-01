@@ -1,7 +1,12 @@
 package com.scapelog.client.ui.component;
 
+import java.awt.Point;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+
 import com.scapelog.api.util.Components;
 import com.scapelog.client.ui.ScapeFrame;
+import com.scapelog.client.ui.ShutdownWindow;
 import com.scapelog.client.ui.StyleConstants;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.control.Label;
@@ -11,10 +16,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-
-import java.awt.Point;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
 
 public final class TitleBar extends HBox {
 
@@ -48,7 +49,6 @@ public final class TitleBar extends HBox {
 		logo = new Label(title);
 		logo.setId("logo");
 		logo.setMinWidth(67);
-		logo.setPrefWidth(67);
 
 		contentScroll = new ScrollPane(content);
 		Components.setPadding(contentScroll, 0);
@@ -81,12 +81,13 @@ public final class TitleBar extends HBox {
 	public TitleBar(ScapeFrame frame) {
 		this(StyleConstants.TITLEBAR_DIMENSIONS.height, frame.getTitle(), new WindowControls(frame));
 
-		beta.setText("Beta");
+		beta.setText("Shutting down on January 1 - Click here");
 		beta.setId("beta");
 		beta.setMinWidth(40);
-		beta.setPrefWidth(40);
 		beta.impl_processCSS(true);
 		getChildren().add(1, beta);
+
+		beta.setOnMousePressed(e -> ShutdownWindow.show());
 
 		frame.addResizeListener((observable, oldValue, newValue) -> {
 			int frameWidth = newValue.width;
